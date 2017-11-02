@@ -30,60 +30,53 @@ public class TFListener : MonoBehaviour
 
 	}
 
-	void Update () // maybe should be fixed update
-	{
-        try {
-        string message = wsc.messages[topic];
-			//Debug.Log (message);
-			string[] dataPairs = message.Split (';');
+    void Update() {
+        string message = wsc.messages[topic]; //get newest robot state data (from transform)
+        string[] tfElements = message.Split(';'); //split the message into each joint/link data pair
+        //Debug.Log(string.Join(", ", tfElements));
+        foreach (string tfElement in tfElements) {
+            //Debug.Log(tfElement);
+            //continue;
+            string[] dataPair = tfElement.Split(':');
+            GameObject cur = GameObject.Find(dataPair[0] + "Pivot"); // replace with hashmap
+            if (cur != null) {
 
-			if (dataPairs.Length > 0) {
-				for (int i = 0; i < dataPairs.Length; i++) {
-					string[] dataPair = dataPairs [i].Split (':');
-                    string linkName = dataPair[0] + "Pivot";
-
-                    if(!links.ContainsKey(linkName)) {
-                        links[linkName] = root.transform.Find(linkName);
-                    }
-                    Transform cur = (Transform) links[linkName];
-					if (cur != null) {
-
-						string[] tmp = dataPair [1].Split (')');
-						string pos = tmp [0];
-						string rot = tmp [1];
-						pos = pos.Substring (1, pos.Length - 1);
-						rot = rot.Substring (1, rot.Length - 1);
-
-						string[] poses = pos.Split (',');
-						float pos_x = float.Parse (poses [0]);
-						float pos_y = float.Parse (poses [1]);
-						float pos_z = float.Parse (poses [2]);
-
-						Vector3 curPos = new Vector3 (pos_x, pos_y, pos_z);
+                string[] tmp = dataPair[1].Split('^'); //seperate position from rotation data
+                string pos = tmp[0]; //position data
+                string rot = tmp[1]; //rotation data
+                pos = pos.Substring(1, pos.Length - 2);
+                rot = rot.Substring(1, rot.Length - 2);
+                string[] poses = pos.Split(',');
+                float pos_x = float.Parse(poses[0]); //x position
+                float pos_y = float.Parse(poses[1]); //y position
+                float pos_z = float.Parse(poses[2]); //z position
 
 
-						string[] rots = rot.Split (',');
-						float rot_x = float.Parse (rots [0]);
-						float rot_y = float.Parse (rots [1]);
-						float rot_z = float.Parse (rots [2]);
-						float rot_w = float.Parse (rots [3]);
+                Vector3 curPos = new Vector3(pos_x, pos_y, pos_z); //save current position
+                string[] rots = rot.Split(',');
+                //save rotation as quaternions
+                float rot_x = float.Parse(rots[0]);
+                float rot_y = float.Parse(rots[1]);
+                float rot_z = float.Parse(rots[2]);
+                float rot_w = float.Parse(rots[3]);
 
 
-						Quaternion curRot = new Quaternion (rot_x, rot_y, rot_z, rot_w);
-                        cur.localPosition = RosToUnityPositionAxisConversion(curPos);
-                        cur.localRotation = RosToUnityQuaternionConversion(curRot);
+                Quaternion curRot = new Quaternion(rot_x, rot_y, rot_z, rot_w);
+                Debug.Log(cur);
+                Debug.Log(curPos);
 
-                        if (!cur.name.Contains("kinect")) {
-							cur.localScale = new Vector3(scale, scale, scale);
-						} else {
-							cur.localScale = new Vector3(-scale, scale, -scale);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-            Debug.Log(e.ToString());
-		}
+                cur.transform.position = Vector3.Lerp(scale * RosToUnityPositionAxisConversion(curPos), cur.transform.position, 0.7f); //convert ROS coordinates to Unity coordinates and scale for position vector
+                cur.transform.rotation = Quaternion.Slerp(RosToUnityQuaternionConversion(curRot), cur.transform.rotation, 0.7f); //convert ROS quaternions to Unity quarternions
+                if (!cur.name.Contains("kinect")) { //rescaling direction of kinect point cloud
+                    cur.transform.localScale = new Vector3(scale, scale, scale);
+                }
+                else {
+                    cur.transform.localScale = new Vector3(-scale, scale, -scale);
+                }
+                //cur.transform.position = RosToUnityPositionAxisConversion (curPos);
+                //cur.transform.rotation = RosToUnityQuaternionConversion (curRot);
+            }
+        }
     }
 
     Vector3 RosToUnityPositionAxisConversion (Vector3 rosIn)
