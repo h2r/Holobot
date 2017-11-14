@@ -63,8 +63,8 @@ public class TFListener : MonoBehaviour
 
                 Quaternion curRot = new Quaternion(rot_x, rot_y, rot_z, rot_w);
 
-                cur.transform.position = Vector3.Lerp(scale * RosToUnityPositionAxisConversion(curPos), cur.transform.position, 0.7f); //convert ROS coordinates to Unity coordinates and scale for position vector
-                cur.transform.rotation = Quaternion.Slerp(RosToUnityQuaternionConversion(curRot), cur.transform.rotation, 0.7f); //convert ROS quaternions to Unity quarternions
+                cur.transform.localPosition = RosToUnityPositionAxisConversion(curPos); //convert ROS coordinates to Unity coordinates and scale for position vector
+                cur.transform.localRotation = RosToUnityQuaternionConversion(curRot); //convert ROS quaternions to Unity quarternions
                 if (!cur.name.Contains("kinect")) { //rescaling direction of kinect point cloud
                     cur.transform.localScale = new Vector3(scale, scale, scale);
                 }
