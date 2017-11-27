@@ -37,7 +37,6 @@ public class TrajectoryVisualizer : MonoBehaviour {
         string path;
         try {
             path = wsc.messages[topic];
-            //path = "Trajectories/All/t" + traj_num;
             Debug.Log(path);
         }
         catch {
@@ -73,9 +72,6 @@ public class TrajectoryVisualizer : MonoBehaviour {
     //    return path;
     //}
 
-    //void Update() {
-    //    Animate();
-    //}
 
     void Animate() {
         arms[cur].SetActive(false);
@@ -98,24 +94,14 @@ public class TrajectoryVisualizer : MonoBehaviour {
                 SetPosition(w, clone);
                 arms[c] = clone;
                 MeshRenderer[] renderers = clone.GetComponentsInChildren<MeshRenderer>();
-                //trail.a = 0.5f - c / (2f*n) + 0.5f;
                 trail.r = 0.5f - c / (2f * n);
                 trail.g = 0.5f - c / (2f * n);
                 trail.b = 0.95f - c / (2f * n);
                 foreach (MeshRenderer r in renderers) {
                     foreach (Material m in r.materials) {
                         m.color = trail;
-                        //m.SetOverrideTag("RenderType", "Transparent");
-                        //m.SetInt("_SrcBlend", 1);
-                        //m.SetInt("_DstBlend", 10);
-                        //m.SetInt("_ZWrite", 0);
-                        //m.DisableKeyword("_ALPHATEST_ON");
-                        //m.DisableKeyword("_ALPHABLEND_ON");
-                        //m.EnableKeyword("_ALPHAPREMULTIPLY_ON");
-                        //m.renderQueue = 3000;
                     }
                 }
-                //clone.SetActive(false);
             }
             c++;
         }
@@ -164,7 +150,6 @@ public class TrajectoryVisualizer : MonoBehaviour {
                     Quaternion curRot = new Quaternion(rot_x, rot_y, rot_z, rot_w);
                     cur.localPosition = RosToUnityPositionAxisConversion(curPos);
                     cur.localRotation = RosToUnityQuaternionConversion(curRot);
-                    //cur.localScale = new Vector3(1.05f, 1.05f, 1.05f);
                 }
             }
         }
