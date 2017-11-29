@@ -63,7 +63,8 @@ v2f_surf vert(appdata_t v)
     UNITY_INITIALIZE_OUTPUT(v2f_surf, o);
 
     #if defined (SHADER_API_D3D11) && defined (VRINSTANCINGEXT_ON)
-        o.pos = mul(UNITY_MATRIX_MVP_STEREO[v.instId], v.vertex);
+        //o.pos = mul(UNITY_MATRIX_MVP_STEREO[v.instId], v.vertex);
+		o.pos = UnityObjectToClipPos(v.vertex);
         o.renderTargetIndex = v.instId;
     #else
         o.pos = UnityObjectToClipPos(v.vertex);
