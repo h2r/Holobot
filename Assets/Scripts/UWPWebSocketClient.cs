@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if NETFX_CORE
+#if !UNITY_EDITOR
 
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
@@ -12,7 +12,7 @@ using Windows.Storage.Streams;
 public class UWPWebSocketClient : UniversalWebsocketClient {
 
     // Windows UWP variables    
-#if NETFX_CORE
+#if !UNITY_EDITOR
     private MessageWebSocket messageWebSocket;
     private DataWriter messageWriter;
 #endif
@@ -28,7 +28,7 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
     }
     
     void WebSocketStart () {
-#if NETFX_CORE
+#if !UNITY_EDITOR
         messageWebSocket = new MessageWebSocket();
         messageWebSocket.Control.MessageType = SocketMessageType.Utf8;
         messageWebSocket.MessageReceived += MessageReceived;
@@ -63,12 +63,16 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
     }
 
     void SendAsync(string message) {
-#if NETFX_CORE
+#if WINDOWS_UWP
         messageWriter.WriteString(message);
-        messageWriter.StoreAsync();
+        try {
+            messageWriter.StoreAsync();
+        } catch (Exception ex) {
+            Debug.Log(ex.ToString());
+        }
 #endif
     }
-#if NETFX_CORE
+#if !UNITY_EDITOR
 
     //The MessageReceived event handler.
     private void MessageReceived(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs args) {

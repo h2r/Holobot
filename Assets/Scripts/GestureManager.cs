@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
-using UnityEngine.VR.WSA.Input;
+
 
 namespace Academy.HoloToolkit.Unity {
     public class GestureManager : Singleton<GestureManager> {
         // Tap and Navigation gesture recognizer.
-        public GestureRecognizer NavigationRecognizer { get; private set; }
+        public UnityEngine.XR.WSA.Input.GestureRecognizer NavigationRecognizer { get; private set; }
 
         // Manipulation gesture recognizer.
-        public GestureRecognizer ManipulationRecognizer { get; private set; }
+        public UnityEngine.XR.WSA.Input.GestureRecognizer ManipulationRecognizer { get; private set; }
 
         // Currently active gesture recognizer.
-        public GestureRecognizer ActiveRecognizer { get; private set; }
+        public UnityEngine.XR.WSA.Input.GestureRecognizer ActiveRecognizer { get; private set; }
 
         public bool IsNavigating { get; private set; }
 
@@ -24,12 +24,12 @@ namespace Academy.HoloToolkit.Unity {
             /* TODO: DEVELOPER CODING EXERCISE 2.b */
 
             // 2.b: Instantiate the NavigationRecognizer.
-            NavigationRecognizer = new GestureRecognizer();
+            NavigationRecognizer = new UnityEngine.XR.WSA.Input.GestureRecognizer();
 
             // 2.b: Add Tap and NavigationX GestureSettings to the NavigationRecognizer's RecognizableGestures.
             NavigationRecognizer.SetRecognizableGestures(
-                GestureSettings.Tap |
-                GestureSettings.NavigationX);
+                UnityEngine.XR.WSA.Input.GestureSettings.Tap |
+                UnityEngine.XR.WSA.Input.GestureSettings.NavigationX);
 
             // 2.b: Register for the TappedEvent with the NavigationRecognizer_TappedEvent function.
             NavigationRecognizer.TappedEvent += NavigationRecognizer_TappedEvent;
@@ -43,11 +43,11 @@ namespace Academy.HoloToolkit.Unity {
             NavigationRecognizer.NavigationCanceledEvent += NavigationRecognizer_NavigationCanceledEvent;
 
             // Instantiate the ManipulationRecognizer.
-            ManipulationRecognizer = new GestureRecognizer();
+            ManipulationRecognizer = new UnityEngine.XR.WSA.Input.GestureRecognizer();
 
             // Add the ManipulationTranslate GestureSetting to the ManipulationRecognizer's RecognizableGestures.
             ManipulationRecognizer.SetRecognizableGestures(
-                GestureSettings.ManipulationTranslate);
+                UnityEngine.XR.WSA.Input.GestureSettings.ManipulationTranslate);
 
             // Register for the Manipulation events on the ManipulationRecognizer.
             ManipulationRecognizer.ManipulationStartedEvent += ManipulationRecognizer_ManipulationStartedEvent;
@@ -88,7 +88,7 @@ namespace Academy.HoloToolkit.Unity {
         /// Transition to a new GestureRecognizer.
         /// </summary>
         /// <param name="newRecognizer">The GestureRecognizer to transition to.</param>
-        public void Transition(GestureRecognizer newRecognizer) {
+        public void Transition(UnityEngine.XR.WSA.Input.GestureRecognizer newRecognizer) {
             //Debug.Log("transitioned");
             if (newRecognizer == null) {
                 return;
@@ -107,7 +107,7 @@ namespace Academy.HoloToolkit.Unity {
             ActiveRecognizer = newRecognizer;
         }
 
-        private void NavigationRecognizer_NavigationStartedEvent(InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
+        private void NavigationRecognizer_NavigationStartedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
             // 2.b: Set IsNavigating to be true.
             IsNavigating = true;
 
@@ -115,7 +115,7 @@ namespace Academy.HoloToolkit.Unity {
             NavigationPosition = relativePosition;
         }
 
-        private void NavigationRecognizer_NavigationUpdatedEvent(InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
+        private void NavigationRecognizer_NavigationUpdatedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
             // 2.b: Set IsNavigating to be true.
             IsNavigating = true;
 
@@ -123,17 +123,17 @@ namespace Academy.HoloToolkit.Unity {
             NavigationPosition = relativePosition;
         }
 
-        private void NavigationRecognizer_NavigationCompletedEvent(InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
+        private void NavigationRecognizer_NavigationCompletedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
             // 2.b: Set IsNavigating to be false.
             IsNavigating = false;
         }
 
-        private void NavigationRecognizer_NavigationCanceledEvent(InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
+        private void NavigationRecognizer_NavigationCanceledEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
             // 2.b: Set IsNavigating to be false.
             IsNavigating = false;
         }
 
-        private void ManipulationRecognizer_ManipulationStartedEvent(InteractionSourceKind source, Vector3 position, Ray ray) {
+        private void ManipulationRecognizer_ManipulationStartedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 position, Ray ray) {
             //Debug.Log("Manipulation started");
             if (HandsManager.Instance.FocusedGameObject != null) {
                 IsManipulating = true;
@@ -144,7 +144,7 @@ namespace Academy.HoloToolkit.Unity {
             }
         }
 
-        private void ManipulationRecognizer_ManipulationUpdatedEvent(InteractionSourceKind source, Vector3 position, Ray ray) {
+        private void ManipulationRecognizer_ManipulationUpdatedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 position, Ray ray) {
             if (HandsManager.Instance.FocusedGameObject != null) {
                 IsManipulating = true;
 
@@ -154,16 +154,16 @@ namespace Academy.HoloToolkit.Unity {
             }
         }
 
-        private void ManipulationRecognizer_ManipulationCompletedEvent(InteractionSourceKind source, Vector3 position, Ray ray) {
+        private void ManipulationRecognizer_ManipulationCompletedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 position, Ray ray) {
             //Debug.Log("Manipulation completed");
             IsManipulating = false;
         }
 
-        private void ManipulationRecognizer_ManipulationCanceledEvent(InteractionSourceKind source, Vector3 position, Ray ray) {
+        private void ManipulationRecognizer_ManipulationCanceledEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 position, Ray ray) {
             IsManipulating = false;
         }
 
-        private void NavigationRecognizer_TappedEvent(InteractionSourceKind source, int tapCount, Ray ray) {
+        private void NavigationRecognizer_TappedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, int tapCount, Ray ray) {
             GameObject focusedObject = InteractibleManager.Instance.FocusedGameObject;
 
             if (focusedObject != null) {

@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Material_007
   m_Shader: {fileID: 4800000, guid: 83912519774dff348bf68dd708702465, type: 3}
-  m_ShaderKeywords: _EMISSION _USECOLOR_ON _USEMAINTEX_ON
+  m_ShaderKeywords: _EMISSION _USECOLOR_ON
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

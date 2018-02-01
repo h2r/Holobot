@@ -20,12 +20,11 @@ public class TFListener : MonoBehaviour
 	{
         //if build
         GameObject wso = GameObject.Find("WebsocketClient");
-#if !UNITY_EDITOR
-        wsc = wso.GetComponent<UWPWebSocketClient> ();
-#else
+#if UNITY_EDITOR
         wsc = wso.GetComponent<WebsocketClient>();
+#else
+        wsc = wso.GetComponent<UWPWebSocketClient>();
 #endif
-
         wsc.Subscribe (topic, "std_msgs/String", "none", 0);
 
 	}
