@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 #if !UNITY_EDITOR
 
@@ -19,7 +20,6 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
 
     //General variables
     System.Uri uri = new System.Uri("ws://138.16.160.16:9090");
-
     //public Dictionary<string, string> messages = new Dictionary<string, string>();
     private int counter = 1;
 
