@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Academy.HoloToolkit.Unity;
+using UnityEngine;
 
 /// <summary>
 /// The Interactible class flags a Game Object as being "Interactible".
@@ -7,13 +8,15 @@
 public class Interactible : MonoBehaviour {
     [Tooltip("Audio clip to play when interacting with this hologram.")]
     public AudioClip TargetFeedbackSound;
+    private bool hasCalibratedSphere, hasCalibratedRobot;
     private AudioSource audioSource;
 
     private Material[] defaultMaterials;
+    private bool firstTime;
 
     void Start() {
-        //defaultMaterials = GetComponent<Renderer>().materials;
-
+        // defaultMaterials = GetComponent<Renderer>().materials;
+        firstTime = true;
         // Add a BoxCollider if the interactible does not contain one.
         Collider collider = GetComponentInChildren<Collider>();
         if (collider == null) {
@@ -21,6 +24,8 @@ public class Interactible : MonoBehaviour {
         }
 
         EnableAudioHapticFeedback();
+        hasCalibratedSphere = false;
+        hasCalibratedRobot = false;
     }
 
     private void EnableAudioHapticFeedback() {
@@ -54,7 +59,7 @@ public class Interactible : MonoBehaviour {
         //}
     }
 
-    void OnSelect() {
+    void OnSelect(GameObject selected) {
         //for (int i = 0; i < defaultMaterials.Length; i++) {
         //    defaultMaterials[i].SetFloat("_Highlight", .5f);
         //}
@@ -63,9 +68,41 @@ public class Interactible : MonoBehaviour {
         if (audioSource != null && !audioSource.isPlaying) {
             audioSource.Play();
         }
+        //if (GestureManager.Instance.IsRecordingData)
+        //{
+        //    // create a new object at the place where the moving object was selected
+        //    // these will also serve as undo points
+        //    GestureManager.Instance.RecordUndoPoint();
+        //}
+        Debug.Log(selected);
+        if (hasCalibratedSphere && selected == GameObject.Find("ControlSphere"))
+        {
+            // clicking on sphere
+            // toggle gripper
 
-        /* TODO: DEVELOPER CODING EXERCISE 6.a */
-        // 6.a: Handle the OnSelect by sending a PerformTagAlong message.
+        }
+        if (selected == GameObject.Find("base_link"))
+        {
+            if (GestureManager.Instance.RobotCalibrating) {
+                GestureManager.Instance.RobotOffset = 
+                    GameObject.Find("Robot_very_low_poly").transform.position 
+                    - GestureManager.Instance.RobotStart;
+                Debug.Log("Robot offset is:");
+                Debug.Log(GestureManager.Instance.RobotOffset);
+
+                hasCalibratedSphere = true;
+                GameObject sphere = GameObject.Find("ControlSphere");
+                Vector3 init_pos = sphere.transform.position;
+                sphere.transform.position = GameObject.Find("right_gripper_base").transform.position;
+                GestureManager.Instance.SphereOffset = sphere.transform.position - init_pos;
+
+            } else if (firstTime)
+            {
+                firstTime = false;
+                GestureManager.Instance.RobotStart = GameObject.Find("Robot_very_low_poly").transform.position;
+            }
+            GestureManager.Instance.RobotCalibrating = !GestureManager.Instance.RobotCalibrating; // toggle
+        }
 
     }
 }

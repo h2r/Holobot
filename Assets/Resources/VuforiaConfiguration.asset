@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: VuforiaConfiguration
   m_EditorClassIdentifier: 
   vuforia:
-    vuforiaLicenseKey: AZVhepX/////AAAAmTKO5RZH7UHJi9AcI9ZixLN6IZcjzp0adwdTlnamSvqXmPwY+fFtWm2TOljCwUaAn7P+rw7i3uUUR7+Yuy/V/EuyaHdV82D0xQodE/Rp7f9skLfs9Lr+Yby4ZKtVS5aXQeY7Cn12yVfSGr5tNlhG4yr3of8AJ7TE9YtVpSwzsvKZpZQ6wRypJSuMMS7fFMAifdwIA1a+d+ZkrhQAs3oQaZNey4WXvWBNqt6beTSCpQD5oPR2x/aJQZ/ifcWXgyFxLQy7u7hf7nVI4RjMrM9QP2ti15b7UEMm4xenxD2f6gs4dczAiejPjbzVyqAsLA2/4dGuktV/g7GjHniDmR0iGi6clT4Won3jPlJ4dhCra512
-    ufoLicenseKey: QWFLbUdiYi8vLy8vQUFBQUtKSlIwcjVZSUVhdnJGdG1iaU1kUDhFSFU5U3NWejRwN0ZlVjVGayt0SDZ2ZjhiUnh4VUV3ZnBsS2d4WXpuV0lqUkpDdHhmamNGMXl6NlZjWmdzM1ljQnNTOVFJZm9peU9qaXp3K2NmY0pONWxzTWJhWitHNFVwV3R3dFUvR3BhU1dPSC9hWmRIM3hVdHhGbW1DOU9QRzlKTG1lcGY2RmRtOFRkR2pXQXdFRWloVXltUnh6dmFBaEEzamJ4OFhnTk5ldEJaQ1Y5SHhydWlxTDdiUFhqbmc2eDRFUGlmeWtlWVFuTTMybXJ5bitteTRsUWNwaElHU0w1dlA5WElyamgxS0Mxai9pb2tmN3FPcHFGeTNYc0pDbHV5bEtwU3d4UXZWOHhNT2M2WVBmRUc1VlZGV1Zaa1RkS08raVN3UkFRbnNROHRwc3ZBMlVQeHFnZHZ2amI3c0xCSTFySnZGa091VE16N1NENU5Dbmk=
+    vuforiaLicenseKey: 
+    ufoLicenseKey: QVludnNJSC8vLy8vQUFBQUtOSExqKzNORDBtZm9VOE53V2hXd3E1akpkZmozNDlkUEFCanlHek5lQ0NpdUg1OTJ2Tm5uUzJkOEN3eXE2SjVWWnJGczJDRTlXc0ZkY2pvUkpoQml1UFQzMmRMWnk0OGFzaS9SNE1hMWdVR1BTeU9wblRNREhCNjhwbC9DQXBzaVplVGNkOXN2Qm1CdlBCYWdEU29QS0lNUm1zY0t5SDNRZlFxdDNuOUdVS3ZFREpTOURDYXgxQzZtTG5rTmQrV3JtSTR2dFdobW5aNUFLSGEwZGk5bXdzTVNQQUQycVdBVkJlcVRGZk1FcGxZbVNORXBSNXpQc0d0RTE4aEV0b044cy9wL1VWZTFPc3NrbExpdzI2RDBKVGVIT0RaVjN6RzdPenMvaUxWYnlNcXJZM080TkVxSjVtbU05d3B4VXllU0FTanVZK3FVQnhPNjFiN2VQUTREaTVlL3plUEV5cWFOZVJ5VE5QbmJkV3k=
     delayedInitialization: 0
     cameraDeviceModeSetting: -1
     maxSimultaneousImageTargets: 1
@@ -24,9 +24,9 @@ MonoBehaviour:
   digitalEyewear:
     cameraOffset: 0.06
     distortionRenderingLayer: 31
-    eyewearType: 1
+    eyewearType: 0
     stereoFramework: 0
-    seeThroughConfiguration: 1
+    seeThroughConfiguration: 0
     viewerName: 
     viewerManufacturer: 
     useCustomViewer: 0
@@ -43,12 +43,8 @@ MonoBehaviour:
       FieldOfView: {x: 0, y: 0, z: 0, w: 0}
       ContainsMagnet: 0
   databaseLoad:
-    dataSetsToLoad:
-    - VuforiaMars_Images
-    - VuforiaMars_VuMark
-    dataSetsToActivate:
-    - VuforiaMars_Images
-    - VuforiaMars_VuMark
+    dataSetsToLoad: []
+    dataSetsToActivate: []
   videoBackground:
     clippingMode: 0
     numDivisions: 2

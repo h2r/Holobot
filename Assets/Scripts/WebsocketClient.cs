@@ -14,7 +14,7 @@ public class WebsocketClient : UniversalWebsocketClient
 	//public string message;
 	private bool connected = false;
 	//public Dictionary<string, string> messages = new Dictionary<string, string>();
-    public string ip_address;
+    //public string ip_address;
     // "ws://138.16.160.16:9090" this is the address for iorek
     // ws://138.16.160.221:5678 this is the address for ursula
     // ws://128.30.25.147:9090
@@ -22,9 +22,9 @@ public class WebsocketClient : UniversalWebsocketClient
 	{
 
         Debug.Log("instantiating websocket");
-		ws = new WebSocket("ws://138.16.160.16:9090");
+        ws = new WebSocket("ws://138.16.160.16:9090");
 
-		ws.OnOpen += OnOpenHandler;
+        ws.OnOpen += OnOpenHandler;
 		ws.OnMessage += OnMessageHandler;
 		ws.OnClose += OnCloseHandler;
 

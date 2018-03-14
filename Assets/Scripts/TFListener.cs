@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Academy.HoloToolkit.Unity;
 
 public class TFListener : MonoBehaviour
 {
@@ -14,7 +16,6 @@ public class TFListener : MonoBehaviour
     Hashtable links = new Hashtable();
 
     public float scale = 1f;
-
 	// Use this for initialization
 	void Start ()
 	{
@@ -30,7 +31,29 @@ public class TFListener : MonoBehaviour
 	}
 
     void Update() {
-        string message = wsc.messages[topic]; //get newest robot state data (from transform)
+        //foreach (KeyValuePair<string, string> kvp in wsc.messages)
+        //{
+        //    Debug.Log("hifdhjf");
+        //    //textBox3.Text += ("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+        //    Debug.LogFormat("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+        //}
+        //Debug.Log("check");
+        // Issue: wsc.messages is empty when it shouldn't be
+        // Fix: use try/catch - only run code if wsc is not empty
+        if (GestureManager.Instance.RobotCalibrating)
+        {
+            return;
+        }
+        string message;
+        try
+        {
+            message = wsc.messages[topic]; //get newest robot state data (from transform)
+        }
+        catch
+        {
+            return;
+        }
+        //Debug.Log("check2");
         string[] tfElements = message.Split(';'); //split the message into each joint/link data pair
         //Debug.Log(string.Join(", ", tfElements));
         foreach (string tfElement in tfElements) {
@@ -49,6 +72,11 @@ public class TFListener : MonoBehaviour
                 float pos_x = float.Parse(poses[0]); //x position
                 float pos_y = float.Parse(poses[1]); //y position
                 float pos_z = float.Parse(poses[2]); //z position
+
+                //if (dataPair[0] == "right_wrist")
+                //{
+                //    Debug.Log(String.Format("Wrist pos: ({0}, {1}, {2})", pos_x, pos_y, pos_z));
+                //}
 
 
                 Vector3 curPos = new Vector3(pos_x, pos_y, pos_z); //save current position
@@ -70,15 +98,16 @@ public class TFListener : MonoBehaviour
                 else {
                     cur.transform.localScale = new Vector3(-scale, scale, -scale);
                 }
-                //cur.transform.position = RosToUnityPositionAxisConversion (curPos);
-                //cur.transform.rotation = RosToUnityQuaternionConversion (curRot);
+                cur.transform.position = RosToUnityPositionAxisConversion (curPos);
+                cur.transform.rotation = RosToUnityQuaternionConversion (curRot);
             }
         }
     }
 
     Vector3 RosToUnityPositionAxisConversion (Vector3 rosIn)
 	{
-        return new Vector3(-rosIn.x, rosIn.z, -rosIn.y) * scale;// + robot.transform.position;	
+        // Debug.Log(GestureManager.Instance.RobotOffset);
+        return new Vector3(-rosIn.x, rosIn.z, -rosIn.y) * scale + GestureManager.Instance.RobotOffset;// + robot.transform.position;	
 	}
 
 	Quaternion RosToUnityQuaternionConversion (Quaternion rosIn)

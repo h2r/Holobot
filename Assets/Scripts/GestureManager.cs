@@ -1,104 +1,117 @@
 ﻿using UnityEngine;
+using UnityEngine.XR.WSA.Input;
+using System.Collections.Generic;
+using System.IO;
 
-
-namespace Academy.HoloToolkit.Unity {
-    public class GestureManager : Singleton<GestureManager> {
-        // Tap and Navigation gesture recognizer.
-        public UnityEngine.XR.WSA.Input.GestureRecognizer NavigationRecognizer { get; private set; }
-
-        // Manipulation gesture recognizer.
-        public UnityEngine.XR.WSA.Input.GestureRecognizer ManipulationRecognizer { get; private set; }
-
-        // Currently active gesture recognizer.
-        public UnityEngine.XR.WSA.Input.GestureRecognizer ActiveRecognizer { get; private set; }
-
+namespace Academy.HoloToolkit.Unity
+{
+    public class GestureManager : Singleton<GestureManager>
+    {
+        public GestureRecognizer NavigationRecognizer { get; private set; }
+        public GestureRecognizer ManipulationRecognizer { get; private set; }
+        public GestureRecognizer ActiveRecognizer { get; private set; }
         public bool IsNavigating { get; private set; }
-
         public Vector3 NavigationPosition { get; private set; }
-
         public bool IsManipulating { get; private set; }
-
         public Vector3 ManipulationPosition { get; private set; }
+        public bool IsRecordingData { get; set; }
+        public List<Record> PathRecord { get; private set; }
+        public List<int> UndoPoints { get; private set; } // list of indicies in Path Record
+        public List<GameObject> SavePointObjects { get; private set; }
+        public Vector3 SphereOffset { get; set; }
+        public Vector3 RobotOffset { get; set; }
+        public bool RobotCalibrating { get; set; }
+        public Vector3 RobotStart { get; set; }
 
-        void Awake() {
-            /* TODO: DEVELOPER CODING EXERCISE 2.b */
+        void Awake()
+        {
+            IsRecordingData = false;
+            PathRecord = new List<Record>();
+            UndoPoints = new List<int>();
+            SavePointObjects = new List<GameObject>();
+            SphereOffset = Vector3.zero;
+            RobotOffset = Vector3.zero;
+            RobotStart = Vector3.zero;
+            RobotCalibrating = false;
 
-            // 2.b: Instantiate the NavigationRecognizer.
-            NavigationRecognizer = new UnityEngine.XR.WSA.Input.GestureRecognizer();
-
-            // 2.b: Add Tap and NavigationX GestureSettings to the NavigationRecognizer's RecognizableGestures.
+            NavigationRecognizer = new GestureRecognizer();
             NavigationRecognizer.SetRecognizableGestures(
-                UnityEngine.XR.WSA.Input.GestureSettings.Tap |
-                UnityEngine.XR.WSA.Input.GestureSettings.NavigationX);
+                GestureSettings.Tap |
+                GestureSettings.NavigationX); 
 
-            // 2.b: Register for the TappedEvent with the NavigationRecognizer_TappedEvent function.
-            NavigationRecognizer.TappedEvent += NavigationRecognizer_TappedEvent;
-            // 2.b: Register for the NavigationStartedEvent with the NavigationRecognizer_NavigationStartedEvent function.
-            NavigationRecognizer.NavigationStartedEvent += NavigationRecognizer_NavigationStartedEvent;
-            // 2.b: Register for the NavigationUpdatedEvent with the NavigationRecognizer_NavigationUpdatedEvent function.
-            NavigationRecognizer.NavigationUpdatedEvent += NavigationRecognizer_NavigationUpdatedEvent;
-            // 2.b: Register for the NavigationCompletedEvent with the NavigationRecognizer_NavigationCompletedEvent function. 
-            NavigationRecognizer.NavigationCompletedEvent += NavigationRecognizer_NavigationCompletedEvent;
-            // 2.b: Register for the NavigationCanceledEvent with the NavigationRecognizer_NavigationCanceledEvent function. 
-            NavigationRecognizer.NavigationCanceledEvent += NavigationRecognizer_NavigationCanceledEvent;
+            NavigationRecognizer.Tapped += NavigationRecognizer_Tapped;
+            NavigationRecognizer.NavigationStarted += NavigationRecognizer_NavigationStarted;
+            NavigationRecognizer.NavigationUpdated += NavigationRecognizer_NavigationUpdated;
+            NavigationRecognizer.NavigationCompleted += NavigationRecognizer_NavigationCompleted;
+            NavigationRecognizer.NavigationCanceled += NavigationRecognizer_NavigationCanceled;
 
             // Instantiate the ManipulationRecognizer.
-            ManipulationRecognizer = new UnityEngine.XR.WSA.Input.GestureRecognizer();
-
-            // Add the ManipulationTranslate GestureSetting to the ManipulationRecognizer's RecognizableGestures.
+            ManipulationRecognizer = new GestureRecognizer();
             ManipulationRecognizer.SetRecognizableGestures(
-                UnityEngine.XR.WSA.Input.GestureSettings.ManipulationTranslate);
+                GestureSettings.ManipulationTranslate |
+                GestureSettings.Tap);
 
             // Register for the Manipulation events on the ManipulationRecognizer.
-            ManipulationRecognizer.ManipulationStartedEvent += ManipulationRecognizer_ManipulationStartedEvent;
-            ManipulationRecognizer.ManipulationUpdatedEvent += ManipulationRecognizer_ManipulationUpdatedEvent;
-            ManipulationRecognizer.ManipulationCompletedEvent += ManipulationRecognizer_ManipulationCompletedEvent;
-            ManipulationRecognizer.ManipulationCanceledEvent += ManipulationRecognizer_ManipulationCanceledEvent;
+            ManipulationRecognizer.Tapped += ManipulationRecognizer_Tapped;
+            ManipulationRecognizer.ManipulationStarted += ManipulationRecognizer_ManipulationStarted;
+            ManipulationRecognizer.ManipulationUpdated += ManipulationRecognizer_ManipulationUpdated;
+            ManipulationRecognizer.ManipulationCompleted += ManipulationRecognizer_ManipulationCompleted;
+            ManipulationRecognizer.ManipulationCanceled += ManipulationRecognizer_ManipulationCanceled;
 
             ResetGestureRecognizers();
         }
 
-        void OnDestroy() {
-            // 2.b: Unregister the Tapped and Navigation events on the NavigationRecognizer.
-            NavigationRecognizer.TappedEvent -= NavigationRecognizer_TappedEvent;
-
-            NavigationRecognizer.NavigationStartedEvent -= NavigationRecognizer_NavigationStartedEvent;
-            NavigationRecognizer.NavigationUpdatedEvent -= NavigationRecognizer_NavigationUpdatedEvent;
-            NavigationRecognizer.NavigationCompletedEvent -= NavigationRecognizer_NavigationCompletedEvent;
-            NavigationRecognizer.NavigationCanceledEvent -= NavigationRecognizer_NavigationCanceledEvent;
-
-            // Unregister the Manipulation events on the ManipulationRecognizer.
-            ManipulationRecognizer.ManipulationStartedEvent -= ManipulationRecognizer_ManipulationStartedEvent;
-            ManipulationRecognizer.ManipulationUpdatedEvent -= ManipulationRecognizer_ManipulationUpdatedEvent;
-            ManipulationRecognizer.ManipulationCompletedEvent -= ManipulationRecognizer_ManipulationCompletedEvent;
-            ManipulationRecognizer.ManipulationCanceledEvent -= ManipulationRecognizer_ManipulationCanceledEvent;
+        public void Reset() // Not yet tested
+        {
+            IsRecordingData = false;
+            PathRecord = new List<Record>();
+            UndoPoints = new List<int>();
+            SavePointObjects = new List<GameObject>();
         }
 
-        /// <summary>
-        /// Revert back to the default GestureRecognizer.
-        /// </summary>
-        public void ResetGestureRecognizers() {
-            // Default to the navigation gestures.
-            //Transition(NavigationRecognizer);
-            Debug.Log("Resetting gesture recognizer to manipulation");
+        void OnDestroy()
+        {
+            // Unregister the Tapped and Navigation events on the NavigationRecognizer.
+            NavigationRecognizer.Tapped -= NavigationRecognizer_Tapped;
+
+            NavigationRecognizer.NavigationStarted -= NavigationRecognizer_NavigationStarted;
+            NavigationRecognizer.NavigationUpdated -= NavigationRecognizer_NavigationUpdated;
+            NavigationRecognizer.NavigationCompleted -= NavigationRecognizer_NavigationCompleted;
+            NavigationRecognizer.NavigationCanceled -= NavigationRecognizer_NavigationCanceled;
+
+            // Unregister the Manipulation events on the ManipulationRecognizer.
+            ManipulationRecognizer.ManipulationStarted -= ManipulationRecognizer_ManipulationStarted;
+            ManipulationRecognizer.ManipulationUpdated -= ManipulationRecognizer_ManipulationUpdated;
+            ManipulationRecognizer.ManipulationCompleted -= ManipulationRecognizer_ManipulationCompleted;
+            ManipulationRecognizer.ManipulationCanceled -= ManipulationRecognizer_ManipulationCanceled;
+        }
+
+
+        // Revert back to the default GestureRecognizer.
+        public void ResetGestureRecognizers()
+        {
+            // Default to the movement gestures.
+            if (ActiveRecognizer != null)
+            {
+                return;
+            }
             Transition(ManipulationRecognizer);
         }
 
-        /// <summary>
-        /// Transition to a new GestureRecognizer.
-        /// </summary>
-        /// <param name="newRecognizer">The GestureRecognizer to transition to.</param>
-        public void Transition(UnityEngine.XR.WSA.Input.GestureRecognizer newRecognizer) {
-            //Debug.Log("transitioned");
-            if (newRecognizer == null) {
+        // set the current GestureRecognizer
+        public void Transition(GestureRecognizer newRecognizer)
+        {
+            if (newRecognizer == null)
+            {
                 return;
             }
 
-            if (ActiveRecognizer != null) {
-                if (ActiveRecognizer == newRecognizer) {
+            if (ActiveRecognizer != null)
+            {
+                if (ActiveRecognizer == newRecognizer)
+                {
                     return;
                 }
-
                 ActiveRecognizer.CancelGestures();
                 ActiveRecognizer.StopCapturingGestures();
             }
@@ -107,68 +120,167 @@ namespace Academy.HoloToolkit.Unity {
             ActiveRecognizer = newRecognizer;
         }
 
-        private void NavigationRecognizer_NavigationStartedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
-            // 2.b: Set IsNavigating to be true.
-            IsNavigating = true;
-
-            // 2.b: Set NavigationPosition to be relativePosition.
-            NavigationPosition = relativePosition;
-        }
-
-        private void NavigationRecognizer_NavigationUpdatedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
-            // 2.b: Set IsNavigating to be true.
-            IsNavigating = true;
-
-            // 2.b: Set NavigationPosition to be relativePosition.
-            NavigationPosition = relativePosition;
-        }
-
-        private void NavigationRecognizer_NavigationCompletedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
-            // 2.b: Set IsNavigating to be false.
-            IsNavigating = false;
-        }
-
-        private void NavigationRecognizer_NavigationCanceledEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 relativePosition, Ray ray) {
-            // 2.b: Set IsNavigating to be false.
-            IsNavigating = false;
-        }
-
-        private void ManipulationRecognizer_ManipulationStartedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 position, Ray ray) {
-            //Debug.Log("Manipulation started");
-            if (HandsManager.Instance.FocusedGameObject != null) {
-                IsManipulating = true;
-
-                ManipulationPosition = position;
-
-                HandsManager.Instance.FocusedGameObject.SendMessageUpwards("PerformManipulationStart", position);
+        public void RecordMovement(Vector3 pos, float delTime)
+        {
+            PathRecord.Add(new Record(pos, delTime));
+            if (PathRecord.Count == 1)
+            {
+                RecordUndoPoint();
             }
         }
 
-        private void ManipulationRecognizer_ManipulationUpdatedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 position, Ray ray) {
-            if (HandsManager.Instance.FocusedGameObject != null) {
-                IsManipulating = true;
+        public void RecordUndoPoint()
+        {
+            if (PathRecord.Count > 0)
+            {
+                if (UndoPoints.Count == 0)
+                {
+                    UndoPoints.Add(0); // get the first recorded point
+                }
+                else
+                {
+                    UndoPoints.Add(PathRecord.Count - 1);
+                }
+            }
 
-                ManipulationPosition = position;
+            // code to visualize the last undo point
 
-                HandsManager.Instance.FocusedGameObject.SendMessageUpwards("PerformManipulationUpdate", position);
+            //GameObject realCube = GameObject.Find("Cube");
+            //Vector3 pos = PathRecord[UndoPoints[UndoPoints.Count - 1]].Position;
+            //Quaternion rot = PathRecord[UndoPoints[UndoPoints.Count - 1]].Rotation;
+            //GameObject shadow = Instantiate(realCube, pos, rot);
+            //shadow.layer = 1; // the transparent layer that the cursor does not repond to
+            //shadow.GetComponent<Renderer>().material.color = Color.cyan;
+            //SavePointObjects.Add(shadow);
+        }
+
+        public void UndoAction()
+        {
+            if (SavePointObjects.Count > 0)
+            {
+                GameObject realCube = GameObject.Find("Cube");
+                GameObject savedCube = SavePointObjects[SavePointObjects.Count - 1];
+                realCube.transform.position = savedCube.transform.position;
+                realCube.transform.rotation = savedCube.transform.rotation;
+                int startIdx = UndoPoints[UndoPoints.Count - 1];
+                PathRecord.RemoveRange(startIdx, PathRecord.Count - startIdx);
+                Destroy(SavePointObjects[SavePointObjects.Count - 1]);
+                SavePointObjects.RemoveAt(SavePointObjects.Count - 1);
+                UndoPoints.RemoveAt(UndoPoints.Count - 1);
+            }
+
+        }
+
+        public void WritePathData()
+        {
+            var fd = File.CreateText("pleasework.txt");
+            fd.WriteLine("dt, sx, sy, sz");
+            Debug.Log("Line written");
+            for (int i = 0; i < PathRecord.Count; i++)
+            {
+                float dt = PathRecord[i].DelTime;
+                Vector3 pos = PathRecord[i].Position;
+                fd.WriteLine("{0}, {1}, {2}, {3}",
+                    dt, pos.x, pos.y, pos.z);
+                Debug.Log("Line written");
             }
         }
 
-        private void ManipulationRecognizer_ManipulationCompletedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 position, Ray ray) {
-            //Debug.Log("Manipulation completed");
+        // Private Methods
+        private void NavigationRecognizer_NavigationStarted(NavigationStartedEventArgs obj)
+        {
+            if (HandsManager.Instance.FocusedGameObject != null)
+            {
+                IsNavigating = true;
+                NavigationPosition = Vector3.zero;
+                HandsManager.Instance.FocusedGameObject.SendMessageUpwards("PerformRotation");
+            }
+        }
+
+        private void NavigationRecognizer_NavigationUpdated(NavigationUpdatedEventArgs obj)
+        {
+            if (HandsManager.Instance.FocusedGameObject != null)
+            {
+                IsNavigating = true;
+                NavigationPosition = obj.normalizedOffset;
+                HandsManager.Instance.FocusedGameObject.SendMessageUpwards("PerformRotation");
+            }
+        }
+
+        private void NavigationRecognizer_NavigationCompleted(NavigationCompletedEventArgs obj)
+        {
+            IsNavigating = false;
+        }
+
+        private void NavigationRecognizer_NavigationCanceled(NavigationCanceledEventArgs obj)
+        {
+            IsNavigating = false;
+        }
+
+        private void ManipulationRecognizer_ManipulationStarted(ManipulationStartedEventArgs obj)
+        {
+            if (HandsManager.Instance.FocusedGameObject != null)
+            {
+                IsManipulating = true;
+
+                ManipulationPosition = Vector3.zero;
+
+                HandsManager.Instance.FocusedGameObject.SendMessageUpwards("PerformManipulationStart", ManipulationPosition);
+            }
+        }
+
+        private void ManipulationRecognizer_ManipulationUpdated(ManipulationUpdatedEventArgs obj)
+        {
+            if (HandsManager.Instance.FocusedGameObject != null)
+            {
+                IsManipulating = true;
+
+                ManipulationPosition = obj.cumulativeDelta;
+
+                HandsManager.Instance.FocusedGameObject.SendMessageUpwards("PerformManipulationUpdate", ManipulationPosition);
+            }
+        }
+
+        private void ManipulationRecognizer_ManipulationCompleted(ManipulationCompletedEventArgs obj)
+        {
             IsManipulating = false;
         }
 
-        private void ManipulationRecognizer_ManipulationCanceledEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, Vector3 position, Ray ray) {
+        private void ManipulationRecognizer_ManipulationCanceled(ManipulationCanceledEventArgs obj)
+        {
             IsManipulating = false;
         }
 
-        private void NavigationRecognizer_TappedEvent(UnityEngine.XR.WSA.Input.InteractionSourceKind source, int tapCount, Ray ray) {
+        private void ManipulationRecognizer_Tapped(TappedEventArgs obj)
+        {
             GameObject focusedObject = InteractibleManager.Instance.FocusedGameObject;
 
-            if (focusedObject != null) {
-                focusedObject.SendMessageUpwards("OnSelect");
+            if (focusedObject != null)
+            {
+                focusedObject.SendMessageUpwards("OnSelect", focusedObject);
             }
+        }
+
+        private void NavigationRecognizer_Tapped(TappedEventArgs obj)
+        {
+            GameObject focusedObject = InteractibleManager.Instance.FocusedGameObject;
+
+            if (focusedObject != null)
+            {
+                focusedObject.SendMessageUpwards("OnSelect", focusedObject);
+            }
+        }
+    }
+
+    public class Record
+    {
+        public Vector3 Position { get; private set; }
+        // public Quaternion Rotation { get; private set; }
+        public float DelTime;
+        public Record(Vector3 pos, float dt)
+        {
+            Position = pos;
+            DelTime = dt;
         }
     }
 }
