@@ -635,6 +635,9 @@ Camera:
   near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
+<<<<<<< HEAD
+>>>>>>> parent of eeb30eb... update to 2017.3
+=======
 >>>>>>> parent of eeb30eb... update to 2017.3
   orthographic: 0
   orthographic size: 5
@@ -648,8 +651,12 @@ Camera:
   m_TargetEye: 3
   m_HDR: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
+=======
+  m_AllowMSAA: 1
+>>>>>>> parent of eeb30eb... update to 2017.3
 =======
   m_AllowMSAA: 1
 >>>>>>> parent of eeb30eb... update to 2017.3
@@ -658,8 +665,11 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!4 &1126146157
 =======
+=======
+>>>>>>> parent of eeb30eb... update to 2017.3
   m_StereoMirrorMode: 0
 --- !u!4 &1183102929
 >>>>>>> parent of eeb30eb... update to 2017.3

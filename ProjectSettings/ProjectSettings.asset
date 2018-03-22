@@ -242,9 +242,12 @@ PlayerSettings:
     m_Devices:
     - HoloLens
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_BuildTargetEnableVuforiaSettings:
   - m_BuildTarget: Metro
     m_Enabled: 1
+=======
+>>>>>>> parent of eeb30eb... update to 2017.3
 =======
 >>>>>>> parent of eeb30eb... update to 2017.3
   openGLRequireES31: 0
