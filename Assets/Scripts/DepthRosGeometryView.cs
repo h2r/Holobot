@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+﻿#if !NETFX_CORE
 using UnityEngine;
 using System.Collections;
 using System;

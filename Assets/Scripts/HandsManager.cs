@@ -1,4 +1,4 @@
-﻿
+﻿using UnityEngine.VR.WSA.Input;
 using UnityEngine;
 
 namespace Academy.HoloToolkit.Unity {
@@ -25,23 +25,16 @@ namespace Academy.HoloToolkit.Unity {
             Debug.Log("HandsManager awake!");
             EnableAudioHapticFeedback();
 
-            //UnityEngine.XR.WSA.Input.InteractionManager.SourceDetected += InteractionManager_SourceDetected;
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourceDetectedLegacy += InteractionManager_SourceDetected;
-            //UnityEngine.XR.WSA.Input.InteractionManager.SourceLost += InteractionManager_SourceLost;
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourceLostLegacy += InteractionManager_SourceLost;
-
+            InteractionManager.SourceDetected += InteractionManager_SourceDetected;
+            InteractionManager.SourceLost += InteractionManager_SourceLost;
 
             /* TODO: DEVELOPER CODE ALONG 2.a */
 
             // 2.a: Register for SourceManager.SourcePressed event.
-            //UnityEngine.XR.WSA.Input.InteractionManager.SourcePressed += InteractionManager_SourcePressed;
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourcePressedLegacy += InteractionManager_SourcePressed;
-
+            InteractionManager.SourcePressed += InteractionManager_SourcePressed;
 
             // 2.a: Register for SourceManager.SourceReleased event.
-            //UnityEngine.XR.WSA.Input.InteractionManager.SourceReleased += InteractionManager_SourceReleased;
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourceReleasedLegacy += InteractionManager_SourceReleased;
-
+            InteractionManager.SourceReleased += InteractionManager_SourceReleased;
 
             // 2.a: Initialize FocusedGameObject as null.
             FocusedGameObject = null;
@@ -62,12 +55,12 @@ namespace Academy.HoloToolkit.Unity {
             }
         }
 
-        private void InteractionManager_SourceDetected(UnityEngine.XR.WSA.Input.InteractionSourceState hand) {
+        private void InteractionManager_SourceDetected(InteractionSourceState hand) {
             Debug.Log("Hand detected");
             HandDetected = true;
         }
 
-        private void InteractionManager_SourceLost(UnityEngine.XR.WSA.Input.InteractionSourceState hand) {
+        private void InteractionManager_SourceLost(InteractionSourceState hand) {
             Debug.Log("Hand lost");
             HandDetected = false;
 
@@ -75,7 +68,7 @@ namespace Academy.HoloToolkit.Unity {
             ResetFocusedGameObject();
         }
 
-        private void InteractionManager_SourcePressed(UnityEngine.XR.WSA.Input.InteractionSourceState hand) {
+        private void InteractionManager_SourcePressed(InteractionSourceState hand) {
             if (InteractibleManager.Instance.FocusedGameObject != null) {
                 // Play a select sound if we have an audio source and are not targeting an asset with a select sound.
                 if (audioSource != null && !audioSource.isPlaying &&
@@ -89,7 +82,7 @@ namespace Academy.HoloToolkit.Unity {
             }
         }
 
-        private void InteractionManager_SourceReleased(UnityEngine.XR.WSA.Input.InteractionSourceState hand) {
+        private void InteractionManager_SourceReleased(InteractionSourceState hand) {
             // 2.a: Reset FocusedGameObject.
             ResetFocusedGameObject();
         }
@@ -104,21 +97,14 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         void OnDestroy() {
-            //UnityEngine.XR.WSA.Input.InteractionManager.SourceDetected -= InteractionManager_SourceDetected;
-            //UnityEngine.XR.WSA.Input.InteractionManager.SourceLost -= InteractionManager_SourceLost;
-
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourceDetectedLegacy -= InteractionManager_SourceDetected;
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourceLostLegacy -= InteractionManager_SourceLost;
+            InteractionManager.SourceDetected -= InteractionManager_SourceDetected;
+            InteractionManager.SourceLost -= InteractionManager_SourceLost;
 
             // 2.a: Unregister the SourceManager.SourceReleased event.
-            //UnityEngine.XR.WSA.Input.InteractionManager.SourceReleased -= InteractionManager_SourceReleased;
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourceReleasedLegacy -= InteractionManager_SourceReleased;
-
+            InteractionManager.SourceReleased -= InteractionManager_SourceReleased;
 
             // 2.a: Unregister for SourceManager.SourcePressed event.
-            //UnityEngine.XR.WSA.Input.InteractionManager.SourcePressed -= InteractionManager_SourcePressed;
-            UnityEngine.XR.WSA.Input.InteractionManager.InteractionSourcePressedLegacy -= InteractionManager_SourcePressed;
-
+            InteractionManager.SourcePressed -= InteractionManager_SourcePressed;
         }
     }
 }

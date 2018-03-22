@@ -18,7 +18,7 @@ public class GestureAction : MonoBehaviour {
 
     void Start() {
         GameObject wso = GameObject.Find("WebsocketClient");
-#if !UNITY_EDITOR
+#if NETFX_CORE
         wsc = wso.GetComponent<UWPWebSocketClient>();
 #else
         wsc = wso.GetComponent<WebsocketClient>();
