@@ -22,7 +22,7 @@ public class WebsocketClient : UniversalWebsocketClient
 	{
 
         Debug.Log("instantiating websocket");
-        ws = new WebSocket("ws://138.16.160.16:9090");
+        ws = new WebSocket("ws://138.16.160.16:5561"); // this is a port forwarding address
 
         ws.OnOpen += OnOpenHandler;
 		ws.OnMessage += OnMessageHandler;

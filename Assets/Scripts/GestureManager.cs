@@ -173,17 +173,25 @@ namespace Academy.HoloToolkit.Unity
 
         public void WritePathData()
         {
-            var fd = File.CreateText("pleasework.txt");
-            fd.WriteLine("dt, sx, sy, sz");
-            Debug.Log("Line written");
-            for (int i = 0; i < PathRecord.Count; i++)
+            string path = Path.Combine(Application.persistentDataPath, "data.txt");
+            using (TextWriter writer = File.CreateText(path))
             {
-                float dt = PathRecord[i].DelTime;
-                Vector3 pos = PathRecord[i].Position;
-                fd.WriteLine("{0}, {1}, {2}, {3}",
-                    dt, pos.x, pos.y, pos.z);
-                Debug.Log("Line written");
+                writer.WriteLine("dt, sx, sy, sz");
+                // Debug.Log("Line written");
+                for (int i = 0; i < PathRecord.Count; i++)
+                {
+                    float dt = PathRecord[i].DelTime;
+                    Vector3 pos = PathRecord[i].Position;
+                    writer.WriteLine("{0}, {1}, {2}, {3}",
+                        dt, pos.x, pos.y, pos.z);
+                    // Debug.Log("Line written");
+                }
             }
+        }
+
+        public void SendDMPData()
+        {
+
         }
 
         // Private Methods

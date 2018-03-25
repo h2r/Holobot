@@ -32,7 +32,7 @@ public class GestureAction : MonoBehaviour {
 
     void Update() {
         // PerformRotation();
-    }
+    } 
 
     private void PerformRotation() {
         //if (GestureManager.Instance.IsNavigating &&

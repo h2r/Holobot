@@ -12,7 +12,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: Holobot
+  productName: Holocontrol
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -590,7 +590,7 @@ PlayerSettings:
   metroCertificateSubject: DefaultCompany
   metroCertificateIssuer: DefaultCompany
   metroCertificateNotAfter: 806809d851bed301
-  metroApplicationDescription: Holobot
+  metroApplicationDescription: Holocontrol an MR experience
   wsaImages: {}
   metroTileShortName: Holobot
   metroCommandLineArgsFile: 
@@ -624,7 +624,7 @@ PlayerSettings:
       PicturesLibrary: False
       PrivateNetworkClientServer: True
       Proximity: False
-      RemovableStorage: False
+      RemovableStorage: True
       SharedUserCertificates: False
       SpatialPerception: True
       UserAccountInformation: False

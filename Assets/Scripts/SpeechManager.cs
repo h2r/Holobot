@@ -69,6 +69,7 @@ public class SpeechManager : Singleton<SpeechManager>
         if (!GestureManager.Instance.IsRecordingData)
         {
             GestureManager.Instance.IsRecordingData = true;
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.green;
         }
     }
 
@@ -79,6 +80,7 @@ public class SpeechManager : Singleton<SpeechManager>
         {
             GestureManager.Instance.IsRecordingData = false;
             GestureManager.Instance.WritePathData();
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.red;
         }
     }
 
