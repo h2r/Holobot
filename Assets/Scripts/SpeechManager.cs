@@ -7,6 +7,8 @@ using UnityEngine.Windows.Speech;
 public class SpeechManager : Singleton<SpeechManager>
 {
     float expandAnimationCompletionTime;
+    private UniversalWebsocketClient wsc;
+
 
     // KeywordRecognizer object.
     KeywordRecognizer keywordRecognizer;
@@ -23,17 +25,24 @@ public class SpeechManager : Singleton<SpeechManager>
         keywordCollection.Add("Rotate", RotateCommand);
         keywordCollection.Add("Start", StartCommand);
         keywordCollection.Add("Stop", StopCommand);
+        keywordCollection.Add("Execute", ExecuteCommand);
         keywordCollection.Add("Go back", UndoCommand);
         // Initialize KeywordRecognizer with the previously added keywords.
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
         keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
         keywordRecognizer.Start();
+        GameObject wso = GameObject.Find("WebsocketClient");
+        #if !UNITY_EDITOR
+        wsc = wso.GetComponent<UWPWebSocketClient>();
+        #else
+        wsc = wso.GetComponent<WebsocketClient>();
+        #endif
+        wsc.Advertise("dmp_train_data", "std_msgs/String");
     }
 
     void OnDestroy()
     {
         keywordRecognizer.Dispose();
-
     }
 
     private void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
@@ -79,8 +88,26 @@ public class SpeechManager : Singleton<SpeechManager>
         if (GestureManager.Instance.IsRecordingData)
         {
             GestureManager.Instance.IsRecordingData = false;
+            
+            #if UNITY_EDITOR
             GestureManager.Instance.WritePathData();
+            #endif
+
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.red;
+            wsc.SendDemonstrationData("EOF");
+        }
+    }
+
+    public void ExecuteCommand(PhraseRecognizedEventArgs args)
+    {
+        Debug.Log("GOT Execute");
+        if (!GestureManager.Instance.IsRecordingData &&
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color == Color.red)
+        {
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.yellow;
+            wsc.SendExecuteMotionPlan(GestureManager.Instance.PathRecord[0].Position, 
+                GestureManager.Instance.PathRecord[GestureManager.Instance.PathRecord.Count - 1].Position); 
+            // eventually this will have args for start and end of motion plan
         }
     }
 

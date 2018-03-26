@@ -19,6 +19,8 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
 #endif
 
     //General variables
+    // System.Uri uri = new System.Uri("ws://138.16.160.16:9090"); // this is a port forwarding address
+
     System.Uri uri = new System.Uri("ws://138.16.160.16:5561"); // this is a port forwarding address
 
     //public Dictionary<string, string> messages = new Dictionary<string, string>();
@@ -57,9 +59,16 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
         Publish("ein/" + arm + "/forth_commands", message);
     }
 
-    public void SendDemonstrationData(string message)
+    public override void SendDemonstrationData(string message)
     { 
         Publish("dmp_train_data/", message);
+    }
+
+    public override void SendExecuteMotionPlan(Vector3 x0, Vector3 g)
+    {
+        string start = x0.x + " " + x0.y + " " + x0.z;
+        string goal = g.x + " " + g.y + " " + g.z;
+        Publish("dmp_train_data/", "EXE " + x0 + " " + g);
     }
 
     public override void Advertise(string topic, string type) {

@@ -22,6 +22,7 @@ public class WebsocketClient : UniversalWebsocketClient
 	{
 
         Debug.Log("instantiating websocket");
+        // ws = new WebSocket("ws://138.16.160.16:9090");
         ws = new WebSocket("ws://138.16.160.16:5561"); // this is a port forwarding address
 
         ws.OnOpen += OnOpenHandler;
@@ -63,7 +64,7 @@ public class WebsocketClient : UniversalWebsocketClient
 	public void Publish(string topic, string message)
 	{
 		string msg = "{\"op\":\"publish\",\"id\":\"publish:/" + topic + ":" + counter + "\",\"topic\":\"/" + topic + "\",\"msg\":{\"data\":\"" + message + "\"},\"latch\":false}";
-		ws.SendAsync(msg, OnSendComplete);
+        ws.SendAsync(msg, OnSendComplete);
 		counter++;
 	}
 
@@ -71,6 +72,19 @@ public class WebsocketClient : UniversalWebsocketClient
 	{
 		Publish ("ein/" + arm + "/forth_commands", message);
 	}
+
+    public override void SendDemonstrationData(string message)
+    {
+        Publish("dmp_train_data/", message);
+    }
+
+    public override void SendExecuteMotionPlan(Vector3 x0, Vector3 g)
+    {
+        string start = x0.x + " " + x0.y + " " + x0.z;
+        string goal = g.x + " " + g.y + " " + g.z;
+        Publish("dmp_train_data/", "EXE " + x0 + " " + g);
+    }
+
     private void OnMessageHandler(object sender, MessageEventArgs e)
 	{
 		string[] input = e.Data.Split (new char[] { ',' }, 2);

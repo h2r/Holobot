@@ -25,9 +25,9 @@ public class GestureAction : MonoBehaviour {
 #else
         wsc = wso.GetComponent<WebsocketClient>();
 #endif
-        GameObject.Find("ControlSphere").transform.position = GameObject.Find("right_wrist").transform.position; // moves the control sphere
+        // GameObject.Find("ControlSphere").transform.position = GameObject.Find("right_wrist").transform.position; // moves the control sphere
         wsc.Advertise("ein/" + "right" + "/forth_commands", "std_msgs/String");
-        
+        wsc.Advertise("dmp_train_data", "std_msgs/String");
     }
 
     void Update() {
@@ -92,14 +92,17 @@ public class GestureAction : MonoBehaviour {
         //rosPos.x = 0.662f;
         //rosPos.y = -0.48f;
         //rosPos.z = 0.611f;
-        string message = rosPos.x + " " + rosPos.y + " " + rosPos.z + " 0 1 0 0 moveToEEPose ";
-        if (GestureManager.Instance.IsRecordingData)
+        string baseMessage = rosPos.x + " " + rosPos.y + " " + rosPos.z;
+        string einMessage = baseMessage + " 0 1 0 0 moveToEEPose ";
+        if (GestureManager.Instance.IsRecordingData) // for local recording, take out eventually
         {
             GestureManager.Instance.RecordMovement(rosPos, Time.deltaTime);
+            wsc.SendDemonstrationData(baseMessage); // sends ros position data 
         }
-        Debug.Log(String.Format("Cmd: ({0}, {1}, {2})", rosPos.x, rosPos.y, rosPos.z));
+        // Debug.Log(String.Format("Cmd: ({0}, {1}, {2})", rosPos.x, rosPos.y, rosPos.z));
         //Debug.Log(message);
-        wsc.SendEinMessage(message, "right");
+        wsc.SendEinMessage(einMessage, "right");
+       
         // wsc.SendEinMessage(" yUp yUp yUp yUp yUp yUp yUp yUp ", "right");
     }
 

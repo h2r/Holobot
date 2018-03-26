@@ -13,4 +13,8 @@ public abstract class UniversalWebsocketClient : MonoBehaviour {
     public abstract void Advertise(string v1, string v2);
 
     public abstract void SendEinMessage(string v1, string v2);
+
+    public abstract void SendDemonstrationData(string data);
+
+    public abstract void SendExecuteMotionPlan(Vector3 x0, Vector3 g);
 }

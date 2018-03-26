@@ -122,6 +122,7 @@ namespace Academy.HoloToolkit.Unity
 
         public void RecordMovement(Vector3 pos, float delTime)
         {
+            // TODO: add radius filtering to not record small jitters
             PathRecord.Add(new Record(pos, delTime));
             if (PathRecord.Count == 1)
             {
@@ -173,24 +174,22 @@ namespace Academy.HoloToolkit.Unity
 
         public void WritePathData()
         {
-            string path = Path.Combine(Application.persistentDataPath, "data.txt");
-            using (TextWriter writer = File.CreateText(path))
+            string path = @"C:\Users\brown\Documents\Unity\HoloControl\Holobot\data.txt";
+            if (!File.Exists(path))
             {
-                writer.WriteLine("dt, sx, sy, sz");
-                // Debug.Log("Line written");
-                for (int i = 0; i < PathRecord.Count; i++)
-                {
-                    float dt = PathRecord[i].DelTime;
-                    Vector3 pos = PathRecord[i].Position;
-                    writer.WriteLine("{0}, {1}, {2}, {3}",
-                        dt, pos.x, pos.y, pos.z);
-                    // Debug.Log("Line written");
-                }
+                File.Create(path); 
             }
-        }
-
-        public void SendDMPData()
-        {
+            TextWriter writer = new StreamWriter(path);
+            writer.WriteLine("dt, sx, sy, sz");
+            // Debug.Log("Line written");
+            for (int i = 0; i < PathRecord.Count; i++)
+            {
+                float dt = PathRecord[i].DelTime;
+                Vector3 pos = PathRecord[i].Position;
+                writer.WriteLine("{0}, {1}, {2}, {3}",
+                    dt, pos.x, pos.y, pos.z);
+            }
+            
 
         }
 
