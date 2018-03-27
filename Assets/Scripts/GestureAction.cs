@@ -86,7 +86,7 @@ public class GestureAction : MonoBehaviour {
 
     void moveArm() {
         Vector3 rosPos = UnityToRosPositionAxisConversion((manipulator.transform.position 
-            - GestureManager.Instance.SphereOffset) 
+            - GestureManager.Instance.RobotOffset) // before: SphereOffset 
             - (root.transform.position 
             - GestureManager.Instance.RobotOffset)); // - robot calib offset
         //rosPos.x = 0.662f;
