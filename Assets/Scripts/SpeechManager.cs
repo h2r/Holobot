@@ -25,7 +25,7 @@ public class SpeechManager : Singleton<SpeechManager>
         keywordCollection.Add("Rotate", RotateCommand);
         keywordCollection.Add("Start", StartCommand);
         keywordCollection.Add("Stop", StopCommand);
-        keywordCollection.Add("Execute", ExecuteCommand);
+        keywordCollection.Add("Motion Plan", ExecuteCommand);
         keywordCollection.Add("Go back", UndoCommand);
         // Initialize KeywordRecognizer with the previously added keywords.
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
@@ -101,7 +101,7 @@ public class SpeechManager : Singleton<SpeechManager>
     public void ExecuteCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT Execute");
-        if (!GestureManager.Instance.IsRecordingData &&
+        if (!GestureManager.Instance.IsRecordingData && 
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color == Color.red)
         {
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.yellow;

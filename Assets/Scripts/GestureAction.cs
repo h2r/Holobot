@@ -86,12 +86,9 @@ public class GestureAction : MonoBehaviour {
 
     void moveArm() {
         Vector3 rosPos = UnityToRosPositionAxisConversion((manipulator.transform.position 
-            - GestureManager.Instance.SphereOffset) 
+            - GestureManager.Instance.RobotOffset) 
             - (root.transform.position 
-            - GestureManager.Instance.RobotOffset)); // - robot calib offset
-        //rosPos.x = 0.662f;
-        //rosPos.y = -0.48f;
-        //rosPos.z = 0.611f;
+            - GestureManager.Instance.RobotOffset));
         string baseMessage = rosPos.x + " " + rosPos.y + " " + rosPos.z;
         string einMessage = baseMessage + " 0 1 0 0 moveToEEPose ";
         if (GestureManager.Instance.IsRecordingData) // for local recording, take out eventually
@@ -100,7 +97,7 @@ public class GestureAction : MonoBehaviour {
             wsc.SendDemonstrationData(baseMessage); // sends ros position data 
         }
         // Debug.Log(String.Format("Cmd: ({0}, {1}, {2})", rosPos.x, rosPos.y, rosPos.z));
-        //Debug.Log(message);
+        // Debug.Log(message);
         wsc.SendEinMessage(einMessage, "right");
        
         // wsc.SendEinMessage(" yUp yUp yUp yUp yUp yUp yUp yUp ", "right");

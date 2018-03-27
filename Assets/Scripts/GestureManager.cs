@@ -18,10 +18,10 @@ namespace Academy.HoloToolkit.Unity
         public List<Record> PathRecord { get; private set; }
         public List<int> UndoPoints { get; private set; } // list of indicies in Path Record
         public List<GameObject> SavePointObjects { get; private set; }
-        public Vector3 SphereOffset { get; set; }
         public Vector3 RobotOffset { get; set; }
         public bool RobotCalibrating { get; set; }
         public Vector3 RobotStart { get; set; }
+        public bool HasCalibratedSphere { get; set; }
 
         void Awake()
         {
@@ -29,10 +29,10 @@ namespace Academy.HoloToolkit.Unity
             PathRecord = new List<Record>();
             UndoPoints = new List<int>();
             SavePointObjects = new List<GameObject>();
-            SphereOffset = Vector3.zero;
             RobotOffset = Vector3.zero;
             RobotStart = Vector3.zero;
             RobotCalibrating = false;
+            HasCalibratedSphere = false;
 
             NavigationRecognizer = new GestureRecognizer();
             NavigationRecognizer.SetRecognizableGestures(
@@ -153,6 +153,7 @@ namespace Academy.HoloToolkit.Unity
             //shadow.layer = 1; // the transparent layer that the cursor does not repond to
             //shadow.GetComponent<Renderer>().material.color = Color.cyan;
             //SavePointObjects.Add(shadow);
+
         }
 
         public void UndoAction()

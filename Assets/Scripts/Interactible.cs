@@ -8,7 +8,6 @@ using UnityEngine;
 public class Interactible : MonoBehaviour {
     [Tooltip("Audio clip to play when interacting with this hologram.")]
     public AudioClip TargetFeedbackSound;
-    private bool hasCalibratedSphere, hasCalibratedRobot;
     private AudioSource audioSource;
 
     private Material[] defaultMaterials;
@@ -24,8 +23,6 @@ public class Interactible : MonoBehaviour {
         }
 
         EnableAudioHapticFeedback();
-        hasCalibratedSphere = false;
-        hasCalibratedRobot = false;
     }
 
     private void EnableAudioHapticFeedback() {
@@ -74,28 +71,28 @@ public class Interactible : MonoBehaviour {
         //    // these will also serve as undo points
         //    GestureManager.Instance.RecordUndoPoint();
         //}
-        Debug.Log(selected);
-        if (hasCalibratedSphere && selected == GameObject.Find("ControlSphere"))
+
+        if (GestureManager.Instance.HasCalibratedSphere && selected == GameObject.Find("ControlSphere"))
         {
             // clicking on sphere
-            // toggle gripper
+            // saves a shadow
+            GameObject rob = GameObject.Find("Robot_very_low_poly");
+            GameObject shadow = Instantiate(rob, rob.transform.position, rob.transform.rotation);
+            shadow.layer = 1;
 
         }
         if (selected == GameObject.Find("base_link"))
         {
             if (GestureManager.Instance.RobotCalibrating) {
+                Debug.Log("GOT HEREEEEEE");
                 GestureManager.Instance.RobotOffset = 
                     GameObject.Find("Robot_very_low_poly").transform.position 
                     - GestureManager.Instance.RobotStart;
-                Debug.Log("Robot offset is:");
-                Debug.Log(GestureManager.Instance.RobotOffset);
-
-                hasCalibratedSphere = true;
+                Debug.Log("Robot offset is: " + GestureManager.Instance.RobotOffset);
+                GestureManager.Instance.HasCalibratedSphere = true;
                 GameObject sphere = GameObject.Find("ControlSphere");
                 Vector3 init_pos = sphere.transform.position;
                 sphere.transform.position = GameObject.Find("right_gripper_base").transform.position;
-                GestureManager.Instance.SphereOffset = sphere.transform.position - init_pos;
-
             } else if (firstTime)
             {
                 firstTime = false;
