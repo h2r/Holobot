@@ -244,6 +244,8 @@ namespace Academy.HoloToolkit.Unity
         private void ManipulationRecognizer_ManipulationCompleted(ManipulationCompletedEventArgs obj)
         {
             IsManipulating = false;
+            //GameObject sphere = GameObject.Find("ControlSphere");
+            //sphere.transform.position = GameObject.Find("right_gripper_base").transform.position;
         }
 
         private void ManipulationRecognizer_ManipulationCanceled(ManipulationCanceledEventArgs obj)
