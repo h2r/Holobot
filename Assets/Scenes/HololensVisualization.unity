@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 587166617}
   - component: {fileID: 587166616}
   - component: {fileID: 587166620}
-  m_Layer: 0
+  m_Layer: 1
   m_Name: StartSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -443,8 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc1e74a3db456594e99f7f67274c6ec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetFeedbackSound: {fileID: 8300000, guid: 9c0ace72966b7234b9d9f946da8b666d, type: 3}
-  root: {fileID: 1894611818}
+  TargetFeedbackSound: {fileID: 0}
 --- !u!1 &657600605
 GameObject:
   m_ObjectHideFlags: 0
@@ -525,8 +524,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 657600605}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.8, y: 0, z: 1.5}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.5}
+  m_LocalScale: {x: 0.11, y: 0.11, z: 0.11}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -544,7 +543,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RotationSensitivity: 10
   manipulator: {fileID: 657600605}
-  root: {fileID: 1894611818}
 --- !u!114 &657600611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,7 +570,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &717018417
 Transform:
   m_ObjectHideFlags: 0
@@ -612,7 +610,7 @@ GameObject:
   - component: {fileID: 746350688}
   - component: {fileID: 746350687}
   - component: {fileID: 746350691}
-  m_Layer: 0
+  m_Layer: 1
   m_Name: StopSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,8 +694,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc1e74a3db456594e99f7f67274c6ec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetFeedbackSound: {fileID: 8300000, guid: 9c0ace72966b7234b9d9f946da8b666d, type: 3}
-  root: {fileID: 1894611818}
+  TargetFeedbackSound: {fileID: 0}
 --- !u!1 &840131882
 GameObject:
   m_ObjectHideFlags: 0
@@ -1233,7 +1230,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RotationSensitivity: 10
   manipulator: {fileID: 0}
-  root: {fileID: 0}
 --- !u!114 &1215667969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1261,7 +1257,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1280459081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1570,7 +1566,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1917820655083642, guid: 7b27a74ada9b543469ed67d6b71d64f7, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 23957804061746666, guid: 7b27a74ada9b543469ed67d6b71d64f7,
         type: 2}
@@ -1816,37 +1812,13 @@ GameObject:
   m_PrefabParentObject: {fileID: 1917820655083642, guid: 7b27a74ada9b543469ed67d6b71d64f7,
     type: 2}
   m_PrefabInternal: {fileID: 1894611817}
---- !u!114 &1894611820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1894611818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f1efafb4e5a9a346ab63a4e76d0a3e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TargetFeedbackSound: {fileID: 8300000, guid: 9c0ace72966b7234b9d9f946da8b666d, type: 3}
---- !u!114 &1894611821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1894611818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3989c73151670447aed69a605b05315, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  RotationSensitivity: 10
 --- !u!114 &1894611822
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1894611818}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8447ef6120bd5844abcea80ee98f4066, type: 3}
   m_Name: 

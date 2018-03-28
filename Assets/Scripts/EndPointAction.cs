@@ -7,7 +7,6 @@ public class EndPointAction : MonoBehaviour
     private Vector3 manipulationPreviousPosition;
     Vector3 currPos;
     public AudioClip TargetFeedbackSound;
-    public GameObject root;
     private AudioSource audioSource;
 
     // Use this for initialization
@@ -48,8 +47,8 @@ public class EndPointAction : MonoBehaviour
     void OnSelect(GameObject selected)
     {
         Vector3 rosPos = UnityToRosPositionAxisConversion(
-            (selected.transform.position - GestureManager.Instance.RobotOffset)
-            - (root.transform.position - GestureManager.Instance.RobotOffset)
+            (selected.transform.position - GestureManager.Instance.CalibrationOffset)
+            - GestureManager.Instance.rosInitTorsoPos
         );
         if (audioSource != null && !audioSource.isPlaying)
         {

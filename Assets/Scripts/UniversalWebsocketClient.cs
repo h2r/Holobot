@@ -6,9 +6,11 @@ using UnityEngine;
 public abstract class UniversalWebsocketClient : MonoBehaviour {
     public Dictionary<string, string> messages = new Dictionary<string, string>();
 
-
+    public abstract void Publish(string topic, string message);
 
     public abstract void Subscribe(string topic, string v1, string v2, int v3);
+
+    public abstract void Unsubscribe(string topic);
 
     public abstract void Advertise(string v1, string v2);
 

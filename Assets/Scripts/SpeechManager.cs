@@ -83,8 +83,8 @@ public class SpeechManager : Singleton<SpeechManager>
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.green;
             startUnityPos = GameObject.Find("ControlSphere").transform.position;
             GestureManager.Instance.MotionPlanStart = UnityToRosPositionAxisConversion(
-                (startUnityPos - GestureManager.Instance.RobotOffset)
-                - (root.transform.position - GestureManager.Instance.RobotOffset)
+                (startUnityPos - GestureManager.Instance.CalibrationOffset)
+                - GestureManager.Instance.rosInitTorsoPos
             );
         }
     }
@@ -102,15 +102,20 @@ public class SpeechManager : Singleton<SpeechManager>
 
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.red;
             wsc.SendDemonstrationData("EOF");
-            GameObject.Find("StartSphere").transform.position = startUnityPos;
-            GameObject.Find("StartSphere").GetComponent<Renderer>().material.color = Color.magenta;
+
+            GameObject startSphere = GameObject.Find("StartSphere");
+            startSphere.transform.position = startUnityPos;
+            startSphere.GetComponent<Renderer>().material.color = Color.magenta;
+            startSphere.layer = 0; // can now interact with this sphere
             
             Vector3 tempOffset = new Vector3(0.03f, 0.03f, 0.03f);
-            GameObject.Find("StopSphere").transform.position = GameObject.Find("ControlSphere").transform.position + tempOffset;
-            GameObject.Find("StopSphere").GetComponent<Renderer>().material.color = Color.cyan;
+            GameObject stopSphere = GameObject.Find("StopSphere");
+            stopSphere.transform.position = GameObject.Find("ControlSphere").transform.position + tempOffset;
+            stopSphere.GetComponent<Renderer>().material.color = Color.cyan;
+            stopSphere.layer = 0;
             GestureManager.Instance.MotionPlanStop = UnityToRosPositionAxisConversion(
-                (GameObject.Find("StopSphere").transform.position - GestureManager.Instance.RobotOffset)
-                - (root.transform.position - GestureManager.Instance.RobotOffset)
+                (stopSphere.transform.position - GestureManager.Instance.CalibrationOffset)
+                - GestureManager.Instance.rosInitTorsoPos
             );
         }
     }
@@ -123,7 +128,6 @@ public class SpeechManager : Singleton<SpeechManager>
         {
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.yellow;
             wsc.SendExecuteMotionPlan(GestureManager.Instance.MotionPlanStart, GestureManager.Instance.MotionPlanStop);
-            // eventually this will have args for start and end of motion plan
         }
     }
 

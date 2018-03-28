@@ -49,10 +49,18 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
     }
 
 
-    void Publish(string topic, string message) {
+    public override void Publish(string topic, string message) {
         string msg = "{\"op\":\"publish\",\"id\":\"publish:/" + topic + ":" + counter + "\",\"topic\":\"/" + topic + "\",\"msg\":{\"data\":\"" + message + "\"},\"latch\":false}";
         SendAsync(msg);
         counter++;
+    }
+
+    // Samir added this--might not work, not sure
+    public override void Unsubscribe(string topic)
+    {
+        string msg = "{\"op\":\"unsubscribe\",\"id\":\"unsubscribe:/" + topic + ":" + counter + "\",\"topic\":\"" + topic + "\"}";
+        Debug.Log(msg);
+        SendAsync(msg);
     }
 
     public override void SendEinMessage(string message, string arm) {

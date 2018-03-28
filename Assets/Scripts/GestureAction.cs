@@ -13,10 +13,9 @@ public class GestureAction : MonoBehaviour {
     private Vector3 manipulationPreviousPosition;
     private float rotationFactor;
     private UniversalWebsocketClient wsc;
-    Vector3 startPos;
-    Vector3 currPos;
     public GameObject manipulator;
-    public GameObject root;
+    Vector3 startPos;
+    //Vector3 currPos;
 
     void Start() {
         GameObject wso = GameObject.Find("WebsocketClient");
@@ -25,7 +24,6 @@ public class GestureAction : MonoBehaviour {
 #else
         wsc = wso.GetComponent<WebsocketClient>();
 #endif
-        // GameObject.Find("ControlSphere").transform.position = GameObject.Find("right_wrist").transform.position; // moves the control sphere
         wsc.Advertise("ein/" + "right" + "/forth_commands", "std_msgs/String");
         wsc.Advertise("dmp_train_data", "std_msgs/String");
     }
@@ -76,17 +74,19 @@ public class GestureAction : MonoBehaviour {
             //startPos = transform.position;
             transform.position += moveVector; // * 3
             
-            currPos = transform.position;
+            //currPos = transform.position;
             //Debug.Log(transform.position);
-            moveArm(); // note this method also records data if we are in recording mode
+            if (GestureManager.Instance.HasCalibratedSphere)
+            {
+                moveArm(); // note this method also records data if we are in recording mode
+            }
         }
     }
 
     void moveArm() {
-        Vector3 rosPos = UnityToRosPositionAxisConversion((manipulator.transform.position 
-            - GestureManager.Instance.RobotOffset) 
-            - (root.transform.position 
-            - GestureManager.Instance.RobotOffset));
+        Vector3 rosPos = UnityToRosPositionAxisConversion(
+            (manipulator.transform.position - GestureManager.Instance.CalibrationOffset) 
+        ) - GestureManager.Instance.rosInitTorsoPos;
         string baseMessage = rosPos.x + " " + rosPos.y + " " + rosPos.z;
         string einMessage = baseMessage + " 0 1 0 0 moveToEEPose ";
         if (GestureManager.Instance.IsRecordingData) // for local recording, take out eventually
@@ -94,7 +94,7 @@ public class GestureAction : MonoBehaviour {
             GestureManager.Instance.RecordMovement(rosPos, Time.deltaTime);
             wsc.SendDemonstrationData(baseMessage); // sends ros position data 
         }
-        // Debug.Log(String.Format("Cmd: ({0}, {1}, {2})", rosPos.x, rosPos.y, rosPos.z));
+        Debug.Log(String.Format("Cmd: ({0}, {1}, {2})", rosPos.x, rosPos.y, rosPos.z));
         // Debug.Log(message);
         wsc.SendEinMessage(einMessage, "right");
        

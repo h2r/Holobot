@@ -46,7 +46,7 @@ public class WebsocketClient : UniversalWebsocketClient
 		counter++;
 	}
 
-	public void Unsubscribe(string topic) {
+	public override void Unsubscribe(string topic) {
 		string msg = "{\"op\":\"unsubscribe\",\"id\":\"unsubscribe:/" + topic + ":" + counter + "\",\"topic\":\"" + topic + "\"}";
 		Debug.Log (msg);
 		ws.SendAsync (msg, OnSendComplete);
@@ -61,7 +61,7 @@ public class WebsocketClient : UniversalWebsocketClient
 
 	}
 
-	public void Publish(string topic, string message)
+	public override void Publish(string topic, string message)
 	{
 		string msg = "{\"op\":\"publish\",\"id\":\"publish:/" + topic + ":" + counter + "\",\"topic\":\"/" + topic + "\",\"msg\":{\"data\":\"" + message + "\"},\"latch\":false}";
         ws.SendAsync(msg, OnSendComplete);

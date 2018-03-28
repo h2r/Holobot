@@ -18,11 +18,13 @@ namespace Academy.HoloToolkit.Unity
         public List<Record> PathRecord { get; private set; }
         public List<int> UndoPoints { get; private set; } // list of indicies in Path Record
         public List<GameObject> SavePointObjects { get; private set; }
-        public Vector3 RobotOffset { get; set; }
-        public bool RobotCalibrating { get; set; }
-        public Vector3 RobotStart { get; set; }
+        //public Vector3 RobotOffset { get; set; }
+        //public bool RobotCalibrating { get; set; }
+        //public Vector3 RobotStart { get; set; }
+        public Vector3 rosInitGripperPos { get; set; }
+        public Vector3 rosInitTorsoPos { get; set; }
+        public Vector3 CalibrationOffset { get; set; }
         public bool HasCalibratedSphere { get; set; }
-        public Vector3 ControlSphereStart { get; set; }
 
         public Vector3 MotionPlanStart { get; set; }
         public Vector3 MotionPlanStop { get; set; }
@@ -33,14 +35,15 @@ namespace Academy.HoloToolkit.Unity
             PathRecord = new List<Record>();
             UndoPoints = new List<int>();
             SavePointObjects = new List<GameObject>();
-            RobotOffset = Vector3.zero;
-            RobotStart = Vector3.zero;
-            RobotCalibrating = false;
+            //RobotOffset = Vector3.zero;
+            //RobotStart = Vector3.zero;
+            //RobotCalibrating = false;
             HasCalibratedSphere = false;
-            ControlSphereStart = Vector3.zero;
-
+            rosInitGripperPos = Vector3.positiveInfinity;
+            rosInitTorsoPos = Vector3.positiveInfinity;
             MotionPlanStart = Vector3.positiveInfinity;
             MotionPlanStop = Vector3.positiveInfinity;
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.blue;
 
             NavigationRecognizer = new GestureRecognizer();
             NavigationRecognizer.SetRecognizableGestures(
@@ -66,8 +69,10 @@ namespace Academy.HoloToolkit.Unity
             ManipulationRecognizer.ManipulationCompleted += ManipulationRecognizer_ManipulationCompleted;
             ManipulationRecognizer.ManipulationCanceled += ManipulationRecognizer_ManipulationCanceled;
 
-            ResetGestureRecognizers();
+            ResetGestureRecognizers();       
         }
+
+        
 
         public void Reset() // Not yet tested
         {
@@ -285,7 +290,7 @@ namespace Academy.HoloToolkit.Unity
             {
                 focusedObject.SendMessageUpwards("OnSelect", focusedObject);
             }
-        }
+        }    
     }
 
     public class Record

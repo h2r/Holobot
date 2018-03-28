@@ -40,10 +40,11 @@ public class TFListener : MonoBehaviour
         //Debug.Log("check");
         // Issue: wsc.messages is empty when it shouldn't be
         // Fix: use try/catch - only run code if wsc is not empty
-        if (GestureManager.Instance.RobotCalibrating)
-        {
-            return;
-        }
+
+        //if (GestureManager.Instance.RobotCalibrating)
+        //{
+        //    return;
+        //}
         string message;
         try
         {
@@ -107,7 +108,7 @@ public class TFListener : MonoBehaviour
     Vector3 RosToUnityPositionAxisConversion (Vector3 rosIn)
 	{
         // Debug.Log(GestureManager.Instance.RobotOffset);
-        return new Vector3(-rosIn.x, rosIn.z, -rosIn.y) * scale + GestureManager.Instance.RobotOffset;// + robot.transform.position;	
+        return new Vector3(-rosIn.x, rosIn.z, -rosIn.y) * scale;// + GestureManager.Instance.RobotOffset;
 	}
 
 	Quaternion RosToUnityQuaternionConversion (Quaternion rosIn)
