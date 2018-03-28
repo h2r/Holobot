@@ -8,7 +8,8 @@ public class SpeechManager : Singleton<SpeechManager>
 {
     float expandAnimationCompletionTime;
     private UniversalWebsocketClient wsc;
-
+    private Vector3 startUnityPos;
+    public GameObject root;
 
     // KeywordRecognizer object.
     KeywordRecognizer keywordRecognizer;
@@ -20,12 +21,13 @@ public class SpeechManager : Singleton<SpeechManager>
     void Start()
     {
         keywordCollection = new Dictionary<string, KeywordAction>();
+        startUnityPos = Vector3.zero;
         // Add keywords
         keywordCollection.Add("Manipulate", MoveCommand);
         keywordCollection.Add("Rotate", RotateCommand);
         keywordCollection.Add("Start", StartCommand);
-        keywordCollection.Add("Stop", StopCommand);
-        keywordCollection.Add("Motion Plan", ExecuteCommand);
+        keywordCollection.Add("Stop", StopCommand); 
+        keywordCollection.Add("Plan", ExecuteCommand);
         keywordCollection.Add("Go back", UndoCommand);
         // Initialize KeywordRecognizer with the previously added keywords.
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
@@ -79,6 +81,11 @@ public class SpeechManager : Singleton<SpeechManager>
         {
             GestureManager.Instance.IsRecordingData = true;
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.green;
+            startUnityPos = GameObject.Find("ControlSphere").transform.position;
+            GestureManager.Instance.MotionPlanStart = UnityToRosPositionAxisConversion(
+                (startUnityPos - GestureManager.Instance.RobotOffset)
+                - (root.transform.position - GestureManager.Instance.RobotOffset)
+            );
         }
     }
 
@@ -95,18 +102,27 @@ public class SpeechManager : Singleton<SpeechManager>
 
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.red;
             wsc.SendDemonstrationData("EOF");
+            GameObject.Find("StartSphere").transform.position = startUnityPos;
+            GameObject.Find("StartSphere").GetComponent<Renderer>().material.color = Color.magenta;
+            
+            Vector3 tempOffset = new Vector3(0.03f, 0.03f, 0.03f);
+            GameObject.Find("StopSphere").transform.position = GameObject.Find("ControlSphere").transform.position + tempOffset;
+            GameObject.Find("StopSphere").GetComponent<Renderer>().material.color = Color.cyan;
+            GestureManager.Instance.MotionPlanStop = UnityToRosPositionAxisConversion(
+                (GameObject.Find("StopSphere").transform.position - GestureManager.Instance.RobotOffset)
+                - (root.transform.position - GestureManager.Instance.RobotOffset)
+            );
         }
     }
 
     public void ExecuteCommand(PhraseRecognizedEventArgs args)
     {
-        Debug.Log("GOT Execute");
+        Debug.Log("GOT EXECUTE");
         if (!GestureManager.Instance.IsRecordingData && 
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color == Color.red)
         {
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.yellow;
-            wsc.SendExecuteMotionPlan(GestureManager.Instance.PathRecord[0].Position, 
-                GestureManager.Instance.PathRecord[GestureManager.Instance.PathRecord.Count - 1].Position); 
+            wsc.SendExecuteMotionPlan(GestureManager.Instance.MotionPlanStart, GestureManager.Instance.MotionPlanStop);
             // eventually this will have args for start and end of motion plan
         }
     }
@@ -134,6 +150,11 @@ public class SpeechManager : Singleton<SpeechManager>
         //        animator.enabled = false;
         //    }
         //}
+    }
+
+    Vector3 UnityToRosPositionAxisConversion(Vector3 rosIn)
+    {
+        return new Vector3(-rosIn.x, -rosIn.z, rosIn.y);
     }
 }
 

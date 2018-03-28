@@ -68,7 +68,7 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
     {
         string start = x0.x + " " + x0.y + " " + x0.z;
         string goal = g.x + " " + g.y + " " + g.z;
-        Publish("dmp_train_data/", "EXE " + x0 + " " + g);
+        Publish("dmp_train_data/", "EXE " + start + " " + goal);
     }
 
     public override void Advertise(string topic, string type) {

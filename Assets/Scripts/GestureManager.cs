@@ -22,6 +22,10 @@ namespace Academy.HoloToolkit.Unity
         public bool RobotCalibrating { get; set; }
         public Vector3 RobotStart { get; set; }
         public bool HasCalibratedSphere { get; set; }
+        public Vector3 ControlSphereStart { get; set; }
+
+        public Vector3 MotionPlanStart { get; set; }
+        public Vector3 MotionPlanStop { get; set; }
 
         void Awake()
         {
@@ -33,6 +37,10 @@ namespace Academy.HoloToolkit.Unity
             RobotStart = Vector3.zero;
             RobotCalibrating = false;
             HasCalibratedSphere = false;
+            ControlSphereStart = Vector3.zero;
+
+            MotionPlanStart = Vector3.positiveInfinity;
+            MotionPlanStop = Vector3.positiveInfinity;
 
             NavigationRecognizer = new GestureRecognizer();
             NavigationRecognizer.SetRecognizableGestures(
@@ -175,21 +183,21 @@ namespace Academy.HoloToolkit.Unity
 
         public void WritePathData()
         {
-            string path = @"C:\Users\brown\Documents\Unity\HoloControl\Holobot\data.txt";
-            if (!File.Exists(path))
-            {
-                File.Create(path); 
-            }
-            TextWriter writer = new StreamWriter(path);
-            writer.WriteLine("dt, sx, sy, sz");
-            // Debug.Log("Line written");
-            for (int i = 0; i < PathRecord.Count; i++)
-            {
-                float dt = PathRecord[i].DelTime;
-                Vector3 pos = PathRecord[i].Position;
-                writer.WriteLine("{0}, {1}, {2}, {3}",
-                    dt, pos.x, pos.y, pos.z);
-            }
+            //string path = @"C:\Users\brown\Documents\Unity\HoloControl\Holobot\data.txt";
+            //if (!File.Exists(path))
+            //{
+            //    File.Create(path); 
+            //}
+            //TextWriter writer = new StreamWriter(path);
+            //writer.WriteLine("dt, sx, sy, sz");
+            //// Debug.Log("Line written");
+            //for (int i = 0; i < PathRecord.Count; i++)
+            //{
+            //    float dt = PathRecord[i].DelTime;
+            //    Vector3 pos = PathRecord[i].Position;
+            //    writer.WriteLine("{0}, {1}, {2}, {3}",
+            //        dt, pos.x, pos.y, pos.z);
+            //}
             
 
         }

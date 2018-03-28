@@ -82,7 +82,7 @@ public class WebsocketClient : UniversalWebsocketClient
     {
         string start = x0.x + " " + x0.y + " " + x0.z;
         string goal = g.x + " " + g.y + " " + g.z;
-        Publish("dmp_train_data/", "EXE " + x0 + " " + g);
+        Publish("dmp_train_data/", "EXE " + start + " " + goal);
     }
 
     private void OnMessageHandler(object sender, MessageEventArgs e)

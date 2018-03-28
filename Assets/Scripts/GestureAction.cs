@@ -48,7 +48,6 @@ public class GestureAction : MonoBehaviour {
         //    transform.Rotate(new Vector3(0, -1 * rotationFactor, 0));
         //}
         //moveArm();
-        //moveArm();
         //if (GestureManager.Instance.IsRecordingData)
         //{
         //    GestureManager.Instance.RecordMovement(transform.position,
@@ -65,7 +64,6 @@ public class GestureAction : MonoBehaviour {
     void PerformManipulationUpdate(Vector3 position) {
         if (GestureManager.Instance.IsManipulating) {
             /* TODO: DEVELOPER CODING EXERCISE 4.a */
-
             Vector3 moveVector = Vector3.zero;
 
             // 4.a: Calculate the moveVector as position - manipulationPreviousPosition.
