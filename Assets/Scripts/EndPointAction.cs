@@ -26,17 +26,17 @@ public class EndPointAction : MonoBehaviour
 
     void PerformManipulationStart(Vector3 position)
     {
+        if (audioSource != null && !audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
         manipulationPreviousPosition = position;
     }
 
     void PerformManipulationUpdate(Vector3 position)
     {
         if (GestureManager.Instance.IsManipulating)
-        {
-            if (audioSource != null && !audioSource.isPlaying)
-            {
-                audioSource.Play();
-            }
+        {            
             Vector3 moveVector = Vector3.zero;
             moveVector = position - manipulationPreviousPosition;
             manipulationPreviousPosition = position;

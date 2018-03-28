@@ -28,7 +28,7 @@ public class SpeechManager : Singleton<SpeechManager>
         keywordCollection.Add("Start", StartCommand);
         keywordCollection.Add("Stop", StopCommand); 
         keywordCollection.Add("Plan", ExecuteCommand);
-        keywordCollection.Add("Go back", UndoCommand);
+        keywordCollection.Add("Go back", UndoCommand); 
         // Initialize KeywordRecognizer with the previously added keywords.
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
         keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
