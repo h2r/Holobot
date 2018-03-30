@@ -9,12 +9,20 @@ public class Interactible : MonoBehaviour {
     [Tooltip("Audio clip to play when interacting with this hologram.")]
     public AudioClip TargetFeedbackSound;
     private AudioSource audioSource;
-
+    private UniversalWebsocketClient wsc;
     private Material[] defaultMaterials;
     private bool firstTime;
 
     void Start() {
         // defaultMaterials = GetComponent<Renderer>().materials;
+        GameObject wso = GameObject.Find("WebsocketClient");
+#if !UNITY_EDITOR
+        wsc = wso.GetComponent<UWPWebSocketClient>();
+#else
+        wsc = wso.GetComponent<WebsocketClient>();
+#endif
+        // GameObject.Find("ControlSphere").transform.position = GameObject.Find("right_wrist").transform.position; // moves the control sphere
+        wsc.Advertise("dmp_train_data", "std_msgs/String");
         firstTime = true;
         // Add a BoxCollider if the interactible does not contain one.
         Collider collider = GetComponentInChildren<Collider>();
@@ -40,8 +48,6 @@ public class Interactible : MonoBehaviour {
         }
     }
 
-    /* TODO: DEVELOPER CODING EXERCISE 2.d */
-
     void GazeEntered() {
         //for (int i = 0; i < defaultMaterials.Length; i++) {
             // 2.d: Uncomment the below line to highlight the material when gaze enters.
@@ -65,30 +71,31 @@ public class Interactible : MonoBehaviour {
         if (audioSource != null && !audioSource.isPlaying) {
             audioSource.Play();
         }
-        //if (GestureManager.Instance.IsRecordingData)
-        //{
-        //    // create a new object at the place where the moving object was selected
-        //    // these will also serve as undo points
-        //    GestureManager.Instance.RecordUndoPoint();
-        //}
 
-        if (GestureManager.Instance.HasCalibratedSphere && selected == GameObject.Find("ControlSphere"))
+        if (GestureManager.Instance.HasCalibratedSphere && selected == GameObject.Find("ControlSphere")
+            && GestureManager.Instance.IsRecordingData)
         {
             // clicking on sphere
+            // should save a support
             // saves a shadow
             GameObject rob = GameObject.Find("Robot_very_low_poly");
             GameObject shadow = Instantiate(rob, rob.transform.position, rob.transform.rotation);
             shadow.layer = 1;
+            Vector3 rosPos = UnityToRosPositionAxisConversion((selected.transform.position
+            - GestureManager.Instance.RobotOffset)
+            - (rob.transform.position
+            - GestureManager.Instance.RobotOffset));
 
+            string baseMessage = rosPos.x + " " + rosPos.y + " " + rosPos.z;
+            // the added 1 bit is to tell the ros server that we are sending a critical point
+            wsc.SendLfdMessage("PT", baseMessage + " 1");
         }
         if (selected == GameObject.Find("base_link"))
         {
             if (GestureManager.Instance.RobotCalibrating) {
-                Debug.Log("GOT HEREEEEEE");
                 GestureManager.Instance.RobotOffset = 
                     GameObject.Find("Robot_very_low_poly").transform.position 
                     - GestureManager.Instance.RobotStart;
-                Debug.Log("Robot offset is: " + GestureManager.Instance.RobotOffset);
                 GestureManager.Instance.HasCalibratedSphere = true;
                 GameObject sphere = GameObject.Find("ControlSphere");
                 Vector3 init_pos = sphere.transform.position;
@@ -101,5 +108,10 @@ public class Interactible : MonoBehaviour {
             GestureManager.Instance.RobotCalibrating = !GestureManager.Instance.RobotCalibrating; // toggle
         }
 
+    }
+
+    Vector3 UnityToRosPositionAxisConversion(Vector3 rosIn)
+    {
+        return new Vector3(-rosIn.x, -rosIn.z, rosIn.y);
     }
 }

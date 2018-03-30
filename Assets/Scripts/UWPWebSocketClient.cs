@@ -59,16 +59,9 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
         Publish("ein/" + arm + "/forth_commands", message);
     }
 
-    public override void SendDemonstrationData(string message)
-    { 
-        Publish("dmp_train_data/", message);
-    }
-
-    public override void SendExecuteMotionPlan(Vector3 x0, Vector3 g)
+    public override void SendLfdMessage(string instruction, string data)
     {
-        string start = x0.x + " " + x0.y + " " + x0.z;
-        string goal = g.x + " " + g.y + " " + g.z;
-        Publish("dmp_train_data/", "EXE " + start + " " + goal);
+        Publish("dmp_train_data/", instruction + " " + data);
     }
 
     public override void Advertise(string topic, string type) {

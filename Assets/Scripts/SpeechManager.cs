@@ -8,9 +8,9 @@ public class SpeechManager : Singleton<SpeechManager>
 {
     float expandAnimationCompletionTime;
     private UniversalWebsocketClient wsc;
-    private Vector3 startUnityPos;
     public GameObject root;
-
+    private GameObject[] endPointSpheres;
+    private bool sentStop;
     // KeywordRecognizer object.
     KeywordRecognizer keywordRecognizer;
 
@@ -20,15 +20,19 @@ public class SpeechManager : Singleton<SpeechManager>
 
     void Start()
     {
+        sentStop = false;
+
         keywordCollection = new Dictionary<string, KeywordAction>();
-        startUnityPos = Vector3.zero;
         // Add keywords
         keywordCollection.Add("Manipulate", MoveCommand);
         keywordCollection.Add("Rotate", RotateCommand);
         keywordCollection.Add("Start", StartCommand);
+        keywordCollection.Add("New", NewSkillCommand);
         keywordCollection.Add("Stop", StopCommand); 
         keywordCollection.Add("Plan", ExecuteCommand);
-        keywordCollection.Add("Go back", UndoCommand); 
+        keywordCollection.Add("Open", OpenCommand);
+        keywordCollection.Add("Close", CloseCommand);
+
         // Initialize KeywordRecognizer with the previously added keywords.
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
         keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
@@ -39,6 +43,7 @@ public class SpeechManager : Singleton<SpeechManager>
         #else
         wsc = wso.GetComponent<WebsocketClient>();
         #endif
+        wsc.Advertise("ein/" + "right" + "/forth_commands", "std_msgs/String");
         wsc.Advertise("dmp_train_data", "std_msgs/String");
     }
 
@@ -60,16 +65,12 @@ public class SpeechManager : Singleton<SpeechManager>
     private void MoveCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT MANIPULATE");
-        //Transform cal = GameObject.Find("ControlSphere").transform;
-        //Transform screen = GameObject.Find("screen").transform;
         GestureManager.Instance.Transition(GestureManager.Instance.ManipulationRecognizer);
     }
 
     private void RotateCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT ROTATE");
-        //Transform cal = GameObject.Find("calibrater").transform;
-        //Transform screen = GameObject.Find("screen").transform;
         GestureManager.Instance.Transition(GestureManager.Instance.NavigationRecognizer);
     }
 
@@ -81,75 +82,90 @@ public class SpeechManager : Singleton<SpeechManager>
         {
             GestureManager.Instance.IsRecordingData = true;
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.green;
-            startUnityPos = GameObject.Find("ControlSphere").transform.position;
-            GestureManager.Instance.MotionPlanStart = UnityToRosPositionAxisConversion(
-                (startUnityPos - GestureManager.Instance.RobotOffset)
-                - (root.transform.position - GestureManager.Instance.RobotOffset)
-            );
+            Vector3 controlSpherePos = GameObject.Find("ControlSphere").transform.position;
+            GestureManager.Instance.UnityMotionPlanEndpoints.Add(controlSpherePos);
+        }
+    }
+
+    private void NewSkillCommand(PhraseRecognizedEventArgs args)
+    {
+        Debug.Log("GOT NEW");
+        if (GestureManager.Instance.IsRecordingData && GestureManager.Instance.HasCalibratedSphere)
+        {
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.green;
+            Vector3 controlSpherePos = GameObject.Find("ControlSphere").transform.position;
+            GestureManager.Instance.UnityMotionPlanEndpoints.Add(controlSpherePos);
+            wsc.SendLfdMessage("EOS", "");
         }
     }
 
     private void StopCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT STOP");
-        if (GestureManager.Instance.IsRecordingData)
+        if (GestureManager.Instance.IsRecordingData && GestureManager.Instance.HasCalibratedSphere)
         {
             GestureManager.Instance.IsRecordingData = false;
-            
-            #if UNITY_EDITOR
-            GestureManager.Instance.WritePathData();
-            #endif
-
-            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.red;
-            wsc.SendDemonstrationData("EOF");
-            GameObject.Find("StartSphere").transform.position = startUnityPos;
-            GameObject.Find("StartSphere").GetComponent<Renderer>().material.color = Color.magenta;
-            
-            Vector3 tempOffset = new Vector3(0.03f, 0.03f, 0.03f);
-            GameObject.Find("StopSphere").transform.position = GameObject.Find("ControlSphere").transform.position + tempOffset;
-            GameObject.Find("StopSphere").GetComponent<Renderer>().material.color = Color.cyan;
-            GestureManager.Instance.MotionPlanStop = UnityToRosPositionAxisConversion(
-                (GameObject.Find("StopSphere").transform.position - GestureManager.Instance.RobotOffset)
-                - (root.transform.position - GestureManager.Instance.RobotOffset)
-            );
+            Vector3 controlSpherePos = GameObject.Find("ControlSphere").transform.position;
+            // add last endpoint
+            GestureManager.Instance.UnityMotionPlanEndpoints.Add(controlSpherePos);
+            wsc.SendLfdMessage("EOS", "");
+            sentStop = true;
+            // can no longer touch the control sphere
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.clear;
+            GameObject.Find("ControlSphere").layer = 1;
+            int endPointCount = GestureManager.Instance.UnityMotionPlanEndpoints.Count();
+            endPointSpheres = new GameObject[endPointCount];
+            // iterate over endpoints and have them show up, this is where a user can edit for autonomous plan
+            for(int i = 0; i < endPointCount; i++ )
+            {
+                GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                go.AddComponent<MeshCollider>();
+                go.AddComponent<EndPointAction>();
+                go.transform.position = GestureManager.Instance.UnityMotionPlanEndpoints[i];
+                Debug.Log("THIS IS SUPPOSED TO BE THE UNITY LOC OF EP: " + GestureManager.Instance.UnityMotionPlanEndpoints[i]);
+                go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                go.layer = 0; // default layer
+                endPointSpheres[i] = go;
+            }
         }
     }
 
-    public void ExecuteCommand(PhraseRecognizedEventArgs args)
+    private void ExecuteCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT EXECUTE");
-        if (!GestureManager.Instance.IsRecordingData && 
-            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color == Color.red)
+        if (sentStop)
         {
+            string data = "";
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.yellow;
-            wsc.SendExecuteMotionPlan(GestureManager.Instance.MotionPlanStart, GestureManager.Instance.MotionPlanStop);
-            // eventually this will have args for start and end of motion plan
+            for(int i=0; i < endPointSpheres.Count(); i++)
+            {
+                endPointSpheres[i].layer = 1;
+                GameObject.Find("ControlSphere").layer = 8;
+                Vector3 rosPos = UnityToRosPositionAxisConversion(
+                    (endPointSpheres[i].transform.position - GestureManager.Instance.RobotOffset)
+                    - (root.transform.position - GestureManager.Instance.RobotOffset)
+                    );
+                data = data + " " + rosPos.x + " " + rosPos.y + " " + rosPos.z;
+                Debug.Log("CURR UNITY LOC: " + endPointSpheres[i].transform.position);
+            }
+            Debug.Log("EXE " + data);
+            wsc.SendLfdMessage("EXE", data);
         }
     }
 
-    private void UndoCommand(PhraseRecognizedEventArgs args)
+    private void OpenCommand(PhraseRecognizedEventArgs args)
     {
-        // TODO go back to last undo point
-        Debug.Log("GOT UNDO");
-        if (GestureManager.Instance.IsRecordingData)
-        {
-            GestureManager.Instance.UndoAction();
-        }
+        wsc.SendEinMessage("openGripper", "right");
+    }
+
+    private void CloseCommand(PhraseRecognizedEventArgs args)
+    {
+        wsc.SendEinMessage("closeGripper", "right");
     }
 
     public void Update()
     {
-        //if (isModelExpanding && Time.realtimeSinceStartup >= expandAnimationCompletionTime)
-        //{
-        //    isModelExpanding = false;
 
-        //    Animator[] expandedAnimators = ExpandModel.Instance.ExpandedModel.GetComponentsInChildren<Animator>();
-
-        //    foreach (Animator animator in expandedAnimators)
-        //    {
-        //        animator.enabled = false;
-        //    }
-        //}
     }
 
     Vector3 UnityToRosPositionAxisConversion(Vector3 rosIn)
@@ -157,56 +173,3 @@ public class SpeechManager : Singleton<SpeechManager>
         return new Vector3(-rosIn.x, -rosIn.z, rosIn.y);
     }
 }
-
-// above is the new code for motion control
-// below is the original holobot code
-
-//using System.Collections.Generic;
-//using System.Linq;
-//using UnityEngine;
-//using UnityEngine.Windows.Speech;
-
-//public class SpeechManager : MonoBehaviour {
-//    KeywordRecognizer keywordRecognizer = null;
-//    Dictionary<string, System.Action> keywords = new Dictionary<string, System.Action>();
-//    public GameObject tflistener;
-//    //GameObject basePivot;
-//    // Use this for initialization
-//    void Start() {
-//        //basePivot = GameObject.Find("basePivot");
-//        keywords.Add("world", () => {
-//            Transform cal = GameObject.Find("calibrater").transform;
-//            Transform screen = GameObject.Find("screen").transform;
-//            // Call the OnReset method on every descendant object.
-
-//            Debug.Log("rotation");
-//        });
-//        keywords.Add("position", () => {
-//            Transform cal = GameObject.Find("ControlSphere").transform;
-//            Transform screen = GameObject.Find("screen").transform;
-//            // Call the OnReset method on every descendant object.
-
-//            Debug.Log("position");
-//        });
-//        keywords.Add("ball", () => {
-//            Debug.Log("ball");
-//            GameObject.Find("ControlSphere").transform.position = GameObject.Find("right_wrist").transform.position;
-//            GameObject.  Find("TrajectoryVisualizer").SetActive(true);
-
-//        });
-
-//        // Tell the KeywordRecognizer about our keywords.
-//        keywordRecognizer = new KeywordRecognizer(keywords.Keys.ToArray());
-
-//        // Register a callback for the KeywordRecognizer and start recognizing!
-//        keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
-//        keywordRecognizer.Start();
-//    }
-
-//    private void KeywordRecognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args) {
-//        System.Action keywordAction;
-//        if (keywords.TryGetValue(args.text, out keywordAction)) {
-//            keywordAction.Invoke();
-//        }
-//    }
-//}

@@ -15,33 +15,21 @@ namespace Academy.HoloToolkit.Unity
         public bool IsManipulating { get; private set; }
         public Vector3 ManipulationPosition { get; private set; }
         public bool IsRecordingData { get; set; }
-        public List<Record> PathRecord { get; private set; }
-        public List<int> UndoPoints { get; private set; } // list of indicies in Path Record
-        public List<GameObject> SavePointObjects { get; private set; }
+
         public Vector3 RobotOffset { get; set; }
         public bool RobotCalibrating { get; set; }
         public Vector3 RobotStart { get; set; }
         public bool HasCalibratedSphere { get; set; }
-        public Vector3 ControlSphereStart { get; set; }
-
-        public Vector3 MotionPlanStart { get; set; }
-        public Vector3 MotionPlanStop { get; set; }
+        public List<Vector3> UnityMotionPlanEndpoints { get; set; }
 
         void Awake()
         {
             IsRecordingData = false;
-            PathRecord = new List<Record>();
-            UndoPoints = new List<int>();
-            SavePointObjects = new List<GameObject>();
             RobotOffset = Vector3.zero;
             RobotStart = Vector3.zero;
             RobotCalibrating = false;
             HasCalibratedSphere = false;
-            ControlSphereStart = Vector3.zero;
-
-            MotionPlanStart = Vector3.positiveInfinity;
-            MotionPlanStop = Vector3.positiveInfinity;
-
+            UnityMotionPlanEndpoints = new List<Vector3>();
             NavigationRecognizer = new GestureRecognizer();
             NavigationRecognizer.SetRecognizableGestures(
                 GestureSettings.Tap |
@@ -72,9 +60,6 @@ namespace Academy.HoloToolkit.Unity
         public void Reset() // Not yet tested
         {
             IsRecordingData = false;
-            PathRecord = new List<Record>();
-            UndoPoints = new List<int>();
-            SavePointObjects = new List<GameObject>();
         }
 
         void OnDestroy()
@@ -126,80 +111,6 @@ namespace Academy.HoloToolkit.Unity
 
             newRecognizer.StartCapturingGestures();
             ActiveRecognizer = newRecognizer;
-        }
-
-        public void RecordMovement(Vector3 pos, float delTime)
-        {
-            // TODO: add radius filtering to not record small jitters
-            PathRecord.Add(new Record(pos, delTime));
-            if (PathRecord.Count == 1)
-            {
-                RecordUndoPoint();
-            }
-        }
-
-        public void RecordUndoPoint()
-        {
-            if (PathRecord.Count > 0)
-            {
-                if (UndoPoints.Count == 0)
-                {
-                    UndoPoints.Add(0); // get the first recorded point
-                }
-                else
-                {
-                    UndoPoints.Add(PathRecord.Count - 1);
-                }
-            }
-
-            // code to visualize the last undo point
-
-            //GameObject realCube = GameObject.Find("Cube");
-            //Vector3 pos = PathRecord[UndoPoints[UndoPoints.Count - 1]].Position;
-            //Quaternion rot = PathRecord[UndoPoints[UndoPoints.Count - 1]].Rotation;
-            //GameObject shadow = Instantiate(realCube, pos, rot);
-            //shadow.layer = 1; // the transparent layer that the cursor does not repond to
-            //shadow.GetComponent<Renderer>().material.color = Color.cyan;
-            //SavePointObjects.Add(shadow);
-
-        }
-
-        public void UndoAction()
-        {
-            if (SavePointObjects.Count > 0)
-            {
-                GameObject realCube = GameObject.Find("Cube");
-                GameObject savedCube = SavePointObjects[SavePointObjects.Count - 1];
-                realCube.transform.position = savedCube.transform.position;
-                realCube.transform.rotation = savedCube.transform.rotation;
-                int startIdx = UndoPoints[UndoPoints.Count - 1];
-                PathRecord.RemoveRange(startIdx, PathRecord.Count - startIdx);
-                Destroy(SavePointObjects[SavePointObjects.Count - 1]);
-                SavePointObjects.RemoveAt(SavePointObjects.Count - 1);
-                UndoPoints.RemoveAt(UndoPoints.Count - 1);
-            }
-
-        }
-
-        public void WritePathData()
-        {
-            //string path = @"C:\Users\brown\Documents\Unity\HoloControl\Holobot\data.txt";
-            //if (!File.Exists(path))
-            //{
-            //    File.Create(path); 
-            //}
-            //TextWriter writer = new StreamWriter(path);
-            //writer.WriteLine("dt, sx, sy, sz");
-            //// Debug.Log("Line written");
-            //for (int i = 0; i < PathRecord.Count; i++)
-            //{
-            //    float dt = PathRecord[i].DelTime;
-            //    Vector3 pos = PathRecord[i].Position;
-            //    writer.WriteLine("{0}, {1}, {2}, {3}",
-            //        dt, pos.x, pos.y, pos.z);
-            //}
-            
-
         }
 
         // Private Methods
@@ -285,18 +196,6 @@ namespace Academy.HoloToolkit.Unity
             {
                 focusedObject.SendMessageUpwards("OnSelect", focusedObject);
             }
-        }
-    }
-
-    public class Record
-    {
-        public Vector3 Position { get; private set; }
-        // public Quaternion Rotation { get; private set; }
-        public float DelTime;
-        public Record(Vector3 pos, float dt)
-        {
-            Position = pos;
-            DelTime = dt;
         }
     }
 }
