@@ -268,7 +268,8 @@ PlayerSettings:
   - m_BuildTarget: Metro
     m_Enabled: 1
     m_Devices:
-    - HoloLens
+    - WindowsMR
+    - Vuforia
   m_BuildTargetEnableVuforiaSettings:
   - m_BuildTarget: Metro
     m_Enabled: 1
