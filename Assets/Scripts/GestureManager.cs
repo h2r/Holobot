@@ -21,6 +21,7 @@ namespace Academy.HoloToolkit.Unity
         public Vector3 RobotStart { get; set; }
         public bool HasCalibratedSphere { get; set; }
         public List<Vector3> UnityMotionPlanEndpoints { get; set; }
+        public List<int> GripperCommands { get; set; }
 
         void Awake()
         {
@@ -30,6 +31,8 @@ namespace Academy.HoloToolkit.Unity
             RobotCalibrating = false;
             HasCalibratedSphere = false;
             UnityMotionPlanEndpoints = new List<Vector3>();
+            GripperCommands = new List<int>();
+
             NavigationRecognizer = new GestureRecognizer();
             NavigationRecognizer.SetRecognizableGestures(
                 GestureSettings.Tap |
