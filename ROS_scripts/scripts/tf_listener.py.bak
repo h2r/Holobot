@@ -1,0 +1,67 @@
+import roslib
+import rospy
+import math
+import tf
+import geometry_msgs.msg
+import numpy as np
+
+#rospy.init_node('movo_tf_listener')
+#listener = tf.TransformListener()
+#rate = rospy.Rate(10.0)
+
+start_pos = None
+
+def main():
+    while True:
+        coord = raw_input('Input goal coord: ')
+        goal_coord = extract_coord(coord)
+        print 'Goal:', goal_coord
+        navigate_to_goal(goal_coord)
+
+def extract_coord(input_coord):
+    vals = input_coord.split(',')
+    assert len(vals) == 2
+    coords = np.asarray((float(vals[0]), float(vals[1])))
+    return coords
+
+def coord_is_valid(coord):
+    return isinstance(coord, np.ndarray) and len(coord) == 2
+
+def get_pose_update():
+    counter = 0
+    while counter < 10:
+        try:
+            (trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
+            euler_rot = np.rad2deg(tf.transformations.euler_from_quaternion(rot)[2])
+            assert isinstance(trans, np.ndarray)
+            return trans, euler_rot
+        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+            print 'Pose update failed. Trying again...'
+            counter++
+    return None
+
+def navigate_to_goal(goal_coord):
+    while True:
+        trans, euler_rot = get_pose_update()
+        #try:
+        #    (trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
+        #    euler_rot = np.rad2deg(tf.transformations.euler_from_quaternion(rot)[2])
+        #except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+        #    continue
+        print 'trans:', trans
+        print 'rot:,', euler_rot
+        if start_pos is None:
+            start_pos = trans
+        move_to_goal(start_pos, goal_coord)
+        delta_pos = trans - start_pos
+        if near_goal(delta_pos, goal_coord):
+            break
+        rate.sleep()
+
+def near_goal(coord1, coord2):
+    assert coord_is_valid(coord1) and coord_is_valid(coord2)
+    return np.linalg.norm(coord1-coord2) < 1
+
+
+if __name__ == '__main__':
+    main()
