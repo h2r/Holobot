@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System;
 
-public class TapToPlace : MonoBehaviour
+public class SpatialPlace : MonoBehaviour
 {
     bool placing = false;
+    bool firstPlace = true;
+    int waypoint_ind = 0;
 
     // Called by GazeGestureManager when the user performs a Select gesture
     void OnSelect()
@@ -20,6 +24,16 @@ public class TapToPlace : MonoBehaviour
         {
             SpatialMapping.Instance.DrawVisualMeshes = false;
         }
+        if (!placing && !firstPlace)
+        {
+            waypoint_ind++;
+            GameObject newWaypoint = Instantiate(gameObject);
+            newWaypoint.name = String.Format("Waypoint{0}", waypoint_ind);
+            // TODO: change child text name
+            Debug.Log(String.Format("New Waypoint: {0}", newWaypoint.name));
+            placing = true;
+            SpatialMapping.Instance.DrawVisualMeshes = true;
+        }
     }
 
     // Update is called once per frame
@@ -30,6 +44,10 @@ public class TapToPlace : MonoBehaviour
 
         if (placing)
         {
+            if (firstPlace)
+            {
+                firstPlace = false;
+            }
             // Do a raycast into the world that will only hit the Spatial Mapping mesh.
             var headPosition = Camera.main.transform.position;
             var gazeDirection = Camera.main.transform.forward;
@@ -48,6 +66,10 @@ public class TapToPlace : MonoBehaviour
                 toQuat.z = 0;
                 this.transform.rotation = toQuat;
             }
+            GameObject coord_text_obj = GameObject.Find(String.Format("WaypointCoord{0}", waypoint_ind));
+            Text coord_text = coord_text_obj.GetComponent<Text>();
+            string msg = string.Format("{0}\n({1}, {2})", gameObject.name, Math.Round(gameObject.transform.position.x, 1), Math.Round(gameObject.transform.position.z, 1));
+            coord_text.text = msg;
         }
     }
 }
