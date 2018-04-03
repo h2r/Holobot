@@ -9,11 +9,6 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 import sys
 
-rospy.init_node('movo_tf_listener')
-listener = tf.TransformListener()
-pub = rospy.Publisher('movo/cmd_vel', Twist, queue_size=1)
-rate = rospy.Rate(10.0)
-
 class Pose:
     def __init__(self, x=0.0, y=0.0, theta=0.0):
         self.x = x
@@ -72,7 +67,7 @@ def main():
     try:
         movo = MovoTeleop()
         movo.move2goal()
-    except rospy.ROSInterruptException:
+    except (rospy.ROSInterruptException, KeyboardInterrupt):
         return
 
 if __name__ == '__main__':
