@@ -31,7 +31,7 @@ class MovoTeleop:
         try:
             (trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
             euler_rot = np.rad2deg(tf.transformations.euler_from_quaternion(rot)[2])
-            self.pose.x, self.pose.y = trans
+            self.pose.x, self.pose.y = round(trans[0], 4), round(trans[1], 4)
             self.pos.theta = euler_rot
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             print 'Pose update failed.'
@@ -48,7 +48,8 @@ class MovoTeleop:
         goal_pose.y = input('Set your y goal:')
         distance_tolerance = 0.5
         vel_msg = Twist()
-        while sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2)) >= distance_tolerance:
+        #while sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2)) >= distance_tolerance:
+        while self.get_distance(goal_pose.x, goal_pose.y) >= distance_tolerance:
             # Proportional Controller
             # Linear velocity in the x-axis
             vel_msg.linear.x = 1.5 * sqrt(pow((goal_pose.x - self.pose.x), 2) + pow((goal_pose.y - self.pose.y), 2))
