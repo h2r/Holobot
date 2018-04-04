@@ -686,7 +686,7 @@ GameObject:
   - component: {fileID: 1042786909}
   - component: {fileID: 1042786908}
   m_Layer: 5
-  m_Name: Text
+  m_Name: WaypointCoord0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
