@@ -11,18 +11,8 @@ namespace Academy.HoloToolkit.Unity
 
         void Start()
         {
-            waypointInd = 0;
+            waypointInd = 1;
         }
 
-        public void IncrementInd()
-        {
-            waypointInd++;
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 }

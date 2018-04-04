@@ -17,6 +17,7 @@ namespace Academy.HoloToolkit.Unity
         {
             SpatialMapping.Instance.DrawVisualMeshes = true;
             InitializeWaypoint();
+            Debug.Log(String.Format("{0} initialized!", waypointObj.name));
         }
 
         void InitializeWaypoint()
