@@ -11,20 +11,12 @@ public class SpeechManager : Singleton<SpeechManager>
     public GameObject root;
     private GameObject[] endPointSpheres;
     private bool sentStop;
-    private bool gripperOpen;
     // KeywordRecognizer object.
     KeywordRecognizer keywordRecognizer;
 
     // Defines which function to call when a keyword is recognized.
     delegate void KeywordAction(PhraseRecognizedEventArgs args);
     Dictionary<string, KeywordAction> keywordCollection;
-
-    private enum GripperCommand
-    {
-        CLOSE = 0,
-        OPEN = 1,
-        NONE = 2,
-    }
 
     void Start()
     {
@@ -53,8 +45,6 @@ public class SpeechManager : Singleton<SpeechManager>
         wsc = wso.GetComponent<WebsocketClient>();
         #endif
         wsc.Advertise("ein/" + "right" + "/forth_commands", "std_msgs/String");
-        wsc.SendEinMessage("openGripper", "right"); // gripper always starts open
-        gripperOpen = true;
         wsc.Advertise("dmp_train_data", "std_msgs/String");
     }
 
@@ -89,38 +79,37 @@ public class SpeechManager : Singleton<SpeechManager>
     {
         Debug.Log("GOT START");
         //GameObject.  Find("TrajectoryVisualizer").SetActive(true);
-        if (!GestureManager.Instance.IsRecordingData && GestureManager.Instance.HasCalibratedSphere)
+        if (!GestureManager.Instance.IsRecordingData)
         {
             GestureManager.Instance.IsRecordingData = true;
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.green;
             Vector3 controlSpherePos = GameObject.Find("ControlSphere").transform.position;
             GestureManager.Instance.UnityMotionPlanEndpoints.Add(controlSpherePos);
-            if (gripperOpen)
-            {
-                GestureManager.Instance.GripperCommands.Add((int)GripperCommand.OPEN);
-            } else
-            {
-                GestureManager.Instance.GripperCommands.Add((int)GripperCommand.CLOSE);
-            }
         }
     }
 
     private void NewSkillCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT NEW");
-        if (GestureManager.Instance.IsRecordingData)
+        if (GestureManager.Instance.IsRecordingData && GestureManager.Instance.HasCalibratedSphere)
         {
-            this.SendEOS(GripperCommand.NONE);
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.green;
+            Vector3 controlSpherePos = GameObject.Find("ControlSphere").transform.position;
+            GestureManager.Instance.UnityMotionPlanEndpoints.Add(controlSpherePos);
+            wsc.SendLfdMessage("EOS", "");
         }
     }
 
     private void StopCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT STOP");
-        if (GestureManager.Instance.IsRecordingData)
+        if (GestureManager.Instance.IsRecordingData && GestureManager.Instance.HasCalibratedSphere)
         {
             GestureManager.Instance.IsRecordingData = false;
-            this.SendEOS(GripperCommand.NONE);
+            Vector3 controlSpherePos = GameObject.Find("ControlSphere").transform.position;
+            // add last endpoint
+            GestureManager.Instance.UnityMotionPlanEndpoints.Add(controlSpherePos);
+            wsc.SendLfdMessage("EOS", "");
             sentStop = true;
             // can no longer touch the control sphere
             GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.clear;
@@ -157,8 +146,7 @@ public class SpeechManager : Singleton<SpeechManager>
                     (endPointSpheres[i].transform.position - GestureManager.Instance.RobotOffset)
                     - (root.transform.position - GestureManager.Instance.RobotOffset)
                     );
-                int gripperCommand = GestureManager.Instance.GripperCommands[i];
-                data = data + " " + rosPos.x + " " + rosPos.y + " " + rosPos.z + " " + gripperCommand;
+                data = data + " " + rosPos.x + " " + rosPos.y + " " + rosPos.z;
                 Debug.Log("CURR UNITY LOC: " + endPointSpheres[i].transform.position);
             }
             Debug.Log("EXE " + data);
@@ -168,21 +156,12 @@ public class SpeechManager : Singleton<SpeechManager>
 
     private void OpenCommand(PhraseRecognizedEventArgs args)
     {
-        if(!gripperOpen)
-        {
-            wsc.SendEinMessage("openGripper", "right");
-            gripperOpen = true;
-        }
-        if (GestureManager.Instance.IsRecordingData)
-        {
-            this.SendSupport();
-            this.SendEOS(GripperCommand.OPEN);
-        }
-        
+        wsc.SendEinMessage("openGripper", "right");
     }
 
     private void CloseCommand(PhraseRecognizedEventArgs args)
     {
+<<<<<<< HEAD
         if(gripperOpen)
         {
             wsc.SendEinMessage("closeGripper", "right");
@@ -223,6 +202,9 @@ public class SpeechManager : Singleton<SpeechManager>
         GestureManager.Instance.UnityMotionPlanEndpoints.Add(controlSpherePos);
         GestureManager.Instance.GripperCommands.Add((int)cmd);
         wsc.SendLfdMessage("EOS", "");
+=======
+        wsc.SendEinMessage("closeGripper", "right");
+>>>>>>> parent of 6c52d89... Gripper Code working!
     }
 
     public void Update()
