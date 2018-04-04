@@ -4,7 +4,7 @@ using System;
 
 namespace Academy.HoloToolkit.Unity
 {
-    public class SpatialPlace : MonoBehaviour
+    public class WaypointPlace : MonoBehaviour
     {
         bool placing = true;
         bool waypointPlaced = false;
@@ -27,6 +27,7 @@ namespace Academy.HoloToolkit.Unity
             waypointObj.name = String.Format("Waypoint{0}", waypointInd);
             coordTextObj = waypointObj.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject;
             coordTextObj.name = String.Format("WaypointCoord{0}", waypointInd);
+            WaypointManager.Instance.AddWaypoint(waypointObj);
             WaypointManager.Instance.waypointInd++;
         }
 

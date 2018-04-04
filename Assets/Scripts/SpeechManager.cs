@@ -23,7 +23,6 @@ public class SpeechManager : Singleton<SpeechManager>
         keywordCollection.Add("Rotate", RotateCommand);
         keywordCollection.Add("Start", StartCommand);
         keywordCollection.Add("Stop", StopCommand);
-        keywordCollection.Add("Go back", UndoCommand);
         // Initialize KeywordRecognizer with the previously added keywords.
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
         keywordRecognizer.OnPhraseRecognized += KeywordRecognizer_OnPhraseRecognized;
@@ -65,31 +64,11 @@ public class SpeechManager : Singleton<SpeechManager>
     private void StartCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT START");
-        //GameObject.  Find("TrajectoryVisualizer").SetActive(true);
-        if (!GestureManager.Instance.IsRecordingData)
-        {
-            GestureManager.Instance.IsRecordingData = true;
-        }
     }
 
     private void StopCommand(PhraseRecognizedEventArgs args)
     {
         Debug.Log("GOT STOP");
-        if (GestureManager.Instance.IsRecordingData)
-        {
-            GestureManager.Instance.IsRecordingData = false;
-            GestureManager.Instance.WritePathData();
-        }
-    }
-
-    private void UndoCommand(PhraseRecognizedEventArgs args)
-    {
-        // TODO go back to last undo point
-        Debug.Log("GOT UNDO");
-        if (GestureManager.Instance.IsRecordingData)
-        {
-            GestureManager.Instance.UndoAction();
-        }
     }
 
     public void Update()

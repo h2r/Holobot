@@ -40,7 +40,7 @@ public class TFListener : MonoBehaviour
         //Debug.Log("check");
         // Issue: wsc.messages is empty when it shouldn't be
         // Fix: use try/catch - only run code if wsc is not empty
-        if (GestureManager.Instance.RobotCalibrating)
+        if (GestureManager.Instance.CalibratingRobot)
         {
             return;
         }

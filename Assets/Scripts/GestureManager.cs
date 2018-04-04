@@ -14,25 +14,15 @@ namespace Academy.HoloToolkit.Unity
         public Vector3 NavigationPosition { get; private set; }
         public bool IsManipulating { get; private set; }
         public Vector3 ManipulationPosition { get; private set; }
-        public bool IsRecordingData { get; set; }
-        public List<Record> PathRecord { get; private set; }
-        public List<int> UndoPoints { get; private set; } // list of indicies in Path Record
-        public List<GameObject> SavePointObjects { get; private set; }
-        public Vector3 SphereOffset { get; set; }
         public Vector3 RobotOffset { get; set; }
-        public bool RobotCalibrating { get; set; }
-        public Vector3 RobotStart { get; set; }
+        public bool CalibratingRobot { get; set; }
+        public Vector3 RobotStartPos { get; set; }
 
         void Awake()
         {
-            IsRecordingData = false;
-            PathRecord = new List<Record>();
-            UndoPoints = new List<int>();
-            SavePointObjects = new List<GameObject>();
-            SphereOffset = Vector3.zero;
             RobotOffset = Vector3.zero;
-            RobotStart = Vector3.zero;
-            RobotCalibrating = false;
+            RobotStartPos = Vector3.zero;
+            CalibratingRobot = false;
 
             NavigationRecognizer = new GestureRecognizer();
             NavigationRecognizer.SetRecognizableGestures(
@@ -59,14 +49,6 @@ namespace Academy.HoloToolkit.Unity
             ManipulationRecognizer.ManipulationCanceled += ManipulationRecognizer_ManipulationCanceled;
 
             ResetGestureRecognizers();
-        }
-
-        public void Reset() // Not yet tested
-        {
-            IsRecordingData = false;
-            PathRecord = new List<Record>();
-            UndoPoints = new List<int>();
-            SavePointObjects = new List<GameObject>();
         }
 
         void OnDestroy()
@@ -118,72 +100,6 @@ namespace Academy.HoloToolkit.Unity
 
             newRecognizer.StartCapturingGestures();
             ActiveRecognizer = newRecognizer;
-        }
-
-        public void RecordMovement(Vector3 pos, float delTime)
-        {
-            PathRecord.Add(new Record(pos, delTime));
-            if (PathRecord.Count == 1)
-            {
-                RecordUndoPoint();
-            }
-        }
-
-        public void RecordUndoPoint()
-        {
-            if (PathRecord.Count > 0)
-            {
-                if (UndoPoints.Count == 0)
-                {
-                    UndoPoints.Add(0); // get the first recorded point
-                }
-                else
-                {
-                    UndoPoints.Add(PathRecord.Count - 1);
-                }
-            }
-
-            // code to visualize the last undo point
-
-            //GameObject realCube = GameObject.Find("Cube");
-            //Vector3 pos = PathRecord[UndoPoints[UndoPoints.Count - 1]].Position;
-            //Quaternion rot = PathRecord[UndoPoints[UndoPoints.Count - 1]].Rotation;
-            //GameObject shadow = Instantiate(realCube, pos, rot);
-            //shadow.layer = 1; // the transparent layer that the cursor does not repond to
-            //shadow.GetComponent<Renderer>().material.color = Color.cyan;
-            //SavePointObjects.Add(shadow);
-        }
-
-        public void UndoAction()
-        {
-            if (SavePointObjects.Count > 0)
-            {
-                GameObject realCube = GameObject.Find("Cube");
-                GameObject savedCube = SavePointObjects[SavePointObjects.Count - 1];
-                realCube.transform.position = savedCube.transform.position;
-                realCube.transform.rotation = savedCube.transform.rotation;
-                int startIdx = UndoPoints[UndoPoints.Count - 1];
-                PathRecord.RemoveRange(startIdx, PathRecord.Count - startIdx);
-                Destroy(SavePointObjects[SavePointObjects.Count - 1]);
-                SavePointObjects.RemoveAt(SavePointObjects.Count - 1);
-                UndoPoints.RemoveAt(UndoPoints.Count - 1);
-            }
-
-        }
-
-        public void WritePathData()
-        {
-            var fd = File.CreateText("pleasework.txt");
-            fd.WriteLine("dt, sx, sy, sz");
-            Debug.Log("Line written");
-            for (int i = 0; i < PathRecord.Count; i++)
-            {
-                float dt = PathRecord[i].DelTime;
-                Vector3 pos = PathRecord[i].Position;
-                fd.WriteLine("{0}, {1}, {2}, {3}",
-                    dt, pos.x, pos.y, pos.z);
-                Debug.Log("Line written");
-            }
         }
 
         // Private Methods

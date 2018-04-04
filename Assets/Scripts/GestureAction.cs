@@ -80,28 +80,28 @@ public class GestureAction : MonoBehaviour {
             
             currPos = transform.position;
             //Debug.Log(transform.position);
-            moveArm(); // note this method also records data if we are in recording mode
+            //moveArm(); // note this method also records data if we are in recording mode
         }
     }
 
-    void moveArm() {
-        Vector3 rosPos = UnityToRosPositionAxisConversion((manipulator.transform.position 
-            - GestureManager.Instance.RobotOffset) // before: SphereOffset 
-            - (root.transform.position 
-            - GestureManager.Instance.RobotOffset)); // - robot calib offset
-        //rosPos.x = 0.662f;
-        //rosPos.y = -0.48f;
-        //rosPos.z = 0.611f;
-        string message = rosPos.x + " " + rosPos.y + " " + rosPos.z + " 0 1 0 0 moveToEEPose ";
-        if (GestureManager.Instance.IsRecordingData)
-        {
-            GestureManager.Instance.RecordMovement(rosPos, Time.deltaTime);
-        }
-        Debug.Log(String.Format("Cmd: ({0}, {1}, {2})", rosPos.x, rosPos.y, rosPos.z));
-        //Debug.Log(message);
-        wsc.SendEinMessage(message, "right");
-        // wsc.SendEinMessage(" yUp yUp yUp yUp yUp yUp yUp yUp ", "right");
-    }
+    //void moveArm() {
+    //    Vector3 rosPos = UnityToRosPositionAxisConversion((manipulator.transform.position 
+    //        - GestureManager.Instance.RobotOffset) // before: SphereOffset 
+    //        - (root.transform.position 
+    //        - GestureManager.Instance.RobotOffset)); // - robot calib offset
+    //    //rosPos.x = 0.662f;
+    //    //rosPos.y = -0.48f;
+    //    //rosPos.z = 0.611f;
+    //    string message = rosPos.x + " " + rosPos.y + " " + rosPos.z + " 0 1 0 0 moveToEEPose ";
+    //    if (GestureManager.Instance.IsRecordingData)
+    //    {
+    //        GestureManager.Instance.RecordMovement(rosPos, Time.deltaTime);
+    //    }
+    //    Debug.Log(String.Format("Cmd: ({0}, {1}, {2})", rosPos.x, rosPos.y, rosPos.z));
+    //    //Debug.Log(message);
+    //    wsc.SendEinMessage(message, "right");
+    //    // wsc.SendEinMessage(" yUp yUp yUp yUp yUp yUp yUp yUp ", "right");
+    //}
 
     //void moveArm(float thresh = 0.1f) {
     //    //Debug.Log("moving arm");
