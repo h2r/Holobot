@@ -40,6 +40,7 @@ public class SpeechManager : Singleton<SpeechManager>
         keywordCollection.Add("Plan", ExecuteCommand);
         keywordCollection.Add("Open", OpenCommand);
         keywordCollection.Add("Close", CloseCommand);
+        //keywordCollection.Add("Repeat", RepeatCommand);
 
         // Initialize KeywordRecognizer with the previously added keywords.
         keywordRecognizer = new KeywordRecognizer(keywordCollection.Keys.ToArray());
@@ -193,6 +194,11 @@ public class SpeechManager : Singleton<SpeechManager>
             this.SendEOS(GripperCommand.CLOSE);
         }
     }
+
+    //private void RepeatCommand(PhraseRecognizedEventArgs args)
+    //{
+
+    //}
 
     private void SendSupport()
     {
