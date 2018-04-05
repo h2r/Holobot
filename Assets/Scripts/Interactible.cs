@@ -98,8 +98,11 @@ public class Interactible : MonoBehaviour {
                     - GestureManager.Instance.RobotStart;
                 GestureManager.Instance.HasCalibratedSphere = true;
                 GameObject sphere = GameObject.Find("ControlSphere");
+                Color color = Color.cyan;
+                color.a = 0.3f;
+                GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = color;
                 Vector3 init_pos = sphere.transform.position;
-                sphere.transform.position = GameObject.Find("right_gripper_base").transform.position;
+                sphere.transform.position = GameObject.Find("r_gripper_l_fingerPivot").transform.position;
             } else if (firstTime)
             {
                 firstTime = false;

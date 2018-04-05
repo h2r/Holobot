@@ -91,7 +91,9 @@ public class SpeechManager : Singleton<SpeechManager>
         if (!GestureManager.Instance.IsRecordingData && GestureManager.Instance.HasCalibratedSphere)
         {
             GestureManager.Instance.IsRecordingData = true;
-            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.green;
+            Color color = Color.white;
+            color.a = 0.3f;
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = color;
             Vector3 controlSpherePos = GameObject.Find("ControlSphere").transform.position;
             GestureManager.Instance.UnityMotionPlanEndpoints.Add(controlSpherePos);
             if (gripperOpen)
@@ -122,7 +124,9 @@ public class SpeechManager : Singleton<SpeechManager>
             this.SendEOS(GripperCommand.NONE);
             sentStop = true;
             // can no longer touch the control sphere
-            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.clear;
+            Color color = Color.red;
+            color.a = 0.3f;
+            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = color;
             GameObject.Find("ControlSphere").layer = 1;
             int endPointCount = GestureManager.Instance.UnityMotionPlanEndpoints.Count();
             endPointSpheres = new GameObject[endPointCount];
@@ -134,7 +138,10 @@ public class SpeechManager : Singleton<SpeechManager>
                 go.AddComponent<EndPointAction>();
                 go.transform.position = GestureManager.Instance.UnityMotionPlanEndpoints[i];
                 Debug.Log("THIS IS SUPPOSED TO BE THE UNITY LOC OF EP: " + GestureManager.Instance.UnityMotionPlanEndpoints[i]);
-                go.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                go.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                Color white = Color.white;
+                white.a = 0.3f;
+                go.GetComponent<Renderer>().material.color = white;
                 go.layer = 0; // default layer
                 endPointSpheres[i] = go;
             }
@@ -147,11 +154,11 @@ public class SpeechManager : Singleton<SpeechManager>
         if (sentStop)
         {
             string data = "";
-            GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.yellow;
+            // GameObject.Find("ControlSphere").GetComponent<Renderer>().material.color = Color.yellow;
             for(int i=0; i < endPointSpheres.Count(); i++)
             {
-                endPointSpheres[i].layer = 1;
-                GameObject.Find("ControlSphere").layer = 8;
+                // endPointSpheres[i].layer = 1;
+                /// GameObject.Find("ControlSphere").layer = 8;
                 Vector3 rosPos = UnityToRosPositionAxisConversion(
                     (endPointSpheres[i].transform.position - GestureManager.Instance.RobotOffset)
                     - (root.transform.position - GestureManager.Instance.RobotOffset)
