@@ -22,7 +22,7 @@ public class WebsocketClient : UniversalWebsocketClient
 	{
 
         Debug.Log("instantiating websocket");
-        ws = new WebSocket("ws://138.16.160.16:9090");
+        ws = new WebSocket("ws://138.16.160.16:5562");
 
         ws.OnOpen += OnOpenHandler;
 		ws.OnMessage += OnMessageHandler;
@@ -37,7 +37,7 @@ public class WebsocketClient : UniversalWebsocketClient
 	}
 
 
-	public override void Subscribe(string topic, string type, string compression, int throttle_rate)
+	public override void Subscribe(string topic, string type, string compression, int throttle_rate) // "none" compression, 0 throttle_rate
 	{
 		string msg = "{\"op\":\"subscribe\",\"id\":\"subscribe:/" + topic + ":" + counter + "\",\"type\":\"" + type + "\",\"topic\":\"/" + topic + "\",\"compression\":\"" + compression + "\",\"throttle_rate\":" + throttle_rate.ToString() + ",\"queue_length\":0}";
 		Debug.Log (msg);
