@@ -11,8 +11,9 @@ import sys
 
 velocity_publisher = rospy.Publisher('/movo/cmd_vel', Twist, queue_size=10)
 listener = tf.TransformListener()
-max_speed = 0.25
-rotation_tolerance = 0.2
+max_speed = 0.2
+min_speed = 0.1
+rotation_tolerance = 0.05
 distance_tolerance = 0.1
 
 class Pose:
@@ -24,7 +25,7 @@ class Pose:
 class MovoTeleop:
     def __init__(self):
         rospy.init_node('movo_controller', anonymous=True)
-        self.rate = rospy.Rate(10.0)
+        self.rate = rospy.Rate(50.0)
         self.pose = Pose()
         listener = tf.TransformListener()
 
@@ -53,8 +54,15 @@ class MovoTeleop:
         distance = atan2(goal_y - self.pose.y, goal_x - self.pose.x) - self.pose.theta
         return distance
 
+    #def get_rot_distance2(self, goal_x, goal_y, update_pose=True):
+    #    if update_pose:
+    #        self.update_pose()
+    #    return del_angle([np.cos(self.pose.theta), np.sin(self.pose.theta)], [goal_x-self.pose.x, goal_y-self.pose.y])
+
     def calibrate_rotation(self, goal_x, goal_y):
-        while abs(self.get_rot_distance(goal_x, goal_y)) >= rotation_tolerance:
+        rot_dist = self.get_rot_distance(goal_x, goal_y)
+        while abs(rot_dist) >= rotation_tolerance:
+            rot_dist = self.get_rot_distance(goal_x, goal_y)
             # Proportional Controller
             # Linear velocity in the x-axis
             self.vel_msg.linear.x = 0 
@@ -63,24 +71,25 @@ class MovoTeleop:
             # Angular velocity in the z-axis:
             self.vel_msg.angular.x = 0
             self.vel_msg.angular.y = 0
-            self.vel_msg.angular.z = min(2 * (atan2(goal_y - self.pose.y, goal_x - self.pose.x) - self.pose.theta), max_speed)
+            self.vel_msg.angular.z = rot_dist
+            #print 'rot err:', rot_dist #del_angle(unit([np.cos(self.pose.theta), np.sin(self.pose.theta)]), unit([goal_x-self.pose.x, goal_y-self.pose.y]))
             # Publishing our vel_msg
             velocity_publisher.publish(self.vel_msg)
             self.rate.sleep()
 
     def calibrate_distance(self, goal_x, goal_y):
         while self.get_distance(goal_x, goal_y) >= distance_tolerance:
-            if abs(self.get_rot_distance(goal_x, goal_y)) >= rotation_tolerance:
+            if abs(self.get_rot_distance(goal_x, goal_y, update_pose=False)) >= rotation_tolerance:
                 self.calibrate_rotation(goal_x, goal_y)
             # Proportional Controller
             # Linear velocity in the x-axis
-            self.vel_msg.linear.x = min(1.5 * sqrt(pow((goal_x - self.pose.x), 2) + pow((goal_y - self.pose.y), 2)), max_speed)
-            self.vel_msg.linear.y = 0
+            self.vel_msg.linear.x = 1.5 * sqrt(pow((goal_x - self.pose.x), 2) + pow((goal_y - self.pose.y), 2))
+            self.vel_msg.linear.y = 0 
             self.vel_msg.linear.z = 0
             # Angular velocity in the z-axis:
             self.vel_msg.angular.x = 0
             self.vel_msg.angular.y = 0
-            self.vel_msg.angular.z = min(self.get_rot_distance(goal_x, goal_y, update_pose=False), max_speed)
+            self.vel_msg.angular.z = 0
             # Publishing our vel_msg
             velocity_publisher.publish(self.vel_msg)
             self.rate.sleep()
@@ -99,6 +108,21 @@ class MovoTeleop:
         self.vel_msg.angular.z = 0
         velocity_publisher.publish(self.vel_msg)
         #rospy.spin()
+
+def unit(v):
+    v = np.asarray(v)
+    return v / np.linalg.norm(v)
+
+def del_angle(v1, v2):
+    v1 = np.asarray(v1)
+    v2 = np.asarray(v2)
+    u1 = v1 / np.linalg.norm(v1)
+    u2 = v2 / np.linalg.norm(v2)
+    s = np.linalg.norm(np.cross(v1, v2))
+    c = np.dot(v1, v2)
+    return np.arctan2(s, c)
+
+
 
 def main():
     try:
