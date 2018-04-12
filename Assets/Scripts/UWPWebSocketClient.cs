@@ -46,7 +46,7 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
     }
 
 
-    void Publish(string topic, string message) {
+    public override void Publish(string topic, string message) {
         string msg = "{\"op\":\"publish\",\"id\":\"publish:/" + topic + ":" + counter + "\",\"topic\":\"/" + topic + "\",\"msg\":{\"data\":\"" + message + "\"},\"latch\":false}";
         SendAsync(msg);
         counter++;

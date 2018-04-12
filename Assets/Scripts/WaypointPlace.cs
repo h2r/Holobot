@@ -20,15 +20,20 @@ namespace Academy.HoloToolkit.Unity
             Debug.Log(String.Format("{0} initialized!", waypointObj.name));
         }
 
+        private void Reset()
+        {
+            WaypointManager.Instance.ResetWaypoints();
+        }
+
         void InitializeWaypoint()
         {
             waypointObj = gameObject;
-            waypointInd = WaypointManager.Instance.waypointInd;
+            waypointInd = WaypointManager.Instance.WaypointInd;
             waypointObj.name = String.Format("Waypoint{0}", waypointInd);
             coordTextObj = waypointObj.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject;
             coordTextObj.name = String.Format("WaypointCoord{0}", waypointInd);
             WaypointManager.Instance.AddWaypoint(waypointObj);
-            WaypointManager.Instance.waypointInd++;
+            //WaypointManager.Instance.WaypointInd++;
         }
 
         // Called by GazeGestureManager when the user performs a Select gesture

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,22 +7,41 @@ namespace Academy.HoloToolkit.Unity
 {
     public class WaypointManager : Singleton<WaypointManager>
     {
-        public int waypointInd;
-        public List<GameObject> Waypoints { get; private set; }
+        public int WaypointInd { get; set; }
+        public List<Waypoint> Waypoints { get; private set; }
         // Use this for initialization
 
         void Awake()
         {
-            waypointInd = 0;
-            Waypoints = new List<GameObject>();
+            ResetWaypoints();
+        }
+
+        public void ResetWaypoints()
+        {
+            Waypoints = new List<Waypoint>();
+            WaypointInd = 0;
         }
 
         public void AddWaypoint(GameObject waypointObj)
         {
             Debug.Assert(waypointObj != null);
             Debug.Assert(Waypoints != null);
-            Waypoints.Add(waypointObj);
+            Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
+            WaypointInd++;
         }
-
+        
+    }
+    public class Waypoint
+    {
+        public GameObject WaypointObj { get; set; }
+        public Vector2 Coords { get; private set; }
+        public String Name { get; private set; }
+        public Waypoint(GameObject waypointObj, int WaypointInd)
+        {
+            Name = String.Format("Waypoint{0}", WaypointInd);
+            waypointObj.name = Name;
+            WaypointObj = waypointObj;
+            Coords = new Vector2(WaypointObj.transform.position.x, WaypointObj.transform.position.z);
+        }
     }
 }

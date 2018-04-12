@@ -10,6 +10,8 @@ public abstract class UniversalWebsocketClient : MonoBehaviour {
 
     public abstract void Subscribe(string topic, string v1, string v2, int v3);
 
+    public abstract void Publish(string topic, string message);
+
     public abstract void Advertise(string v1, string v2);
 
     public abstract void SendEinMessage(string v1, string v2);

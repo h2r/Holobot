@@ -60,7 +60,7 @@ public class WebsocketClient : UniversalWebsocketClient
 
 	}
 
-	public void Publish(string topic, string message)
+	public override void Publish(string topic, string message)
 	{
 		string msg = "{\"op\":\"publish\",\"id\":\"publish:/" + topic + ":" + counter + "\",\"topic\":\"/" + topic + "\",\"msg\":{\"data\":\"" + message + "\"},\"latch\":false}";
 		ws.SendAsync(msg, OnSendComplete);
@@ -73,13 +73,16 @@ public class WebsocketClient : UniversalWebsocketClient
 	}
     private void OnMessageHandler(object sender, MessageEventArgs e)
 	{
-		string[] input = e.Data.Split (new char[] { ',' }, 2);
-		string topic = input [0].Substring (12).Replace("\"", "");
-		string data = input [1].Split(new string[] { "data" }, StringSplitOptions.None)[1];
-		data = data.Substring (4);
-		data = data.Split('"')[0];
-		messages [topic] = data;
-	}
+        Debug.Log("OnMessageHandler");
+        //string[] input = e.Data.Split (new char[] { ',' }, 2);
+        //string topic = input [0].Substring (12).Replace("\"", "");
+        //string data = input [1].Split(new string[] { "data" }, StringSplitOptions.None)[1];
+        //data = data.Substring (4);
+        //data = data.Split('"')[0];
+        //messages [topic] = data;
+        messages["coord_pub"] = e.Data;
+        Debug.Log(e.Data);
+    }
     private void OnOpenHandler(object sender, System.EventArgs e)
 	{
 		Debug.Log("WebSocket connected!");
@@ -92,7 +95,7 @@ public class WebsocketClient : UniversalWebsocketClient
 
     private void OnSendComplete(bool success)
 	{
-		//Debug.Log("Message sent successfully? " + success);
+		Debug.Log("Message sent successfully? " + success);
 	}
 
 	public bool IsConnected() {

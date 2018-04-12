@@ -20,9 +20,9 @@ namespace Academy.HoloToolkit.Unity
 
         void Awake()
         {
-            RobotOffset = Vector3.zero;
-            RobotStartPos = Vector3.zero;
-            CalibratingRobot = false;
+            //RobotOffset = Vector3.zero;
+            //RobotStartPos = Vector3.zero;
+            //CalibratingRobot = false;
 
             NavigationRecognizer = new GestureRecognizer();
             NavigationRecognizer.SetRecognizableGestures(
@@ -190,15 +190,15 @@ namespace Academy.HoloToolkit.Unity
         }
     }
 
-    public class Record
-    {
-        public Vector3 Position { get; private set; }
-        // public Quaternion Rotation { get; private set; }
-        public float DelTime;
-        public Record(Vector3 pos, float dt)
-        {
-            Position = pos;
-            DelTime = dt;
-        }
-    }
+    //public class Record
+    //{
+    //    public Vector3 Position { get; private set; }
+    //    // public Quaternion Rotation { get; private set; }
+    //    public float DelTime;
+    //    public Record(Vector3 pos, float dt)
+    //    {
+    //        Position = pos;
+    //        DelTime = dt;
+    //    }
+    //}
 }
