@@ -38,6 +38,7 @@ namespace Academy.HoloToolkit.Unity
         public String Name { get; private set; }
         public Waypoint(GameObject waypointObj, int WaypointInd)
         {
+            waypointObj.transform.parent = GameObject.Find("Movo").transform;
             Name = String.Format("Waypoint{0}", WaypointInd);
             waypointObj.name = Name;
             WaypointObj = waypointObj;

@@ -5,12 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Movo2.unity
+    guid: 056a2fed1ed9a4941948a26c817b8831
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/Scenes/HololensVisualization.unity
     guid: c6afb32a4d43a32419497dadd55fc0b7
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Movo.unity
     guid: e78ed3db88dd97745903814c11a66980

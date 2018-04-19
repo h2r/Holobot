@@ -4,18 +4,19 @@ using System;
 
 namespace Academy.HoloToolkit.Unity
 {
-    public class WaypointPlace : MonoBehaviour
+    public class WaypointPlace2 : MonoBehaviour
     {
         bool placing = true;
         bool waypointPlaced = false;
-        int waypointInd;
         GameObject waypointObj;
         GameObject coordTextObj;
         Text coordText;
 
         private void Start()
         {
+            Debug.Log("Start called!");
             SpatialMapping.Instance.DrawVisualMeshes = true;
+            waypointObj = gameObject.transform.GetChild(0).gameObject;
             InitializeWaypoint();
             Debug.Log(String.Format("{0} initialized!", waypointObj.name));
         }
@@ -27,18 +28,21 @@ namespace Academy.HoloToolkit.Unity
 
         void InitializeWaypoint()
         {
-            waypointObj = gameObject;
+            Debug.Log("Initializing!");
             Debug.Log(waypointObj.name);
-            waypointInd = WaypointManager.Instance.WaypointInd;
+            int waypointInd = WaypointManager.Instance.WaypointInd;
             waypointObj.name = String.Format("Waypoint{0}", waypointInd);
             coordTextObj = waypointObj.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject;
             coordTextObj.name = String.Format("WaypointCoord{0}", waypointInd);
             WaypointManager.Instance.AddWaypoint(waypointObj);
+            placing = true;
+            waypointPlaced = false;
         }
 
         // Called by GazeGestureManager when the user performs a Select gesture
         void OnSelect()
         {
+            Debug.Log("Select!");
             // On each Select gesture, toggle whether the user is in placing mode.
             //placing = !placing;
 
@@ -50,8 +54,9 @@ namespace Academy.HoloToolkit.Unity
             //}
             if (waypointPlaced)
             {
-                waypointObj = Instantiate(gameObject);
-                placing = false;
+                waypointObj = Instantiate(gameObject.transform.GetChild(0).gameObject);
+                InitializeWaypoint();
+                Debug.Assert(waypointPlaced == false && placing == true);
             }
         }
 
@@ -60,15 +65,12 @@ namespace Academy.HoloToolkit.Unity
         {
             // If the user is in placing mode,
             // update the placement to match the user's gaze.
-
             if (placing)
             {
-                //Debug.Log(String.Format("Placing Waypoint {0}", waypoint_ind));
-                
+
                 // Do a raycast into the world that will only hit the Spatial Mapping mesh.
                 var headPosition = Camera.main.transform.position;
                 var gazeDirection = Camera.main.transform.forward;
-
                 RaycastHit hitInfo;
                 if (Physics.Raycast(headPosition, gazeDirection, out hitInfo,
                     30.0f, SpatialMapping.PhysicsRaycastMask))
