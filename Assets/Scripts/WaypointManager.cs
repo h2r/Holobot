@@ -65,9 +65,8 @@ namespace Academy.HoloToolkit.Unity {
         public Vector2 GetCoords() {
             Transform robotObj = GameObject.Find("Movo").transform;
             Vector3 relativePos = robotObj.InverseTransformPoint(WaypointObj.transform.position);
-            //double theta = Deg2rad(robotObj.transform.eulerAngles.y);
-            var x_coord = relativePos.x;
-            var y_coord = relativePos.z;
+            var x_coord = -relativePos.z;
+            var y_coord = relativePos.x;
             return new Vector2(x_coord, y_coord);
         }
         public Waypoint(GameObject waypointObj, int WaypointInd) {
