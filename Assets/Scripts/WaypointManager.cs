@@ -15,7 +15,6 @@ namespace Academy.HoloToolkit.Unity {
             WaypointTemplate = GameObject.Find("Waypoint0");
             WaypointTemplate.GetComponent<Renderer>().enabled = false;
             ClearWaypoints();
-            //InitializeWaypoints();
         }
 
         public void ClearWaypoints() {

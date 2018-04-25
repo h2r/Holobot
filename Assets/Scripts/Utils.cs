@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Academy.HoloToolkit.Unity {
     public class Utils : MonoBehaviour {
         public static void RaycastPlace(Camera cam, GameObject obj) {
+            Debug.Assert(SpatialMapping.Instance.DrawVisualMeshes == true);
             // Do a raycast into the world that will only hit the Spatial Mapping mesh.
             var headPosition = cam.transform.position;
             var gazeDirection = cam.transform.forward;
@@ -24,6 +25,9 @@ namespace Academy.HoloToolkit.Unity {
                 //this.transform.rotation = toQuat;
                 obj.transform.rotation = toQuat;
             }
+        }
+        public static void SetSpatialMapping(bool state) {
+            SpatialMapping.Instance.DrawVisualMeshes = state;
         }
     }
 }

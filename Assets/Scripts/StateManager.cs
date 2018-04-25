@@ -9,7 +9,7 @@ namespace Academy.HoloToolkit.Unity {
         public bool RobotCalibrated { get; set; }
         public bool PlacingWaypoints { get; set; }
         public Vector3 RobotStartPos { get; set; }
-        public enum State { CalibratingState, WaypointState, ArmState };
+        public enum State { CalibratingState, WaypointState };
         public State CurrentState;
 
         void Awake() {
@@ -17,26 +17,21 @@ namespace Academy.HoloToolkit.Unity {
             RobotOffset = Vector3.zero;
             RobotStartPos = Vector3.zero;
             RobotCalibrated = true;
-            PlacingWaypoints = false;
+            PlacingWaypoints = true;
             CurrentState = State.CalibratingState;
         }
+
         private void Update() {
+            if (!RobotCalibrated) {
+                CurrentState = State.CalibratingState;
+            }
             if (RobotCalibrated) {
+                PlacingWaypoints = true;
                 CurrentState = State.WaypointState;
                 if (!PlacingWaypoints) {
                     return;
                 }
             }
-        }
-    }
-
-    public class Record {
-        public Vector3 Position { get; private set; }
-        // public Quaternion Rotation { get; private set; }
-        public float DelTime;
-        public Record(Vector3 pos, float dt) {
-            Position = pos;
-            DelTime = dt;
         }
     }
 }
