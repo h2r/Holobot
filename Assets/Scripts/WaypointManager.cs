@@ -21,14 +21,12 @@ namespace Academy.HoloToolkit.Unity {
             WaypointTemplate.GetComponent<Renderer>().enabled = false;
             Waypoints = new List<Waypoint>();
             WaypointInd = 0;
-            StateManager.Instance.PlacingWaypoints = false;
         }
 
         public void InitializeWaypoints() {
             ClearWaypoints();
             WaypointTemplate.GetComponent<Renderer>().enabled = true;
             AddWaypoint();
-            StateManager.Instance.PlacingWaypoints = true;
         }
 
         public GameObject GetCoordTextObj(GameObject waypointObj) {
@@ -66,12 +64,11 @@ namespace Academy.HoloToolkit.Unity {
         }
         public Vector2 GetCoords() {
             Transform robotObj = GameObject.Find("Movo").transform;
-            Vector3 relativePos = robotObj.InverseTransformDirection(WaypointObj.transform.position);
-            double theta = Deg2rad(robotObj.transform.eulerAngles.y);
-            Debug.Assert((theta - 45) < 0.1);
-            var x_coord = relativePos.x * Math.Cos(theta) + relativePos.y * Math.Sin(theta);
-            var y_coord = -relativePos.x * Math.Sin(theta) + relativePos.z * Math.Cos(theta);
-            return new Vector2((float)x_coord, (float)y_coord);
+            Vector3 relativePos = robotObj.InverseTransformPoint(WaypointObj.transform.position);
+            //double theta = Deg2rad(robotObj.transform.eulerAngles.y);
+            var x_coord = relativePos.x;
+            var y_coord = relativePos.z;
+            return new Vector2(x_coord, y_coord);
         }
         public Waypoint(GameObject waypointObj, int WaypointInd) {
             waypointObj.transform.parent = GameObject.Find("Movo").transform;
