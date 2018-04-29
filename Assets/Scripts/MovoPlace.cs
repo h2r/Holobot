@@ -18,9 +18,7 @@ namespace Academy.HoloToolkit.Unity {
 
         // Called by GazeGestureManager when the user performs a Select gesture
         void OnSelect() {
-            Debug.Log("check1");
             if (!robotPlaced) {
-                Debug.Log("check2");
                 robotPlaced = true;
                 StateManager.Instance.RobotCalibrated = true;
                 StateManager.Instance.CurrentState = StateManager.State.WaypointState;

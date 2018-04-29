@@ -22,7 +22,7 @@ public class WebsocketClient : UniversalWebsocketClient
 	{
 
         Debug.Log("instantiating websocket");
-        ws = new WebSocket("ws://138.16.160.16:5562");
+        ws = new WebSocket("ws://138.16.160.211:9090");
 
         ws.OnOpen += OnOpenHandler;
 		ws.OnMessage += OnMessageHandler;
@@ -73,15 +73,17 @@ public class WebsocketClient : UniversalWebsocketClient
 	}
     private void OnMessageHandler(object sender, MessageEventArgs e)
 	{
-        Debug.Log("OnMessageHandler");
-        //string[] input = e.Data.Split (new char[] { ',' }, 2);
-        //string topic = input [0].Substring (12).Replace("\"", "");
+        //Debug.Log("OnMessageHandler");
+        string[] input = e.Data.Split (new char[] { ',' }, 2);
+        string topic = input [0].Substring (12).Replace("\"", "");
+        //Debug.Log(topic);
+        //Debug.Log("TOPIC: " + topic);
         //string data = input [1].Split(new string[] { "data" }, StringSplitOptions.None)[1];
         //data = data.Substring (4);
         //data = data.Split('"')[0];
         //messages [topic] = data;
-        messages["coord_pub"] = e.Data;
-        Debug.Log(e.Data);
+        messages[topic] = e.Data;
+        //Debug.Log(e.Data);
     }
     private void OnOpenHandler(object sender, System.EventArgs e)
 	{
@@ -95,7 +97,7 @@ public class WebsocketClient : UniversalWebsocketClient
 
     private void OnSendComplete(bool success)
 	{
-		Debug.Log("Message sent successfully? " + success);
+		//Debug.Log("Message sent successfully? " + success);
 	}
 
 	public bool IsConnected() {

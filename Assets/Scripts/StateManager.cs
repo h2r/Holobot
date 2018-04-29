@@ -7,8 +7,9 @@ namespace Academy.HoloToolkit.Unity {
     public class StateManager : Singleton<StateManager> {
         public Vector3 RobotOffset { get; set; }
         public bool RobotCalibrated { get; set; }
+        public bool TransitionedToWaypointState { get; set; }
         public Vector3 RobotStartPos { get; set; }
-        public enum State { CalibratingState, WaypointState };
+        public enum State { CalibratingState, WaypointState, NavigatingState };
         public State CurrentState;
 
         void Awake() {
@@ -17,6 +18,7 @@ namespace Academy.HoloToolkit.Unity {
             RobotStartPos = Vector3.zero;
             RobotCalibrated = false;
             CurrentState = State.CalibratingState;
+            TransitionedToWaypointState = false;
         }
 
         private void ParseStates() {
@@ -26,10 +28,10 @@ namespace Academy.HoloToolkit.Unity {
             else {
                 Utils.SetSpatialMapping(false);
             }
-            if (!RobotCalibrated) {
+            if (!RobotCalibrated && CurrentState != State.NavigatingState) {
                 CurrentState = State.CalibratingState;
             }
-            if (RobotCalibrated) {
+            if (RobotCalibrated && CurrentState == State.CalibratingState) {
                 CurrentState = State.WaypointState;
             }
         }
