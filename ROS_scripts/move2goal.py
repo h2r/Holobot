@@ -7,14 +7,9 @@ import numpy as np
 from math import pow, atan2, sqrt
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
+from std_msgs.msg import String
 import sys
 
-velocity_publisher = rospy.Publisher('/movo/cmd_vel', Twist, queue_size=10)
-listener = tf.TransformListener()
-max_speed = 0.2
-min_speed = 0.1
-rotation_tolerance = 0.05
-distance_tolerance = 0.1
 
 class Pose:
     def __init__(self, x=0.0, y=0.0, theta=0.0):
@@ -24,9 +19,9 @@ class Pose:
 
 class MovoTeleop:
     def __init__(self):
-        rospy.init_node('movo_controller', anonymous=True)
         self.rate = rospy.Rate(50.0)
         self.pose = Pose()
+        self.curr_state = 'standby'
         listener = tf.TransformListener()
 
     def update_pose(self):
@@ -54,11 +49,6 @@ class MovoTeleop:
         distance = atan2(goal_y - self.pose.y, goal_x - self.pose.x) - self.pose.theta
         return distance
 
-    #def get_rot_distance2(self, goal_x, goal_y, update_pose=True):
-    #    if update_pose:
-    #        self.update_pose()
-    #    return del_angle([np.cos(self.pose.theta), np.sin(self.pose.theta)], [goal_x-self.pose.x, goal_y-self.pose.y])
-
     def calibrate_rotation(self, goal_x, goal_y):
         rot_dist = self.get_rot_distance(goal_x, goal_y)
         while abs(rot_dist) >= rotation_tolerance:
@@ -76,6 +66,9 @@ class MovoTeleop:
             # Publishing our vel_msg
             velocity_publisher.publish(self.vel_msg)
             self.rate.sleep()
+            print 'current state:', self.curr_state
+            assert(self.curr_state == 'navigating')
+            movo_state_publisher.publish(self.curr_state)
 
     def calibrate_distance(self, goal_x, goal_y):
         while self.get_distance(goal_x, goal_y) >= distance_tolerance:
@@ -93,13 +86,18 @@ class MovoTeleop:
             # Publishing our vel_msg
             velocity_publisher.publish(self.vel_msg)
             self.rate.sleep()
+            assert(self.curr_state == 'navigating')
+            movo_state_publisher.publish(self.curr_state)
 
-    def move2goal(self):
+    def move2goal(self, goal_x, goal_y):
+        assert self.curr_state == 'navigating'
         goal_pose = Pose()
         self.update_pose()
         print 'Curr pose: ({}, {})'.format(self.pose.x, self.pose.y)
-        goal_pose.x = input('Set your x goal:')
-        goal_pose.y = input('Set your y goal:')
+        #goal_pose.x = input('Set your x goal:')
+        #goal_pose.y = input('Set your y goal:')
+        goal_pose.x = goal_x
+        goal_pose.y = goal_y
         self.vel_msg = Twist()
         self.calibrate_rotation(goal_pose.x, goal_pose.y)
         self.calibrate_distance(goal_pose.x, goal_pose.y)
@@ -107,7 +105,6 @@ class MovoTeleop:
         self.vel_msg.linear.x = 0
         self.vel_msg.angular.z = 0
         velocity_publisher.publish(self.vel_msg)
-        #rospy.spin()
 
 def unit(v):
     v = np.asarray(v)
@@ -122,14 +119,47 @@ def del_angle(v1, v2):
     c = np.dot(v1, v2)
     return np.arctan2(s, c)
 
+def waypoint_callback(data):
+    print 'waypoint callback:', data.data
+    coords = data.data.split(';')
+    print 'coords:', coords
+    movo.curr_state = 'navigating'
+    print 'set state to navigating'
+    for coord in coords:
+        coord = coord.split(',')
+        assert len(coord) == 2
+        goal_x = float(coord[0])
+        goal_y = float(coord[1])
+        movo.move2goal(goal_x, goal_y)
+    print 'set state to standby'
+    movo.curr_state = 'standby'
 
+def state_request_callback(data):
+    #print 'state_request_callback'
+    assert (movo.curr_state in ['standby', 'navigating'])
+    movo_state_publisher.publish(movo.curr_state)
 
-def main():
-    try:
-        movo = MovoTeleop()
-        movo.move2goal()
-    except (rospy.ROSInterruptException, KeyboardInterrupt):
-        return
+def poserequest_callback(data):
+    print 'poserequest_callback'
+    movo.update_pose()
+    pose_publisher.publish('{},{},{}'.format(movo.pose.x, movo.pose.y, movo.pos.theta))
 
 if __name__ == '__main__':
-    main()
+    try:
+        listener = tf.TransformListener()
+        max_speed = 0.2
+        min_speed = 0.1
+        rotation_tolerance = 0.05
+        distance_tolerance = 0.1
+        rospy.init_node('movo_controller', anonymous=True)
+        velocity_publisher = rospy.Publisher('/movo/cmd_vel', Twist, queue_size=10)
+        pose_publisher = rospy.Publisher('holocontrol/pose', String, queue_size=10)
+        movo_state_publisher = rospy.Publisher('holocontrol/ros_movo_state_pub', String, queue_size=0)
+        rospy.Subscriber('holocontrol/movo_state_request', String, state_request_callback)
+        rospy.Subscriber('holocontrol/pose_request', String, poserequest_callback)
+        rospy.Subscriber('holocontrol/unity_waypoint_pub', String, waypoint_callback)
+        movo = MovoTeleop()
+        movo.curr_state = 'standby'
+    except (rospy.ROSInterruptException, KeyboardInterrupt):
+        print 'ROS exception :('
+    rospy.spin()
