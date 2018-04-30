@@ -9,6 +9,8 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 from std_msgs.msg import String
 import sys
+import actionlib
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
 
 class Pose:
@@ -24,87 +26,116 @@ class MovoTeleop:
         self.curr_state = 'standby'
         listener = tf.TransformListener()
 
-    def update_pose(self):
-        while not rospy.is_shutdown():
-            try:
-                (trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
-                print 'Trans:', trans
-                z_rot = tf.transformations.euler_from_quaternion(rot)[2]
-                #euler_rot = np.rad2deg(tf.transformations.euler_from_quaternion(rot)[2])
-                self.pose.x, self.pose.y = round(trans[0], 4), round(trans[1], 4)
-                self.pose.theta = z_rot
-                self.rate.sleep()
-                return
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                continue
+    #def update_pose(self):
+    #    while not rospy.is_shutdown():
+    #        try:
+    #            (trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
+    #            print 'Trans:', trans
+    #            z_rot = tf.transformations.euler_from_quaternion(rot)[2]
+    #            #euler_rot = np.rad2deg(tf.transformations.euler_from_quaternion(rot)[2])
+    #            self.pose.x, self.pose.y = round(trans[0], 4), round(trans[1], 4)
+    #            self.pose.theta = z_rot
+    #            self.rate.sleep()
+    #            return
+    #        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+    #            continue
 
-    def get_distance(self, goal_x, goal_y):
-        self.update_pose()
-        distance = sqrt(pow((goal_x - self.pose.x), 2) + pow((goal_y - self.pose.y), 2))
-        return distance
+    #def get_distance(self, goal_x, goal_y):
+    #    self.update_pose()
+    #    distance = sqrt(pow((goal_x - self.pose.x), 2) + pow((goal_y - self.pose.y), 2))
+    #    return distance
 
-    def get_rot_distance(self, goal_x, goal_y, update_pose=True):
-        if update_pose:
-            self.update_pose()
-        distance = atan2(goal_y - self.pose.y, goal_x - self.pose.x) - self.pose.theta
-        return distance
+    #def get_rot_distance(self, goal_x, goal_y, update_pose=True):
+    #    if update_pose:
+    #        self.update_pose()
+    #    distance = atan2(goal_y - self.pose.y, goal_x - self.pose.x) - self.pose.theta
+    #    return distance
 
-    def calibrate_rotation(self, goal_x, goal_y):
-        rot_dist = self.get_rot_distance(goal_x, goal_y)
-        while abs(rot_dist) >= rotation_tolerance:
-            rot_dist = self.get_rot_distance(goal_x, goal_y)
-            # Proportional Controller
-            # Linear velocity in the x-axis
-            self.vel_msg.linear.x = 0 
-            self.vel_msg.linear.y = 0
-            self.vel_msg.linear.z = 0
-            # Angular velocity in the z-axis:
-            self.vel_msg.angular.x = 0
-            self.vel_msg.angular.y = 0
-            self.vel_msg.angular.z = rot_dist
-            #print 'rot err:', rot_dist #del_angle(unit([np.cos(self.pose.theta), np.sin(self.pose.theta)]), unit([goal_x-self.pose.x, goal_y-self.pose.y]))
-            # Publishing our vel_msg
-            velocity_publisher.publish(self.vel_msg)
-            self.rate.sleep()
-            print 'current state:', self.curr_state
-            assert(self.curr_state == 'navigating')
-            movo_state_publisher.publish(self.curr_state)
+    #def calibrate_rotation(self, goal_x, goal_y):
+    #    rot_dist = self.get_rot_distance(goal_x, goal_y)
+    #    while abs(rot_dist) >= rotation_tolerance:
+    #        rot_dist = self.get_rot_distance(goal_x, goal_y)
+    #        # Proportional Controller
+    #        # Linear velocity in the x-axis
+    #        self.vel_msg.linear.x = 0 
+    #        self.vel_msg.linear.y = 0
+    #        self.vel_msg.linear.z = 0
+    #        # Angular velocity in the z-axis:
+    #        self.vel_msg.angular.x = 0
+    #        self.vel_msg.angular.y = 0
+    #        self.vel_msg.angular.z = rot_dist
+    #        #print 'rot err:', rot_dist #del_angle(unit([np.cos(self.pose.theta), np.sin(self.pose.theta)]), unit([goal_x-self.pose.x, goal_y-self.pose.y]))
+    #        # Publishing our vel_msg
+    #        velocity_publisher.publish(self.vel_msg)
+    #        self.rate.sleep()
+    #        print 'current state:', self.curr_state
+    #        assert(self.curr_state == 'navigating')
+    #        movo_state_publisher.publish(self.curr_state)
 
-    def calibrate_distance(self, goal_x, goal_y):
-        while self.get_distance(goal_x, goal_y) >= distance_tolerance:
-            if abs(self.get_rot_distance(goal_x, goal_y, update_pose=False)) >= rotation_tolerance:
-                self.calibrate_rotation(goal_x, goal_y)
-            # Proportional Controller
-            # Linear velocity in the x-axis
-            self.vel_msg.linear.x = 1.5 * sqrt(pow((goal_x - self.pose.x), 2) + pow((goal_y - self.pose.y), 2))
-            self.vel_msg.linear.y = 0 
-            self.vel_msg.linear.z = 0
-            # Angular velocity in the z-axis:
-            self.vel_msg.angular.x = 0
-            self.vel_msg.angular.y = 0
-            self.vel_msg.angular.z = 0
-            # Publishing our vel_msg
-            velocity_publisher.publish(self.vel_msg)
-            self.rate.sleep()
-            assert(self.curr_state == 'navigating')
-            movo_state_publisher.publish(self.curr_state)
+    #def calibrate_distance(self, goal_x, goal_y):
+    #    while self.get_distance(goal_x, goal_y) >= distance_tolerance:
+    #        if abs(self.get_rot_distance(goal_x, goal_y, update_pose=False)) >= rotation_tolerance:
+    #            self.calibrate_rotation(goal_x, goal_y)
+    #        # Proportional Controller
+    #        # Linear velocity in the x-axis
+    #        self.vel_msg.linear.x = 1.5 * sqrt(pow((goal_x - self.pose.x), 2) + pow((goal_y - self.pose.y), 2))
+    #        self.vel_msg.linear.y = 0 
+    #        self.vel_msg.linear.z = 0
+    #        # Angular velocity in the z-axis:
+    #        self.vel_msg.angular.x = 0
+    #        self.vel_msg.angular.y = 0
+    #        self.vel_msg.angular.z = 0
+    #        # Publishing our vel_msg
+    #        velocity_publisher.publish(self.vel_msg)
+    #        self.rate.sleep()
+    #        assert(self.curr_state == 'navigating')
+    #        movo_state_publisher.publish(self.curr_state)
 
+    #def move2goal_(self, goal_x, goal_y):
+    #    assert self.curr_state == 'navigating'
+    #    goal_pose = Pose()
+    #    self.update_pose()
+    #    print 'Curr pose: ({}, {})'.format(self.pose.x, self.pose.y)
+    #    #goal_pose.x = input('Set your x goal:')
+    #    #goal_pose.y = input('Set your y goal:')
+    #    goal_pose.x = goal_x
+    #    goal_pose.y = goal_y
+    #    self.vel_msg = Twist()
+    #    self.calibrate_rotation(goal_pose.x, goal_pose.y)
+    #    self.calibrate_distance(goal_pose.x, goal_pose.y)
+    #    # Stop robot after movement is over
+    #    self.vel_msg.linear.x = 0
+    #    self.vel_msg.angular.z = 0
+    #    velocity_publisher.publish(self.vel_msg)
+    
     def move2goal(self, goal_x, goal_y):
         assert self.curr_state == 'navigating'
-        goal_pose = Pose()
-        self.update_pose()
-        print 'Curr pose: ({}, {})'.format(self.pose.x, self.pose.y)
-        #goal_pose.x = input('Set your x goal:')
-        #goal_pose.y = input('Set your y goal:')
-        goal_pose.x = goal_x
-        goal_pose.y = goal_y
-        self.vel_msg = Twist()
-        self.calibrate_rotation(goal_pose.x, goal_pose.y)
-        self.calibrate_distance(goal_pose.x, goal_pose.y)
-        # Stop robot after movement is over
-        self.vel_msg.linear.x = 0
-        self.vel_msg.angular.z = 0
-        velocity_publisher.publish(self.vel_msg)
+        print 'moving to ({},{})'.format(goal_x, goal_y)
+        try:
+            result = movebase_client(goal_x, goal_y)
+            if result:
+                rospy.loginfo('Goal execution done!')
+        except rospy.ROSInterruptException:
+            rospy.loginfo('Navigation test finished.')
+
+def movebase_client(goal_x, goal_y):
+    client = actionlib.SimpleActionClient('movo_move_base', MoveBaseAction)
+    client.wait_for_server()
+
+    goal = MoveBaseGoal()
+    goal.target_pose.header.frame_id = "map"
+    goal.target_pose.header.stamp = rospy.Time.now()
+    goal.target_pose.pose.position.x = goal_x
+    goal.target_pose.pose.position.y = goal_y
+    goal.target_pose.pose.orientation.w = 1.0
+
+    client.send_goal(goal)
+    wait = client.wait_for_result()
+    if not wait:
+        rospy.logerr("Action server not available!")
+        rospy.signal_shutdown("Action server not available!")
+    else:
+        return client.get_result()
 
 def unit(v):
     v = np.asarray(v)
@@ -150,7 +181,7 @@ if __name__ == '__main__':
         max_speed = 0.2
         min_speed = 0.1
         rotation_tolerance = 0.05
-        distance_tolerance = 0.1
+        distance_tolerance = 0.15
         rospy.init_node('movo_controller', anonymous=True)
         velocity_publisher = rospy.Publisher('/movo/cmd_vel', Twist, queue_size=10)
         pose_publisher = rospy.Publisher('holocontrol/pose', String, queue_size=10)
