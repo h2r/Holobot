@@ -22,7 +22,7 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         public void Disable() {
-            WaypointManager.Instance.ClearWaypoints();
+            //WaypointManager.Instance.ClearWaypoints();
             placingEnabled = false;
         }
 
@@ -37,14 +37,18 @@ namespace Academy.HoloToolkit.Unity {
 
         // Update is called once per frame
         void Update() {
+            if (StateManager.Instance.TransitionedToWaypointState) {
+                Reset();
+                StateManager.Instance.TransitionedToWaypointState = false;
+            }
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 Disable();
                 return;
             }
             if (!placingEnabled) {
-                Reset();
+                //Reset();
             }
-            Debug.Assert(placingEnabled);
+            //Debug.Assert(placingEnabled);
             Debug.Assert(StateManager.Instance.CurrentState == StateManager.State.WaypointState);
             Waypoint curr_waypoint = WaypointManager.Instance.GetLastWaypoint();
             waypointObj = curr_waypoint.WaypointObj;

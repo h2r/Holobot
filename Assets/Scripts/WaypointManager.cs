@@ -8,6 +8,8 @@ namespace Academy.HoloToolkit.Unity {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
         private GameObject WaypointTemplate;
+        //public bool placingEnabled;
+        //public bool waypointPlaced;
         // Use this for initialization
 
         void Awake() {
@@ -47,14 +49,24 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         public Waypoint GetLastWaypoint() {
+            if (Waypoints.Count == 0) {
+                return null;
+            }
             return Waypoints[Waypoints.Count - 1];
         }
 
         private void Update() {
-            
+            if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
+                return;
+            }
+            if (Waypoints.Count == 3) {
+                Waypoints.RemoveAt(Waypoints.Count - 1);
+                StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+            }
         }
 
     }
+
     public class Waypoint {
         public GameObject WaypointObj { get; private set; }
         public GameObject CoordTextObj { get; private set; }
@@ -63,8 +75,8 @@ namespace Academy.HoloToolkit.Unity {
             return (Math.PI / 180) * angle;
         }
         public Vector2 GetCoords() {
-            Transform robotObj = GameObject.Find("Movo").transform;
-            Vector3 relativePos = robotObj.InverseTransformPoint(WaypointObj.transform.position);
+            Transform robotObjTransform = GameObject.Find("Movo").transform;
+            Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
             var x_coord = -relativePos.z;
             var y_coord = relativePos.x;
             return new Vector2(x_coord, y_coord);
