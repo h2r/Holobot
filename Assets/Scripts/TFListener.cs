@@ -11,7 +11,9 @@ public class TFListener : MonoBehaviour {
     private UniversalWebsocketClient wsc;
     private string unityTopic = "holocontrol/unity_waypoint_pub";
     private string movoStateTopic = "holocontrol/ros_movo_state_pub";
+    private string movoPoseTopic = "holocontrol/ros_movo_pose_pub";
     private string movoStateRequestTopic = "holocontrol/movo_state_request";
+    private string movoPoseRequestTopic = "holocontrol/movo_pose_request";
     private bool currentlyNavigating = false;
     private bool hasPublishedWaypoints = false;
 
@@ -26,14 +28,16 @@ public class TFListener : MonoBehaviour {
         wsc = wso.GetComponent<UWPWebSocketClient>();
 #endif
         wsc.Subscribe(movoStateTopic, "std_msgs/String", "none", 0);
+        wsc.Subscribe(movoPoseTopic, "std_msgs/String", "none", 0);
         wsc.Advertise(unityTopic, "std_msgs/String");
         wsc.Advertise(movoStateRequestTopic, "std_msgs/String");
+        wsc.Advertise(movoPoseRequestTopic, "std_msgs/String");
         Debug.Log("Subscribed!");
         currentlyNavigating = false;
         hasPublishedWaypoints = false;
     }
 
-    private string GetMessageFromTopic(string topic_input) {
+    private string GetROSMessage(string topic_input) {
         string[] components = topic_input.Split(':');
         foreach (string component in components) {
             if (component.Contains("\"op\"")) {
@@ -64,6 +68,16 @@ public class TFListener : MonoBehaviour {
         StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
     }
 
+    public string GetMovoPose() {
+        wsc.Publish(movoPoseRequestTopic, "True");
+        return GetROSMessage(wsc.messages[movoPoseTopic]);
+    }
+
+    private string GetMovoState() {
+        wsc.Publish(movoStateRequestTopic, "True");
+        return GetROSMessage(wsc.messages[movoStateTopic]);
+    }
+
     //private void PrintDict(Dictionary<string,string> d) {
     //    foreach (KeyValuePair<string, string> kvp in d) {
     //        Debug.Log(String.Format("Key: {0}, Value: {1}", kvp.Key, kvp.Value));
@@ -71,13 +85,12 @@ public class TFListener : MonoBehaviour {
     //}
 
     void Update() {
-        wsc.Publish(movoStateRequestTopic, "True");
-        string ros_message;
+        string movo_state;
+        string movo_pose;
         try {
-            string ros_output = wsc.messages[movoStateTopic];
-            ros_message = GetMessageFromTopic(ros_output);
-            Debug.Log("Movo state: " + ros_message);
-            Debug.Assert(ros_message == "standby" || ros_message == "navigating");
+            movo_state = GetMovoState();
+            movo_pose = GetMovoPose();
+            Debug.Log("Movo pose: " + movo_pose);
         }
         catch {
             return;
@@ -86,13 +99,13 @@ public class TFListener : MonoBehaviour {
         if (StateManager.Instance.CurrentState != StateManager.State.NavigatingState) {
             return;
         }
-        if (ros_message == "standby" && hasPublishedWaypoints) {
+        if (movo_state == "standby" && hasPublishedWaypoints) {
             currentlyNavigating = false;
             hasPublishedWaypoints = false;
             StateManager.Instance.TransitionedToWaypointState = true;
             StateManager.Instance.CurrentState = StateManager.State.WaypointState;
         }
-        else if (ros_message == "standby" && !currentlyNavigating && !hasPublishedWaypoints) {
+        else if (movo_state == "standby" && !currentlyNavigating && !hasPublishedWaypoints) {
             PublishWaypoints();
         }
     }
