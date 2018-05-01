@@ -67,26 +67,26 @@ namespace Academy.HoloToolkit.Unity {
 
     }
 
-    public class Waypoint {
-        public GameObject WaypointObj { get; private set; }
-        public GameObject CoordTextObj { get; private set; }
-        public String Name { get; private set; }
-        private double Deg2rad(float angle) {
-            return (Math.PI / 180) * angle;
-        }
-        public Vector2 GetCoords() {
-            Transform robotObjTransform = GameObject.Find("Movo").transform;
-            Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
-            var x_coord = -relativePos.z;
-            var y_coord = relativePos.x;
-            return new Vector2(x_coord, y_coord);
-        }
-        public Waypoint(GameObject waypointObj, int WaypointInd) {
-            waypointObj.transform.parent = GameObject.Find("Movo").transform;
-            Name = String.Format("Waypoint{0}", WaypointInd);
-            waypointObj.name = Name;
-            WaypointObj = waypointObj;
-            CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);
-        }
-    }
+    //public class Waypoint {
+    //    public GameObject WaypointObj { get; private set; }
+    //    public GameObject CoordTextObj { get; private set; }
+    //    public String Name { get; private set; }
+    //    private double Deg2rad(float angle) {
+    //        return (Math.PI / 180) * angle;
+    //    }
+    //    public Vector2 GetCoords() {
+    //        Transform robotObjTransform = GameObject.Find("Movo").transform;
+    //        Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
+    //        var x_coord = -relativePos.z;
+    //        var y_coord = relativePos.x;
+    //        return new Vector2(x_coord, y_coord);
+    //    }
+    //    public Waypoint(GameObject waypointObj, int WaypointInd) {
+    //        waypointObj.transform.parent = GameObject.Find("Movo").transform;
+    //        Name = String.Format("Waypoint{0}", WaypointInd);
+    //        waypointObj.name = Name;
+    //        WaypointObj = waypointObj;
+    //        CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);
+    //    }
+    //}
 }
