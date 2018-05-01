@@ -63,10 +63,11 @@ namespace Academy.HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
-            if (Waypoints.Count == 5) {
-                Destroy(GetLastWaypoint().WaypointObj);
-                Waypoints.RemoveAt(Waypoints.Count - 1);
-                StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+            if (Waypoints.Count == 4) {
+                InitializeWaypoints();
+                //Destroy(GetLastWaypoint().WaypointObj);
+                //Waypoints.RemoveAt(Waypoints.Count - 1);
+                //StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
             }
         }
 
