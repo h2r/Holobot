@@ -35,7 +35,8 @@ class MovoTeleop:
                 self.pose.x, self.pose.y = round(trans[0], 4), round(trans[1], 4)
                 self.pose.theta = np.rad2deg(z_rot)
                 self.rate.sleep()
-                return (self.pose.x, self.pos.y, self.pose.theta)
+                #return (self.pose.x, self.pose.y, self.pose.theta)
+                return
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 continue
     
@@ -98,14 +99,14 @@ def waypoint_callback(data):
     movo.curr_state = 'standby'
 
 def state_request_callback(data):
-    #print 'state_request_callback'
+    #print 'state_request_callback:', movo.curr_state
     assert (movo.curr_state in ['standby', 'navigating'])
     movo_state_publisher.publish(movo.curr_state)
 
 def poserequest_callback(data):
-    print 'poserequest_callback'
+    #print 'poserequest_callback'
     movo.update_pose()
-    movo_pose_publisher.publish('{},{},{}'.format(movo.pose.x, movo.pose.y, movo.pos.theta))
+    movo_pose_publisher.publish('{},{},{}'.format(movo.pose.x, movo.pose.y, movo.pose.theta))
 
 if __name__ == '__main__':
     try:
@@ -119,7 +120,7 @@ if __name__ == '__main__':
         movo_state_publisher = rospy.Publisher('holocontrol/ros_movo_state_pub', String, queue_size=0)
         movo_pose_publisher = rospy.Publisher('holocontrol/ros_movo_pose_pub', String, queue_size=0)
         rospy.Subscriber('holocontrol/movo_state_request', String, state_request_callback)
-        rospy.Subscriber('holocontrol/unity_pose_request', String, poserequest_callback)
+        rospy.Subscriber('holocontrol/movo_pose_request', String, poserequest_callback)
         rospy.Subscriber('holocontrol/unity_waypoint_pub', String, waypoint_callback)
         movo = MovoTeleop()
         movo.curr_state = 'standby'
