@@ -18,6 +18,8 @@ namespace Academy.HoloToolkit.Unity {
         private string movoPoseRequestTopic = "holocontrol/movo_pose_request";
         private bool currentlyNavigating = false;
         private bool hasPublishedWaypoints = false;
+        private int frameCounter;
+        private int frameCountStart;
 
         public float scale = 1f;
         // Use this for initialization
@@ -37,6 +39,7 @@ namespace Academy.HoloToolkit.Unity {
             Debug.Log("Subscribed!");
             currentlyNavigating = false;
             hasPublishedWaypoints = false;
+            frameCounter = 0;
         }
 
         private string GetROSMessage(string topic_input) {
@@ -68,6 +71,7 @@ namespace Academy.HoloToolkit.Unity {
             currentlyNavigating = true;
             hasPublishedWaypoints = true;
             StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+            frameCountStart = frameCounter;
         }
 
         public void UpdateMovoROSPose() {
@@ -93,6 +97,7 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         void Update() {
+            frameCounter++;
             try {
                 UpdateMovoROSPose();
                 UpdateMovoState();
@@ -106,6 +111,11 @@ namespace Academy.HoloToolkit.Unity {
             }
 
             if (StateManager.Instance.MovoState == "standby" && hasPublishedWaypoints) {
+                if (frameCounter - frameCountStart < 7) { // Give ROS enough time to receive waypoints
+                    frameCounter++;
+                    return;
+                }
+                frameCounter = 0;
                 currentlyNavigating = false;
                 hasPublishedWaypoints = false;
                 StateManager.Instance.TransitionedToWaypointState = true;
