@@ -51,9 +51,9 @@ namespace Academy.HoloToolkit.Unity {
         void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.CalibratingState) {
                 Debug.Assert(StateManager.Instance.RobotCalibrated == true);
-                //movoObj.transform.position = (StateManager.Instance.MovoROSPose + movoROSToUnityOffset).ToUnityCoords(movoY);
+                movoObj.transform.position = (StateManager.Instance.MovoROSPose + movoROSToUnityOffset).ToUnityCoords(movoY);
                 float theta = StateManager.Instance.MovoROSPose.Theta + movoROSToUnityOffset.Theta;
-                //movoObj.transform.rotation = Quaternion.Euler(0, theta, 0);
+                movoObj.transform.rotation = Quaternion.Euler(0, theta, 0);
                 return;
             }
             if (StateManager.Instance.RobotCalibrated != true) {
