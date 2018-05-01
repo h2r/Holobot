@@ -67,40 +67,44 @@ namespace Academy.HoloToolkit.Unity {
             }
             wsc.Publish(unityTopic, coord_message.TrimEnd(';'));
             Debug.Log("Published: " + coord_message);
-            WaypointManager.Instance.ClearWaypoints();
             currentlyNavigating = true;
             hasPublishedWaypoints = true;
             StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
             frameCountStart = frameCounter;
+            // TODO: Remove
+            // -------------------
+            StateManager.Instance.MovoState = "navigating";
+            // -------------------
         }
 
         public void UpdateMovoROSPose() {
-            wsc.Publish(movoPoseRequestTopic, "True");
-            string ros_msg = wsc.messages[movoPoseTopic];
-            while (ros_msg == null) {
-                Debug.Log("Waiting for message...");
-                ros_msg = wsc.messages[movoPoseTopic];
-            }
-            Debug.Log(ros_msg);
-            List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
-            List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
-            Debug.Assert(pose.Count == 3);
-            StateManager.Instance.MovoROSPose = new Pose(pose[0], pose[1], -pose[2]);
-            Debug.Log("MovoROSPose updated!");
+            //wsc.Publish(movoPoseRequestTopic, "True");
+            //string ros_msg = wsc.messages[movoPoseTopic];
+            //while (ros_msg == null) {
+            //    Debug.Log("Waiting for message...");
+            //    ros_msg = wsc.messages[movoPoseTopic];
+            //}
+            //Debug.Log(ros_msg);
+            //List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
+            //List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
+            //Debug.Assert(pose.Count == 3);
+            //StateManager.Instance.MovoROSPose = new Pose(pose[0], pose[1], -pose[2]);
+            StateManager.Instance.MovoROSPose = new Pose(0, 0, 0);
+            //Debug.Log("MovoROSPose updated!");
         }
 
         private void UpdateMovoState() {
             //Debug.Log("Updating MovoState");
             wsc.Publish(movoStateRequestTopic, "True");
             StateManager.Instance.MovoState = GetROSMessage(wsc.messages[movoStateTopic]);
-            //Debug.Log(StateManager.Instance.MovoState);
+            Debug.Log(StateManager.Instance.MovoState);
         }
 
         void Update() {
             frameCounter++;
             try {
                 UpdateMovoROSPose();
-                UpdateMovoState();
+                //UpdateMovoState();
             }
             catch {
                 return;
@@ -118,6 +122,10 @@ namespace Academy.HoloToolkit.Unity {
                 frameCounter = 0;
                 currentlyNavigating = false;
                 hasPublishedWaypoints = false;
+                // TODO: is this necessary?
+                // ------------------------------------------------
+                WaypointManager.Instance.InitializeWaypoints();
+                // ------------------------------------------------
                 StateManager.Instance.TransitionedToWaypointState = true;
                 StateManager.Instance.CurrentState = StateManager.State.WaypointState;
             }

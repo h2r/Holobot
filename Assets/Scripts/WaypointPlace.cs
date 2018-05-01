@@ -45,9 +45,9 @@ namespace Academy.HoloToolkit.Unity {
                 Disable();
                 return;
             }
-            if (!placingEnabled) {
-                //Reset();
-            }
+            //if (!placingEnabled) {
+            //    //Reset();
+            //}
             //Debug.Assert(placingEnabled);
             Debug.Assert(StateManager.Instance.CurrentState == StateManager.State.WaypointState);
             Waypoint curr_waypoint = WaypointManager.Instance.GetLastWaypoint();

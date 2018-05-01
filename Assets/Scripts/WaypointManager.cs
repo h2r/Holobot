@@ -16,18 +16,21 @@ namespace Academy.HoloToolkit.Unity {
             Debug.Log("Initialized WaypointManager");
             WaypointTemplate = GameObject.Find("Waypoint0");
             WaypointTemplate.GetComponent<Renderer>().enabled = false;
+            Waypoints = new List<Waypoint>();
             ClearWaypoints();
         }
 
         public void ClearWaypoints() {
-            WaypointTemplate.GetComponent<Renderer>().enabled = false;
+            foreach (Waypoint wp in Waypoints) {
+                Destroy(wp.WaypointObj);
+            }
             Waypoints = new List<Waypoint>();
             WaypointInd = 0;
         }
 
         public void InitializeWaypoints() {
             ClearWaypoints();
-            WaypointTemplate.GetComponent<Renderer>().enabled = true;
+            //WaypointTemplate.GetComponent<Renderer>().enabled = true;
             AddWaypoint();
         }
 
@@ -36,7 +39,8 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         public void AddWaypoint() {
-            GameObject waypointObj = WaypointTemplate;
+            GameObject waypointObj = Instantiate(WaypointTemplate);
+            waypointObj.GetComponent<Renderer>().enabled = true; // if doesn't work, enable template then diable immediately after
             if (Waypoints.Count > 0) {
                 waypointObj = Instantiate(GetLastWaypoint().WaypointObj);
             }
@@ -59,7 +63,7 @@ namespace Academy.HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
-            if (Waypoints.Count == 3) {
+            if (Waypoints.Count == 5) {
                 Destroy(GetLastWaypoint().WaypointObj);
                 Waypoints.RemoveAt(Waypoints.Count - 1);
                 StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
