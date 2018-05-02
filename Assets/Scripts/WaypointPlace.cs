@@ -58,7 +58,6 @@ namespace Academy.HoloToolkit.Unity {
             coordText = coordTextObj.GetComponent<Text>();
             Vector2 coords = curr_waypoint.GetCoords();
             string msg = string.Format("{0}\n({1}, {2})", waypointObj.name, Math.Round(coords[0], 1), Math.Round(coords[1], 1));
-            //string msg = string.Format("{0}\n({1}, {2})", waypointObj.name, Math.Round(waypointObj.transform.position.x, 1), Math.Round(waypointObj.transform.position.z, 1));
             coordText.text = msg;
             if (!waypointPlaced) {
                 waypointPlaced = true;

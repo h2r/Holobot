@@ -8,14 +8,12 @@ namespace Academy.HoloToolkit.Unity {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
         private GameObject WaypointTemplate;
-        //public bool placingEnabled;
-        //public bool waypointPlaced;
         // Use this for initialization
 
         void Awake() {
             Debug.Log("Initialized WaypointManager");
             WaypointTemplate = GameObject.Find("Waypoint0");
-            WaypointTemplate.GetComponent<Renderer>().enabled = false;
+            //WaypointTemplate.GetComponent<Renderer>().enabled = false;
             Waypoints = new List<Waypoint>();
             ClearWaypoints();
         }
@@ -64,35 +62,16 @@ namespace Academy.HoloToolkit.Unity {
                 return;
             }
             if (Waypoints.Count == 4) {
-                InitializeWaypoints();
-                //Destroy(GetLastWaypoint().WaypointObj);
-                //Waypoints.RemoveAt(Waypoints.Count - 1);
-                //StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+                if (StateManager.Instance.UnityDebugMode) {
+                    InitializeWaypoints();
+                }
+                else {
+                    Destroy(GetLastWaypoint().WaypointObj);
+                    Waypoints.RemoveAt(Waypoints.Count - 1);
+                    StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+                }
             }
         }
 
     }
-
-    //public class Waypoint {
-    //    public GameObject WaypointObj { get; private set; }
-    //    public GameObject CoordTextObj { get; private set; }
-    //    public String Name { get; private set; }
-    //    private double Deg2rad(float angle) {
-    //        return (Math.PI / 180) * angle;
-    //    }
-    //    public Vector2 GetCoords() {
-    //        Transform robotObjTransform = GameObject.Find("Movo").transform;
-    //        Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
-    //        var x_coord = -relativePos.z;
-    //        var y_coord = relativePos.x;
-    //        return new Vector2(x_coord, y_coord);
-    //    }
-    //    public Waypoint(GameObject waypointObj, int WaypointInd) {
-    //        waypointObj.transform.parent = GameObject.Find("Movo").transform;
-    //        Name = String.Format("Waypoint{0}", WaypointInd);
-    //        waypointObj.name = Name;
-    //        WaypointObj = waypointObj;
-    //        CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);
-    //    }
-    //}
 }

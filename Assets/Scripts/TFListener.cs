@@ -71,29 +71,34 @@ namespace Academy.HoloToolkit.Unity {
             hasPublishedWaypoints = true;
             StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
             frameCountStart = frameCounter;
-            // TODO: Remove
-            // -------------------
-            StateManager.Instance.MovoState = "navigating";
-            // -------------------
+            if (StateManager.Instance.UnityDebugMode) {
+                StateManager.Instance.MovoState = "navigating";
+            }
         }
 
         public void UpdateMovoROSPose() {
-            //wsc.Publish(movoPoseRequestTopic, "True");
-            //string ros_msg = wsc.messages[movoPoseTopic];
-            //while (ros_msg == null) {
-            //    Debug.Log("Waiting for message...");
-            //    ros_msg = wsc.messages[movoPoseTopic];
-            //}
-            //Debug.Log(ros_msg);
-            //List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
-            //List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
-            //Debug.Assert(pose.Count == 3);
-            //StateManager.Instance.MovoROSPose = new Pose(pose[0], pose[1], -pose[2]);
-            StateManager.Instance.MovoROSPose = new Pose(0, 0, 0);
+            if (StateManager.Instance.UnityDebugMode) {
+                StateManager.Instance.MovoROSPose = new Pose(0, 0, 0);
+                return;
+            }
+            wsc.Publish(movoPoseRequestTopic, "True");
+            string ros_msg = wsc.messages[movoPoseTopic];
+            while (ros_msg == null) {
+                Debug.Log("Waiting for message...");
+                ros_msg = wsc.messages[movoPoseTopic];
+            }
+            Debug.Log(ros_msg);
+            List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
+            List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
+            Debug.Assert(pose.Count == 3);
+            StateManager.Instance.MovoROSPose = new Pose(pose[0], pose[1], -pose[2]);
             //Debug.Log("MovoROSPose updated!");
         }
 
         private void UpdateMovoState() {
+            if (StateManager.Instance.UnityDebugMode) {
+                return;
+            }
             //Debug.Log("Updating MovoState");
             wsc.Publish(movoStateRequestTopic, "True");
             StateManager.Instance.MovoState = GetROSMessage(wsc.messages[movoStateTopic]);
@@ -104,7 +109,7 @@ namespace Academy.HoloToolkit.Unity {
             frameCounter++;
             try {
                 UpdateMovoROSPose();
-                //UpdateMovoState();
+                UpdateMovoState();
             }
             catch {
                 return;

@@ -38,13 +38,6 @@ namespace Academy.HoloToolkit.Unity {
             SpatialMapping.Instance.DrawVisualMeshes = state;
         }
 
-        public static Pose ROSToUnityPose(Pose rosPose) {
-            if (StateManager.Instance.MovoROSToUnityOffset == null) {
-                return null;
-            }
-            return rosPose + StateManager.Instance.MovoROSToUnityOffset;
-        }
-
     }
 
     public class Waypoint {

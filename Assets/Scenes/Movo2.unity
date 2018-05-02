@@ -5252,8 +5252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b40488ae653254fa044f43e05cf4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentState: 0
-  MovoState: 
+  UnityDebugMode: 1
 --- !u!1 &2100004717
 GameObject:
   m_ObjectHideFlags: 0

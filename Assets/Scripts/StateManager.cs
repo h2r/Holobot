@@ -6,12 +6,13 @@ namespace Academy.HoloToolkit.Unity {
         public bool RobotCalibrated { get; set; }
         public bool TransitionedToWaypointState { get; set; }
         public enum State { CalibratingState, WaypointState, NavigatingState };
-        public State CurrentState;
+        public State CurrentState { get; set; }
         public Pose MovoROSToUnityOffset { get; set; }
         public Pose MovoUnityToROSOffset { get; set; }
         public Pose MovoROSPose { get; set; }
         public Pose MovoStartPose { get; set; }
-        public string MovoState;
+        public string MovoState { get; set; }
+        public bool UnityDebugMode = true;
 
         void Awake() {
             Debug.Log("Initialized StateManager");
