@@ -13,9 +13,9 @@ namespace Academy.HoloToolkit.Unity {
         void Awake() {
             Debug.Log("Initialized WaypointManager");
             WaypointTemplate = GameObject.Find("Waypoint0");
-            //WaypointTemplate.GetComponent<Renderer>().enabled = false;
             Waypoints = new List<Waypoint>();
-            ClearWaypoints();
+            //ClearWaypoints();
+            InitializeWaypoints();
         }
 
         public void ClearWaypoints() {
@@ -28,7 +28,6 @@ namespace Academy.HoloToolkit.Unity {
 
         public void InitializeWaypoints() {
             ClearWaypoints();
-            //WaypointTemplate.GetComponent<Renderer>().enabled = true;
             AddWaypoint();
         }
 
@@ -38,7 +37,7 @@ namespace Academy.HoloToolkit.Unity {
 
         public void AddWaypoint() {
             GameObject waypointObj = Instantiate(WaypointTemplate);
-            waypointObj.GetComponent<Renderer>().enabled = true; // if doesn't work, enable template then diable immediately after
+            //waypointObj.GetComponent<Renderer>().enabled = true; // if doesn't work, enable template then diable immediately after
             if (Waypoints.Count > 0) {
                 waypointObj = Instantiate(GetLastWaypoint().WaypointObj);
             }

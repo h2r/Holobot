@@ -40,6 +40,9 @@ namespace Academy.HoloToolkit.Unity {
 
         // Called by GazeGestureManager when the user performs a Select gesture
         void OnSelect() {
+            if (StateManager.Instance.CurrentState != StateManager.State.CalibratingState) {
+                return;
+            }
             if (!MovoYSet) {
                 MovoY = movoObj.transform.position.y;
                 MovoYSet = true;

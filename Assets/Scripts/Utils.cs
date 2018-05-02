@@ -55,7 +55,7 @@ namespace Academy.HoloToolkit.Unity {
             return new Vector2(x_coord, y_coord);
         }
         public Waypoint(GameObject waypointObj, int WaypointInd) {
-            waypointObj.transform.parent = GameObject.Find("Movo").transform;
+            //waypointObj.transform.parent = GameObject.Find("Movo").transform;
             Name = String.Format("Waypoint{0}", WaypointInd);
             waypointObj.name = Name;
             WaypointObj = waypointObj;

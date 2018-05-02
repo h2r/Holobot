@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
 
 namespace Academy.HoloToolkit.Unity {
@@ -11,14 +12,14 @@ namespace Academy.HoloToolkit.Unity {
         Text coordText;
 
         private void Start() {
+            Debug.Log("Check");
             Reset();
         }
 
         private void Reset() {
             placingEnabled = true;
             waypointPlaced = false;
-            WaypointManager.Instance.InitializeWaypoints();
-            Debug.Assert(WaypointManager.Instance.Waypoints.Count == 1);
+            //WaypointManager.Instance.InitializeWaypoints();
         }
 
         public void Disable() {
@@ -28,6 +29,7 @@ namespace Academy.HoloToolkit.Unity {
 
         // Called by GazeGestureManager when the user performs a Select gesture
         void OnSelect() {
+            Debug.Log("Selected!");
             if (waypointPlaced) {
                 waypointPlaced = false;
                 WaypointManager.Instance.AddWaypoint();
@@ -52,6 +54,9 @@ namespace Academy.HoloToolkit.Unity {
             Debug.Assert(StateManager.Instance.CurrentState == StateManager.State.WaypointState);
             Waypoint curr_waypoint = WaypointManager.Instance.GetLastWaypoint();
             waypointObj = curr_waypoint.WaypointObj;
+
+            //m_EventSystem.SetSelectedGameObject(waypointObj);
+
             Utils.RaycastPlace(Camera.main, waypointObj);
             coordTextObj = WaypointManager.Instance.GetLastWaypoint().CoordTextObj;
             Debug.Assert(coordTextObj != null);

@@ -172,6 +172,7 @@ namespace Academy.HoloToolkit.Unity
         private void ManipulationRecognizer_Tapped(TappedEventArgs obj)
         {
             GameObject focusedObject = InteractibleManager.Instance.FocusedGameObject;
+            //Debug.Log("Focused object: " + focusedObject.name);
 
             if (focusedObject != null)
             {

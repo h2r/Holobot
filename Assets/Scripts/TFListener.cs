@@ -58,7 +58,6 @@ namespace Academy.HoloToolkit.Unity {
             Debug.Log("Publishing waypoints!");
             List<Waypoint> waypoints = WaypointManager.Instance.Waypoints;
             int num_waypoints = waypoints.Count;
-            Debug.Assert(num_waypoints == 2);
             string coord_message = "";
             foreach (Waypoint waypoint in waypoints) {
                 Vector2 waypoint_coords = waypoint.GetCoords();
