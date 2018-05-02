@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Academy.HoloToolkit.Unity {
     public class Utils : MonoBehaviour {
-        public static void RaycastPlace(Camera cam, GameObject obj, bool flip = false) {
+        public static void RaycastPlace(Camera cam, GameObject obj, bool isMovo = false) {
             Debug.Assert(SpatialMapping.Instance.DrawVisualMeshes == true);
             // Do a raycast into the world that will only hit the Spatial Mapping mesh.
             var headPosition = cam.transform.position;
@@ -25,7 +25,10 @@ namespace Academy.HoloToolkit.Unity {
                 toQuat.z = 0;
                 //this.transform.rotation = toQuat;
                 obj.transform.rotation = toQuat;
-                if (flip) {
+                if (isMovo) {
+                    if (MovoPlace.MovoYSet) {
+                        obj.transform.position = new Vector3(hitInfo.point.x, MovoPlace.MovoY, hitInfo.point.z);
+                    }
                     obj.transform.rotation *= Quaternion.Euler(0, 180, 0);
                 }
             }
