@@ -10,7 +10,8 @@ namespace Academy.HoloToolkit.Unity {
         public Pose MovoROSToUnityOffset { get; set; }
         public Pose MovoUnityToROSOffset { get; set; }
         public Pose MovoROSPose { get; set; }
-        public Pose MovoStartPose { get; set; }
+        public Pose MovoROSStartPose { get; set; }
+        public Pose MovoUnityStartPose { get; set; }
         public string MovoState { get; set; }
         public bool UnityDebugMode = true;
 

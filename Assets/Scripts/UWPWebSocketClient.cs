@@ -19,7 +19,8 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
 #endif
 
     //General variables
-    System.Uri uri = new System.Uri("ws://138.16.160.16:9090");
+    //System.Uri uri = new System.Uri("ws://138.16.160.16:9090");
+    System.Uri uri = new System.Uri("ws://138.16.160.211:9090");
     //public Dictionary<string, string> messages = new Dictionary<string, string>();
     private int counter = 1;
 
@@ -81,12 +82,16 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
         string messageString = messageReader.ReadString(messageReader.UnconsumedBufferLength);
 
         //Add code here to do something with the string that is received.
+  //      string[] input = messageString.Split (new char[] { ',' }, 2);
+		//string topic = input [0].Substring (12).Replace("\"", "");
+		//string data = input [1].Split(new string[] { "data" }, StringSplitOptions.None)[1];
+		//data = data.Substring (4);
+		//data = data.Split('"')[0];
+		//messages [topic] = data;
+        
         string[] input = messageString.Split (new char[] { ',' }, 2);
-		string topic = input [0].Substring (12).Replace("\"", "");
-		string data = input [1].Split(new string[] { "data" }, StringSplitOptions.None)[1];
-		data = data.Substring (4);
-		data = data.Split('"')[0];
-		messages [topic] = data;
+        string topic = input[0].Substring(12).Replace("\"", "");
+        messages[topic] = messageString;
     }
 
     //The Closed event handler

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Academy.HoloToolkit.Unity {
@@ -25,11 +23,8 @@ namespace Academy.HoloToolkit.Unity {
                 toQuat.z = 0;
                 //this.transform.rotation = toQuat;
                 obj.transform.rotation = toQuat;
-                if (isMovo) {
-                    if (MovoPlace.MovoYSet) {
-                        obj.transform.position = new Vector3(hitInfo.point.x, MovoPlace.MovoY, hitInfo.point.z);
-                    }
-                    obj.transform.rotation *= Quaternion.Euler(0, 180, 0);
+                if (isMovo && MovoPlace.MovoYSet) {
+                    obj.transform.position = new Vector3(hitInfo.point.x, MovoPlace.MovoY, hitInfo.point.z);
                 }
             }
         }
@@ -50,12 +45,13 @@ namespace Academy.HoloToolkit.Unity {
         public Vector2 GetCoords() {
             Transform robotObjTransform = GameObject.Find("Movo").transform;
             Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
-            var x_coord = -relativePos.z + StateManager.Instance.MovoUnityToROSOffset.X;
-            var y_coord = relativePos.x + StateManager.Instance.MovoUnityToROSOffset.Y;
+            float delTheta = StateManager.Instance.MovoUnityToROSOffset.Theta;
+            var x_coord = -relativePos.z + StateManager.Instance.MovoROSStartPose.X; //StateManager.Instance.MovoUnityToROSOffset.X;
+            var y_coord = relativePos.x + StateManager.Instance.MovoROSStartPose.Y; // StateManager.Instance.MovoUnityToROSOffset.Y;
+            // TODO: trig!
             return new Vector2(x_coord, y_coord);
         }
         public Waypoint(GameObject waypointObj, int WaypointInd) {
-            //waypointObj.transform.parent = GameObject.Find("Movo").transform;
             Name = String.Format("Waypoint{0}", WaypointInd);
             waypointObj.name = Name;
             WaypointObj = waypointObj;
@@ -80,6 +76,9 @@ namespace Academy.HoloToolkit.Unity {
         }
         public static Pose operator -(Pose pose1, Pose pose2) {
             return new Pose(pose1.X - pose2.X, pose1.Y - pose2.Y, pose1.Theta - pose2.Theta);
+        }
+        public static Pose operator -(Pose pose) {
+            return new Pose(-pose.X, -pose.Y, -pose.Theta);
         }
     }
 }

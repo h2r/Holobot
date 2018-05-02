@@ -36,7 +36,6 @@ namespace Academy.HoloToolkit.Unity {
             wsc.Advertise(unityTopic, "std_msgs/String");
             wsc.Advertise(movoStateRequestTopic, "std_msgs/String");
             wsc.Advertise(movoPoseRequestTopic, "std_msgs/String");
-            Debug.Log("Subscribed!");
             currentlyNavigating = false;
             hasPublishedWaypoints = false;
             frameCounter = 0;
@@ -86,7 +85,7 @@ namespace Academy.HoloToolkit.Unity {
                 Debug.Log("Waiting for message...");
                 ros_msg = wsc.messages[movoPoseTopic];
             }
-            Debug.Log(ros_msg);
+            //Debug.Log(ros_msg);
             List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
             List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
             Debug.Assert(pose.Count == 3);
@@ -101,7 +100,7 @@ namespace Academy.HoloToolkit.Unity {
             //Debug.Log("Updating MovoState");
             wsc.Publish(movoStateRequestTopic, "True");
             StateManager.Instance.MovoState = GetROSMessage(wsc.messages[movoStateTopic]);
-            Debug.Log(StateManager.Instance.MovoState);
+            //Debug.Log(StateManager.Instance.MovoState);
         }
 
         void Update() {

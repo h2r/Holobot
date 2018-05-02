@@ -12,7 +12,6 @@ namespace Academy.HoloToolkit.Unity {
         Text coordText;
 
         private void Start() {
-            Debug.Log("Check");
             Reset();
         }
 
@@ -29,7 +28,6 @@ namespace Academy.HoloToolkit.Unity {
 
         // Called by GazeGestureManager when the user performs a Select gesture
         void OnSelect() {
-            Debug.Log("Selected!");
             if (waypointPlaced) {
                 waypointPlaced = false;
                 WaypointManager.Instance.AddWaypoint();
