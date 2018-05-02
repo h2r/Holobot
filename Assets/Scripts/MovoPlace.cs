@@ -4,9 +4,10 @@ using System;
 
 namespace Academy.HoloToolkit.Unity {
     public class MovoPlace : MonoBehaviour {
-        bool robotPlaced;
-        private float movoY;
-        GameObject movoObj;
+        public static float MovoY;
+        public static bool MovoYSet;
+        private GameObject movoObj;
+        private bool movoPlaced;
         private Pose movoUnityStartPose;
         private Pose movoROSToUnityOffset;
         private Pose movoUnityToROSOffset;
@@ -16,7 +17,8 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         private void Reset() {
-            robotPlaced = false;
+            movoPlaced = false;
+            MovoYSet = false;
             movoObj = GameObject.Find("Movo");
         }
 
@@ -38,9 +40,12 @@ namespace Academy.HoloToolkit.Unity {
 
         // Called by GazeGestureManager when the user performs a Select gesture
         void OnSelect() {
-            if (!robotPlaced) {
-                robotPlaced = true;
-                movoY = movoObj.transform.position.y;
+            if (!MovoYSet) {
+                MovoY = movoObj.transform.position.y;
+                MovoYSet = true;
+            }
+            else if (!movoPlaced) {
+                movoPlaced = true;
                 CalibrateMovo();
                 StateManager.Instance.RobotCalibrated = true;
                 StateManager.Instance.CurrentState = StateManager.State.WaypointState;
@@ -51,14 +56,14 @@ namespace Academy.HoloToolkit.Unity {
         void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.CalibratingState) {
                 Debug.Assert(StateManager.Instance.RobotCalibrated == true);
-                movoObj.transform.position = (StateManager.Instance.MovoROSPose + movoROSToUnityOffset).ToUnityCoords(movoY);
+                movoObj.transform.position = (StateManager.Instance.MovoROSPose + movoROSToUnityOffset).ToUnityCoords(MovoY);
                 float theta = StateManager.Instance.MovoROSPose.Theta + movoROSToUnityOffset.Theta;
                 movoObj.transform.rotation = Quaternion.Euler(0, theta, 0);
                 return;
             }
             if (StateManager.Instance.RobotCalibrated != true) {
                 Debug.Assert(movoObj != null);
-                if (!robotPlaced) {
+                if (!movoPlaced) {
                     Utils.RaycastPlace(Camera.main, movoObj, true);
                 }
             }
