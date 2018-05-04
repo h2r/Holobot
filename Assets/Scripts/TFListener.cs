@@ -87,9 +87,10 @@ namespace Academy.HoloToolkit.Unity {
             }
             //Debug.Log(ros_msg);
             List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
+            //Debug.Log(poseStr);
             List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
             Debug.Assert(pose.Count == 3);
-            StateManager.Instance.MovoROSPose = new Pose(pose[0], pose[1], -pose[2]);
+            StateManager.Instance.MovoROSPose = new Pose(pose[0], pose[1], -pose[2]); // Unity rotation goes clockwise
             //Debug.Log("MovoROSPose updated!");
         }
 
@@ -118,7 +119,7 @@ namespace Academy.HoloToolkit.Unity {
             }
 
             if (StateManager.Instance.MovoState == "standby" && hasPublishedWaypoints) {
-                if (frameCounter - frameCountStart < 7) { // Give ROS enough time to receive waypoints
+                if (frameCounter - frameCountStart < 20) { // Give ROS enough time to receive waypoints
                     frameCounter++;
                     return;
                 }
@@ -129,6 +130,7 @@ namespace Academy.HoloToolkit.Unity {
                 // ------------------------------------------------
                 WaypointManager.Instance.InitializeWaypoints();
                 // ------------------------------------------------
+                Utils.SetSpatialMapping(true);
                 StateManager.Instance.TransitionedToWaypointState = true;
                 StateManager.Instance.CurrentState = StateManager.State.WaypointState;
             }

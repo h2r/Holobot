@@ -23,8 +23,12 @@ namespace Academy.HoloToolkit.Unity {
                 toQuat.z = 0;
                 //this.transform.rotation = toQuat;
                 obj.transform.rotation = toQuat;
-                if (isMovo && MovoPlace.MovoYSet) {
-                    obj.transform.position = new Vector3(hitInfo.point.x, MovoPlace.MovoY, hitInfo.point.z);
+                if (isMovo) {
+                    Debug.Assert(obj.name == "Movo");
+                    obj.transform.rotation *= Quaternion.Euler(0, 180, 0);
+                    if (MovoPlace.MovoYSet) {
+                        obj.transform.position = new Vector3(hitInfo.point.x, MovoPlace.MovoY, hitInfo.point.z);
+                    }
                 }
             }
         }
@@ -45,14 +49,24 @@ namespace Academy.HoloToolkit.Unity {
         public Vector2 GetCoords() {
             Transform robotObjTransform = GameObject.Find("Movo").transform;
             Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
-            float delTheta = StateManager.Instance.MovoUnityToROSOffset.Theta;
-            var x_coord = -relativePos.z + StateManager.Instance.MovoROSStartPose.X; //StateManager.Instance.MovoUnityToROSOffset.X;
-            var y_coord = relativePos.x + StateManager.Instance.MovoROSStartPose.Y; // StateManager.Instance.MovoUnityToROSOffset.Y;
-            // TODO: trig!
+            //float delTheta = StateManager.Instance.MovoUnityToROSOffset.Theta;
+            //Debug.Log(StateManager.Instance.MovoUnityStartPose.Theta);
+            double delTheta = StateManager.Instance.MovoROSStartPose.Theta - StateManager.Instance.MovoUnityStartPose.Theta;
+            delTheta = -(Math.PI / 180) * delTheta; // deg to rad
+            Debug.Log(delTheta);
+            var x_coord = -relativePos.z; // + StateManager.Instance.MovoROSStartPose.X;
+            var y_coord = relativePos.x; // + StateManager.Instance.MovoROSStartPose.Y;
+            // Rotating the coordinates to match ROS coordinate system
+            // ----------------------------------------
+            x_coord = (float)(x_coord * Math.Cos(delTheta) - y_coord * Math.Sin(delTheta));
+            y_coord = (float)(x_coord * Math.Sin(delTheta) + y_coord * Math.Cos(delTheta));
+            // ----------------------------------------
+            x_coord += StateManager.Instance.MovoROSStartPose.X;
+            y_coord += StateManager.Instance.MovoROSStartPose.Y;
             return new Vector2(x_coord, y_coord);
         }
-        public Waypoint(GameObject waypointObj, int WaypointInd) {
-            Name = String.Format("Waypoint{0}", WaypointInd);
+        public Waypoint(GameObject waypointObj, int waypointInd) {
+            Name = String.Format("Waypoint{0}", waypointInd);
             waypointObj.name = Name;
             WaypointObj = waypointObj;
             CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);

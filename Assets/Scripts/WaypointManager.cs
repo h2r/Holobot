@@ -8,6 +8,7 @@ namespace Academy.HoloToolkit.Unity {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
         private GameObject WaypointTemplate;
+        private bool DebugStop;
         // Use this for initialization
 
         void Awake() {
@@ -16,6 +17,7 @@ namespace Academy.HoloToolkit.Unity {
             Waypoints = new List<Waypoint>();
             //ClearWaypoints();
             InitializeWaypoints();
+            DebugStop = false;
         }
 
         public void ClearWaypoints() {
@@ -61,7 +63,7 @@ namespace Academy.HoloToolkit.Unity {
                 return;
             }
             if (Waypoints.Count == 4) {
-                if (StateManager.Instance.UnityDebugMode) {
+                if (StateManager.Instance.UnityDebugMode && false) {
                     InitializeWaypoints();
                 }
                 else {

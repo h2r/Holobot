@@ -28,8 +28,8 @@ namespace Academy.HoloToolkit.Unity {
             StateManager.Instance.MovoUnityStartPose = movoUnityStartPose;
             StateManager.Instance.MovoROSStartPose = StateManager.Instance.MovoROSPose;
             Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
-            StateManager.Instance.MovoROSToUnityOffset = movoUnityStartPose - StateManager.Instance.MovoROSStartPose;
-            StateManager.Instance.MovoUnityToROSOffset = -StateManager.Instance.MovoROSToUnityOffset;
+            //StateManager.Instance.MovoROSToUnityOffset = movoUnityStartPose - StateManager.Instance.MovoROSStartPose;
+            //StateManager.Instance.MovoUnityToROSOffset = -StateManager.Instance.MovoROSToUnityOffset;
         }
 
         // Called by GazeGestureManager when the user performs a Select gesture
@@ -52,6 +52,10 @@ namespace Academy.HoloToolkit.Unity {
         // Update is called once per frame
         void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.CalibratingState) {
+                if (StateManager.Instance.UnityDebugMode) {
+                    return;
+                }
+                //Debug.Log("Updating base_link coords");
                 Debug.Assert(StateManager.Instance.RobotCalibrated == true);
                 //Pose movoROSToUnityOffset = StateManager.Instance.MovoROSToUnityOffset;
                 //movoObj.transform.position = (StateManager.Instance.MovoROSPose + movoROSToUnityOffset).ToUnityCoords(MovoY);
@@ -60,10 +64,9 @@ namespace Academy.HoloToolkit.Unity {
                 Pose movoROSStartPose = StateManager.Instance.MovoROSStartPose;
                 Pose movoROSPose = StateManager.Instance.MovoROSPose;
                 GameObject baseLink = GameObject.Find("base_link");
-                baseLink.transform.localPosition = (movoROSPose - movoROSStartPose).ToUnityCoords(MovoY);
+                baseLink.transform.localPosition = (movoROSPose - movoROSStartPose).ToUnityCoords(0);
                 float theta = movoROSPose.Theta - movoROSStartPose.Theta;
                 baseLink.transform.localRotation = Quaternion.Euler(0, theta, 0);
-                return;
             }
             else if (StateManager.Instance.RobotCalibrated != true) {
                 Debug.Assert(movoObj != null);

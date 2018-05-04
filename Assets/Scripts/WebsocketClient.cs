@@ -22,7 +22,7 @@ public class WebsocketClient : UniversalWebsocketClient
 	{
 
         Debug.Log("instantiating websocket");
-        ws = new WebSocket("ws://138.16.160.211:9090");
+        ws = new WebSocket("ws://138.16.160.216:9090");
 
         ws.OnOpen += OnOpenHandler;
 		ws.OnMessage += OnMessageHandler;
