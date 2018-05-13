@@ -62,7 +62,7 @@ namespace Academy.HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
-            if (Waypoints.Count == 4) {
+            if (Waypoints.Count == 3) {
                 if (StateManager.Instance.UnityDebugMode && false) {
                     InitializeWaypoints();
                 }
