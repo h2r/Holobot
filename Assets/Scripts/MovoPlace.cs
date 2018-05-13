@@ -64,7 +64,7 @@ namespace Academy.HoloToolkit.Unity {
                 Pose movoROSStartPose = StateManager.Instance.MovoROSStartPose;
                 Pose movoROSPose = StateManager.Instance.MovoROSPose;
                 GameObject baseLink = GameObject.Find("base_link");
-                baseLink.transform.localPosition = (movoROSPose - movoROSStartPose).ToUnityCoords(0);
+                baseLink.transform.localPosition = (movoROSPose - movoROSStartPose).ToUnityCoordsMovo(0);
                 float theta = movoROSPose.Theta - movoROSStartPose.Theta;
                 baseLink.transform.localRotation = Quaternion.Euler(0, theta, 0);
             }
