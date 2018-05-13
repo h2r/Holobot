@@ -34,6 +34,7 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         public static void SetSpatialMapping(bool state) {
+            //Debug.Log("Set spatial mapping: " + state);
             SpatialMapping.Instance.DrawVisualMeshes = state;
         }
 
@@ -54,12 +55,12 @@ namespace Academy.HoloToolkit.Unity {
             double delTheta = StateManager.Instance.MovoROSStartPose.Theta - StateManager.Instance.MovoUnityStartPose.Theta;
             delTheta = -(Math.PI / 180) * delTheta; // deg to rad
             Debug.Log(delTheta);
-            var x_coord = -relativePos.z; // + StateManager.Instance.MovoROSStartPose.X;
-            var y_coord = relativePos.x; // + StateManager.Instance.MovoROSStartPose.Y;
+            var x_coord = relativePos.z; // + StateManager.Instance.MovoROSStartPose.X;
+            var y_coord = -relativePos.x; // + StateManager.Instance.MovoROSStartPose.Y;
             // Rotating the coordinates to match ROS coordinate system
             // ----------------------------------------
-            x_coord = (float)(x_coord * Math.Cos(delTheta) - y_coord * Math.Sin(delTheta));
-            y_coord = (float)(x_coord * Math.Sin(delTheta) + y_coord * Math.Cos(delTheta));
+            //x_coord = (float)(x_coord * Math.Cos(delTheta) - y_coord * Math.Sin(delTheta));
+            //y_coord = (float)(x_coord * Math.Sin(delTheta) + y_coord * Math.Cos(delTheta));
             // ----------------------------------------
             x_coord += StateManager.Instance.MovoROSStartPose.X;
             y_coord += StateManager.Instance.MovoROSStartPose.Y;
@@ -82,9 +83,15 @@ namespace Academy.HoloToolkit.Unity {
             Y = y;
             Theta = theta;
         }
-        public Vector3 ToUnityCoords(float unityY) {
-            return new Vector3(Y, unityY, -X);
+        public Vector3 ToUnityCoordsMovo(float unityY) {
+            return new Vector3(-Y, unityY, X);
         }
+        //public Vector3 ToUnityCoords(float unityY, bool flipX = true) {
+        //    if (flipX) {
+        //        return new Vector3(Y, unityY, -X);
+        //    }
+        //    return new Vector3(Y, unityY, X);
+        //}
         public static Pose operator +(Pose pose1, Pose pose2) {
             return new Pose(pose1.X + pose2.X, pose1.Y + pose2.Y, pose1.Theta + pose2.Theta);
         }
