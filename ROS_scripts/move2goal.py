@@ -21,7 +21,7 @@ class Pose:
 
 class MovoTeleop:
     def __init__(self):
-        self.rate = rospy.Rate(50.0)
+        self.rate = rospy.Rate(10.0)
         self.pose = Pose()
         self.curr_state = 'standby'
         listener = tf.TransformListener()
@@ -30,7 +30,7 @@ class MovoTeleop:
         while not rospy.is_shutdown():
             try:
                 (trans, rot) = listener.lookupTransform('/map', '/base_link', rospy.Time(0))
-                print 'Trans:', trans
+                #print 'Trans:', trans
                 z_rot = tf.transformations.euler_from_quaternion(rot)[2]
                 self.pose.x, self.pose.y = round(trans[0], 4), round(trans[1], 4)
                 self.pose.theta = np.rad2deg(z_rot)
