@@ -14,9 +14,9 @@ namespace Academy.HoloToolkit.Unity
         public Vector3 NavigationPosition { get; private set; }
         public bool IsManipulating { get; private set; }
         public Vector3 ManipulationPosition { get; private set; }
-        public Vector3 RobotOffset { get; set; }
-        public bool CalibratingRobot { get; set; }
-        public Vector3 RobotStartPos { get; set; }
+        //public Vector3 RobotOffset { get; set; }
+        //public bool CalibratingRobot { get; set; }
+        //public Vector3 RobotStartPos { get; set; }
 
         void Awake()
         {

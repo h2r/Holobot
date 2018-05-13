@@ -29,15 +29,15 @@ public class RobotCalibration : MonoBehaviour
 
     private void PerformRotation()
     {
-        if (GestureManager.Instance.IsNavigating && !GestureManager.Instance.CalibratingRobot)
-        {
-            // This will help control the amount of rotation.
-            rotationFactor = GestureManager.Instance.NavigationPosition.x * RotationSensitivity;
+        //if (GestureManager.Instance.IsNavigating && !GestureManager.Instance.CalibratingRobot)
+        //{
+        //    // This will help control the amount of rotation.
+        //    rotationFactor = GestureManager.Instance.NavigationPosition.x * RotationSensitivity;
 
-            // transform.Rotate along the Y axis using rotationFactor.
-            transform.Rotate(new Vector3(0, -1 * rotationFactor, 0));
+        //    // transform.Rotate along the Y axis using rotationFactor.
+        //    transform.Rotate(new Vector3(0, -1 * rotationFactor, 0));
 
-        }
+        //}
     }
 
     void PerformManipulationStart(Vector3 position)

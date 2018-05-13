@@ -8,26 +8,28 @@ namespace Academy.HoloToolkit.Unity {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
         private GameObject WaypointTemplate;
-        //public bool placingEnabled;
-        //public bool waypointPlaced;
+        private bool DebugStop;
         // Use this for initialization
 
         void Awake() {
             Debug.Log("Initialized WaypointManager");
             WaypointTemplate = GameObject.Find("Waypoint0");
-            WaypointTemplate.GetComponent<Renderer>().enabled = false;
-            ClearWaypoints();
+            Waypoints = new List<Waypoint>();
+            //ClearWaypoints();
+            InitializeWaypoints();
+            DebugStop = false;
         }
 
         public void ClearWaypoints() {
-            WaypointTemplate.GetComponent<Renderer>().enabled = false;
+            foreach (Waypoint wp in Waypoints) {
+                Destroy(wp.WaypointObj);
+            }
             Waypoints = new List<Waypoint>();
             WaypointInd = 0;
         }
 
         public void InitializeWaypoints() {
             ClearWaypoints();
-            WaypointTemplate.GetComponent<Renderer>().enabled = true;
             AddWaypoint();
         }
 
@@ -36,7 +38,8 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         public void AddWaypoint() {
-            GameObject waypointObj = WaypointTemplate;
+            GameObject waypointObj = Instantiate(WaypointTemplate);
+            //waypointObj.GetComponent<Renderer>().enabled = true; // if doesn't work, enable template then diable immediately after
             if (Waypoints.Count > 0) {
                 waypointObj = Instantiate(GetLastWaypoint().WaypointObj);
             }
@@ -59,34 +62,17 @@ namespace Academy.HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
-            if (Waypoints.Count == 3) {
-                Waypoints.RemoveAt(Waypoints.Count - 1);
-                StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+            if (Waypoints.Count == 4) {
+                if (StateManager.Instance.UnityDebugMode && false) {
+                    InitializeWaypoints();
+                }
+                else {
+                    Destroy(GetLastWaypoint().WaypointObj);
+                    Waypoints.RemoveAt(Waypoints.Count - 1);
+                    StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+                }
             }
         }
 
-    }
-
-    public class Waypoint {
-        public GameObject WaypointObj { get; private set; }
-        public GameObject CoordTextObj { get; private set; }
-        public String Name { get; private set; }
-        private double Deg2rad(float angle) {
-            return (Math.PI / 180) * angle;
-        }
-        public Vector2 GetCoords() {
-            Transform robotObjTransform = GameObject.Find("Movo").transform;
-            Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
-            var x_coord = -relativePos.z;
-            var y_coord = relativePos.x;
-            return new Vector2(x_coord, y_coord);
-        }
-        public Waypoint(GameObject waypointObj, int WaypointInd) {
-            waypointObj.transform.parent = GameObject.Find("Movo").transform;
-            Name = String.Format("Waypoint{0}", WaypointInd);
-            waypointObj.name = Name;
-            WaypointObj = waypointObj;
-            CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);
-        }
     }
 }
