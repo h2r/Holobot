@@ -1,0 +1,9 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <UnityWSASolutionName>Movocontrol</UnityWSASolutionName>
+        <UnityWSASolutionDir>C:\Users\garyc\Documents\Unity\holobot\App2\</UnityWSASolutionDir>
+        <UnityProjectDir>C:\Users\garyc\Documents\Unity\holobot\</UnityProjectDir>
+        <UnityWSAPlayerDir>C:\Program Files\Unity\Editor\Data\PlaybackEngines\MetroSupport\</UnityWSAPlayerDir>
+        <UnityWSAToolsDir>$(UnityWSASolutionDir)Unity\Tools\</UnityWSAToolsDir>
+    </PropertyGroup>
+</Project>

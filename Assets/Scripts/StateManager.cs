@@ -14,6 +14,7 @@ namespace Academy.HoloToolkit.Unity {
         public Pose MovoUnityStartPose { get; set; }
         public string MovoState { get; set; }
         public bool UnityDebugMode = true;
+        public float FloorY = 0; // The y-coordinate of the floor
 
         void Awake() {
             Debug.Log("Initialized StateManager");
@@ -26,12 +27,12 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         private void ParseStates() {
-            if (CurrentState == State.CalibratingState || CurrentState == State.WaypointState) {
-                Utils.SetSpatialMapping(true);
-            }
-            else {
-                Utils.SetSpatialMapping(false);
-            }
+            //if (CurrentState == State.CalibratingState || CurrentState == State.WaypointState) {
+            //    Utils.SetSpatialMapping(true);
+            //}
+            //else {
+            //    Utils.SetSpatialMapping(false);
+            //}
             if (!RobotCalibrated && CurrentState != State.NavigatingState) {
                 CurrentState = State.CalibratingState;
             }

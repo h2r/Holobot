@@ -6,13 +6,9 @@ namespace Academy.HoloToolkit.Unity {
         public static bool MovoYSet;
         private GameObject movoObj;
         private bool movoPlaced;
-        private Pose movoLocalPose; // Update Movo's LOCAL coordinates, then transform to global Unity coords.
+        private Pose movoLocalPose;
 
         private void Start() {
-            Reset();
-        }
-
-        private void Reset() {
             movoPlaced = false;
             MovoYSet = false;
             movoObj = GameObject.Find("Movo");
@@ -65,13 +61,13 @@ namespace Academy.HoloToolkit.Unity {
                 Pose movoROSPose = StateManager.Instance.MovoROSPose;
                 GameObject baseLink = GameObject.Find("base_link");
                 baseLink.transform.localPosition = (movoROSPose - movoROSStartPose).ToUnityCoordsMovo(0);
-                float theta = movoROSPose.Theta - movoROSStartPose.Theta;
-                baseLink.transform.localRotation = Quaternion.Euler(0, theta, 0);
+                float ROSDelTheta = movoROSPose.Theta - movoROSStartPose.Theta;
+                baseLink.transform.localRotation = Quaternion.Euler(0, ROSDelTheta, 0);
             }
             else if (StateManager.Instance.RobotCalibrated != true) {
                 Debug.Assert(movoObj != null);
                 if (!movoPlaced) {
-                    Utils.RaycastPlace(Camera.main, movoObj, true);
+                    //Utils.RaycastPlace(Camera.main, movoObj, true);
                 }
             }
         }

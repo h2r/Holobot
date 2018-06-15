@@ -3,40 +3,40 @@ using UnityEngine;
 
 namespace Academy.HoloToolkit.Unity {
     public class Utils : MonoBehaviour {
-        public static void RaycastPlace(Camera cam, GameObject obj, bool isMovo = false) {
-            Debug.Assert(SpatialMapping.Instance.DrawVisualMeshes == true);
-            // Do a raycast into the world that will only hit the Spatial Mapping mesh.
-            var headPosition = cam.transform.position;
-            var gazeDirection = cam.transform.forward;
+        //public static void RaycastPlace(Camera cam, GameObject obj, bool isMovo = false) {
+        //    Debug.Assert(SpatialMapping.Instance.DrawVisualMeshes == true);
+        //    // Do a raycast into the world that will only hit the Spatial Mapping mesh.
+        //    var headPosition = cam.transform.position;
+        //    var gazeDirection = cam.transform.forward;
 
-            RaycastHit hitInfo;
-            if (Physics.Raycast(headPosition, gazeDirection, out hitInfo,
-                30.0f, SpatialMapping.PhysicsRaycastMask)) {
-                // Move this object's parent object to
-                // where the raycast hit the Spatial Mapping mesh.
-                //this.transform.position = hitInfo.point;
-                obj.transform.position = hitInfo.point;
+        //    RaycastHit hitInfo;
+        //    if (Physics.Raycast(headPosition, gazeDirection, out hitInfo,
+        //        30.0f, SpatialMapping.PhysicsRaycastMask)) {
+        //        // Move this object's parent object to
+        //        // where the raycast hit the Spatial Mapping mesh.
+        //        //this.transform.position = hitInfo.point;
+        //        obj.transform.position = hitInfo.point;
 
-                // Rotate this object's parent object to face the user.
-                Quaternion toQuat = cam.transform.localRotation;
-                toQuat.x = 0;
-                toQuat.z = 0;
-                //this.transform.rotation = toQuat;
-                obj.transform.rotation = toQuat;
-                if (isMovo) {
-                    Debug.Assert(obj.name == "Movo");
-                    obj.transform.rotation *= Quaternion.Euler(0, 180, 0);
-                    if (MovoPlace.MovoYSet) {
-                        obj.transform.position = new Vector3(hitInfo.point.x, MovoPlace.MovoY, hitInfo.point.z);
-                    }
-                }
-            }
-        }
+        //        // Rotate this object's parent object to face the user.
+        //        Quaternion toQuat = cam.transform.localRotation;
+        //        toQuat.x = 0;
+        //        toQuat.z = 0;
+        //        //this.transform.rotation = toQuat;
+        //        obj.transform.rotation = toQuat;
+        //        if (isMovo) {
+        //            Debug.Assert(obj.name == "Movo");
+        //            obj.transform.rotation *= Quaternion.Euler(0, 180, 0);
+        //            if (MovoPlace.MovoYSet) {
+        //                obj.transform.position = new Vector3(hitInfo.point.x, MovoPlace.MovoY, hitInfo.point.z);
+        //            }
+        //        }
+        //    }
+        //}
 
-        public static void SetSpatialMapping(bool state) {
-            //Debug.Log("Set spatial mapping: " + state);
-            SpatialMapping.Instance.DrawVisualMeshes = state;
-        }
+        //public static void SetSpatialMapping(bool state) {
+        //    //Debug.Log("Set spatial mapping: " + state);
+        //    SpatialMapping.Instance.DrawVisualMeshes = state;
+        //}
 
     }
 
@@ -52,15 +52,16 @@ namespace Academy.HoloToolkit.Unity {
             Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
             //float delTheta = StateManager.Instance.MovoUnityToROSOffset.Theta;
             //Debug.Log(StateManager.Instance.MovoUnityStartPose.Theta);
-            double delTheta = StateManager.Instance.MovoROSStartPose.Theta - StateManager.Instance.MovoUnityStartPose.Theta;
-            delTheta = -(Math.PI / 180) * delTheta; // deg to rad
-            Debug.Log(delTheta);
+            //double delTheta = StateManager.Instance.MovoROSStartPose.Theta - StateManager.Instance.MovoUnityStartPose.Theta;
+            double delTheta = -StateManager.Instance.MovoROSStartPose.Theta;
+            //Debug.Log(delTheta);
+            delTheta = (Math.PI / 180) * delTheta; // deg to rad
             var x_coord = relativePos.z; // + StateManager.Instance.MovoROSStartPose.X;
             var y_coord = -relativePos.x; // + StateManager.Instance.MovoROSStartPose.Y;
             // Rotating the coordinates to match ROS coordinate system
             // ----------------------------------------
-            //x_coord = (float)(x_coord * Math.Cos(delTheta) - y_coord * Math.Sin(delTheta));
-            //y_coord = (float)(x_coord * Math.Sin(delTheta) + y_coord * Math.Cos(delTheta));
+            x_coord = (float)(x_coord * Math.Cos(delTheta) - y_coord * Math.Sin(delTheta));
+            y_coord = (float)(x_coord * Math.Sin(delTheta) + y_coord * Math.Cos(delTheta));
             // ----------------------------------------
             x_coord += StateManager.Instance.MovoROSStartPose.X;
             y_coord += StateManager.Instance.MovoROSStartPose.Y;

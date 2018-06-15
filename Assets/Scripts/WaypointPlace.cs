@@ -55,7 +55,7 @@ namespace Academy.HoloToolkit.Unity {
 
             //m_EventSystem.SetSelectedGameObject(waypointObj);
 
-            Utils.RaycastPlace(Camera.main, waypointObj);
+            //Utils.RaycastPlace(Camera.main, waypointObj);
             coordTextObj = WaypointManager.Instance.GetLastWaypoint().CoordTextObj;
             Debug.Assert(coordTextObj != null);
             coordText = coordTextObj.GetComponent<Text>();

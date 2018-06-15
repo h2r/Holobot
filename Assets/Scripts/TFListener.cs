@@ -130,7 +130,7 @@ namespace Academy.HoloToolkit.Unity {
                 // ------------------------------------------------
                 WaypointManager.Instance.InitializeWaypoints();
                 // ------------------------------------------------
-                Utils.SetSpatialMapping(true);
+                //Utils.SetSpatialMapping(true);
                 StateManager.Instance.TransitionedToWaypointState = true;
                 StateManager.Instance.CurrentState = StateManager.State.WaypointState;
             }
