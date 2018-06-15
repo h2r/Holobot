@@ -9,10 +9,9 @@ namespace Academy.HoloToolkit.Unity {
         //public DisplayTrajectoryReceiver DisplayTrajectoryReceiver;
 
         void ISpeechHandler.OnSpeechKeywordRecognized(SpeechEventData eventData) {
-            Debug.Log(eventData.RecognizedText);
+            //Debug.Log(eventData.RecognizedText);
             switch (eventData.RecognizedText.ToLower()) {
                 case "calibrate":
-                    Debug.Log("ayyy");
                     Calibrate();
                     break;
                 case "place":
@@ -23,20 +22,26 @@ namespace Academy.HoloToolkit.Unity {
 
         // Calibrate Movo
         public void Calibrate() {
-            Debug.Log("Calibrating!");
-            GameObject movoObj = GameObject.Find("Movo");
-            StateManager.Instance.FloorY = movoObj.transform.position.y;
-            Vector3 movoUnityPos = movoObj.transform.position;
-            StateManager.Instance.MovoUnityStartPose = new Pose(-movoUnityPos.z, movoUnityPos.x, movoObj.transform.eulerAngles.y);
-            StateManager.Instance.MovoROSStartPose = StateManager.Instance.MovoROSPose;
-            Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
-            StateManager.Instance.RobotCalibrated = true;
-            StateManager.Instance.CurrentState = StateManager.State.WaypointState;
+            if (StateManager.Instance.CurrentState == StateManager.State.CalibratingState) {
+                //Debug.Log("Calibrating!");
+                GameObject movoObj = GameObject.Find("Movo");
+                StateManager.Instance.FloorY = movoObj.transform.position.y;
+                Vector3 movoUnityPos = movoObj.transform.position;
+                StateManager.Instance.MovoUnityStartPose = new Pose(-movoUnityPos.z, movoUnityPos.x, movoObj.transform.eulerAngles.y);
+                StateManager.Instance.MovoROSStartPose = StateManager.Instance.MovoROSPose;
+                Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
+                StateManager.Instance.RobotCalibrated = true;
+                StateManager.Instance.CurrentState = StateManager.State.WaypointState;
+                Utils.InitWaypointPos(Camera.main, WaypointManager.Instance.Waypoints[0].WaypointObj);
+            }
         }
 
         // Place waypoint
         public void Place() {
-
+            if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
+                //Debug.Log("Placing waypoint!");
+                WaypointManager.Instance.AddWaypoint();
+            }
         }
 
         // Sends the goal position to MoveIt

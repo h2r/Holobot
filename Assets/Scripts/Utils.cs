@@ -3,6 +3,15 @@ using UnityEngine;
 
 namespace Academy.HoloToolkit.Unity {
     public class Utils : MonoBehaviour {
+        public static void InitWaypointPos(Camera cam, GameObject obj) {
+            var headPosition = cam.transform.position;
+            var gazeDirection = cam.transform.forward;
+            obj.transform.position = headPosition + gazeDirection * 2.0f;
+            var pos = obj.transform.position;
+            Debug.Assert(StateManager.Instance.FloorY != -99);
+            obj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
+        }
+
         //public static void RaycastPlace(Camera cam, GameObject obj, bool isMovo = false) {
         //    Debug.Assert(SpatialMapping.Instance.DrawVisualMeshes == true);
         //    // Do a raycast into the world that will only hit the Spatial Mapping mesh.

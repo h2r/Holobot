@@ -1,0 +1,18 @@
+[MODE Calibration]
+Drag Movo model over Movo
+"Calibrate"
+[MODE Waypoints]
+Waypoint appears in front of user
+User drags waypoint to desired pose (lock Y position)
+"Place"
+Another waypoint appears in front of user
+User drags waypoint to desired pose
+"Place"
+(repeat)
+"Execute"
+[MODE Navigate]
+(Movo moves through waypoints)
+[MODE Waypoints]
+(Waypoints disappear)
+Waypoint appears in front of user
+(etc)

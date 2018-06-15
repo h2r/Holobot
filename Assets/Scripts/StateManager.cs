@@ -13,8 +13,8 @@ namespace Academy.HoloToolkit.Unity {
         public Pose MovoROSStartPose { get; set; }
         public Pose MovoUnityStartPose { get; set; }
         public string MovoState { get; set; }
-        public bool UnityDebugMode = true;
-        public float FloorY = 0; // The y-coordinate of the floor
+        public bool UnityDebugMode = false;
+        public float FloorY = -99; // The y-coordinate of the floor (initialized to impossible value)
 
         void Awake() {
             Debug.Log("Initialized StateManager");
