@@ -5,45 +5,55 @@ using System;
 
 namespace Academy.HoloToolkit.Unity {
     public class WaypointPlace : MonoBehaviour {
-        bool placingEnabled;
+        //bool placingEnabled;
         bool waypointPlaced;
         GameObject waypointObj;
         GameObject coordTextObj;
         Text coordText;
 
         private void Start() {
+            Debug.Log("WaypointPlace Start()");
             Reset();
         }
 
         private void Reset() {
-            placingEnabled = true;
-            waypointPlaced = false;
+            //placingEnabled = true;
+            //waypointPlaced = false;
+            Debug.Log("WaypointPlace Reset()");
             //WaypointManager.Instance.InitializeWaypoints();
         }
 
         public void Disable() {
             //WaypointManager.Instance.ClearWaypoints();
-            placingEnabled = false;
+            //placingEnabled = false;
         }
 
         // Called by GazeGestureManager when the user performs a Select gesture
-        void OnSelect() {
-            if (waypointPlaced) {
-                waypointPlaced = false;
-                WaypointManager.Instance.AddWaypoint();
-                Debug.Assert(placingEnabled = true);
-            }
-        }
+        //void OnSelect() {
+        //    if (waypointPlaced) {
+        //        waypointPlaced = false;
+        //        WaypointManager.Instance.AddWaypoint();
+        //        Debug.Assert(placingEnabled = true);
+        //    }
+        //}
 
         // Update is called once per frame
         void Update() {
+            //Debug.Log("Update");
             if (StateManager.Instance.TransitionedToWaypointState) {
+                Debug.Log("Transitioned to WaypointState");
                 Reset();
                 StateManager.Instance.TransitionedToWaypointState = false;
             }
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 Disable();
                 return;
+            }
+            // Ensure that all waypoints are at floor level
+            foreach (Waypoint wp in WaypointManager.Instance.Waypoints) {
+                var pos = wp.WaypointObj.transform.position;
+                Debug.Assert(StateManager.Instance.FloorY != -99);
+                wp.WaypointObj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
             }
             //if (!placingEnabled) {
             //    //Reset();
@@ -55,16 +65,17 @@ namespace Academy.HoloToolkit.Unity {
 
             //m_EventSystem.SetSelectedGameObject(waypointObj);
 
-            Utils.RaycastPlace(Camera.main, waypointObj);
+            //Utils.RaycastPlace(Camera.main, waypointObj);
             coordTextObj = WaypointManager.Instance.GetLastWaypoint().CoordTextObj;
             Debug.Assert(coordTextObj != null);
             coordText = coordTextObj.GetComponent<Text>();
             Vector2 coords = curr_waypoint.GetCoords();
             string msg = string.Format("{0}\n({1}, {2})", waypointObj.name, Math.Round(coords[0], 1), Math.Round(coords[1], 1));
             coordText.text = msg;
-            if (!waypointPlaced) {
-                waypointPlaced = true;
-            }
+            //Debug.Log(msg);
+            //if (!waypointPlaced) {
+            //    waypointPlaced = true;
+            //}
         }
     }
 }

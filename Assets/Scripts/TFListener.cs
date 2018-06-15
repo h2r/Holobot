@@ -80,12 +80,13 @@ namespace Academy.HoloToolkit.Unity {
                 return;
             }
             wsc.Publish(movoPoseRequestTopic, "True");
+            Debug.Log("Published PoseRequestTopic");
             string ros_msg = wsc.messages[movoPoseTopic];
             while (ros_msg == null) {
                 Debug.Log("Waiting for message...");
                 ros_msg = wsc.messages[movoPoseTopic];
             }
-            //Debug.Log(ros_msg);
+            Debug.Log(ros_msg);
             List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
             //Debug.Log(poseStr);
             List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
@@ -105,19 +106,21 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         void Update() {
+            Debug.Log("Current state: " + StateManager.Instance.CurrentState);
             frameCounter++;
             try {
                 UpdateMovoROSPose();
                 UpdateMovoState();
             }
             catch {
+                Debug.Log("Bluh");
                 return;
             }
 
             if (StateManager.Instance.CurrentState != StateManager.State.NavigatingState) {
                 return;
             }
-
+            Debug.Log("ay");
             if (StateManager.Instance.MovoState == "standby" && hasPublishedWaypoints) {
                 if (frameCounter - frameCountStart < 20) { // Give ROS enough time to receive waypoints
                     frameCounter++;
@@ -130,11 +133,12 @@ namespace Academy.HoloToolkit.Unity {
                 // ------------------------------------------------
                 WaypointManager.Instance.InitializeWaypoints();
                 // ------------------------------------------------
-                Utils.SetSpatialMapping(true);
+                //Utils.SetSpatialMapping(true);
                 StateManager.Instance.TransitionedToWaypointState = true;
                 StateManager.Instance.CurrentState = StateManager.State.WaypointState;
             }
             else if (StateManager.Instance.MovoState == "standby" && !currentlyNavigating && !hasPublishedWaypoints) {
+                Debug.Log("Check");
                 PublishWaypoints();
             }
         }

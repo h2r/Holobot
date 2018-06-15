@@ -16,6 +16,7 @@ namespace Academy.HoloToolkit.Unity {
             WaypointTemplate = GameObject.Find("Waypoint0");
             Waypoints = new List<Waypoint>();
             //ClearWaypoints();
+            Debug.Log("WaypointManager Awake()");
             InitializeWaypoints();
             DebugStop = false;
         }
@@ -29,6 +30,7 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         public void InitializeWaypoints() {
+            Debug.Log("InitializeWaypoints()");
             ClearWaypoints();
             AddWaypoint();
         }
@@ -38,10 +40,17 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         public void AddWaypoint() {
-            GameObject waypointObj = Instantiate(WaypointTemplate);
-            //waypointObj.GetComponent<Renderer>().enabled = true; // if doesn't work, enable template then diable immediately after
-            if (Waypoints.Count > 0) {
-                waypointObj = Instantiate(GetLastWaypoint().WaypointObj);
+            Debug.Log("AddWaypoint()");
+            GameObject waypointObj = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+            //if (Waypoints.Count == 0) {
+            //    waypointObj = Instantiate(WaypointTemplate);
+            //}
+            ////waypointObj.GetComponent<Renderer>().enabled = true; // if doesn't work, enable template then disable immediately after
+            //else {
+            //    waypointObj = Instantiate(GetLastWaypoint().WaypointObj);
+            //}
+            if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) { // If in WaypointState, then place waypoint in front of user.
+                Utils.InitWaypointPos(Camera.main, waypointObj);
             }
             Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
             WaypointInd++;
@@ -49,6 +58,7 @@ namespace Academy.HoloToolkit.Unity {
             GameObject coordTextObj = GetCoordTextObj(waypointObj);
             Debug.Assert(coordTextObj != null);
             coordTextObj.name = String.Format("WaypointCoord{0}", WaypointInd);
+            //Debug.Log(WaypointManager.Instance.Waypoints.Count + " Waypoints exist.");
         }
 
         public Waypoint GetLastWaypoint() {
@@ -63,7 +73,7 @@ namespace Academy.HoloToolkit.Unity {
                 return;
             }
             if (Waypoints.Count == 3) {
-                if (StateManager.Instance.UnityDebugMode && false) {
+                if (StateManager.Instance.UnityDebugMode) {
                     InitializeWaypoints();
                 }
                 else {

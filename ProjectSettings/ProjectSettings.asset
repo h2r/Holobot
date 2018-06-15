@@ -268,10 +268,10 @@ PlayerSettings:
   - m_BuildTarget: Metro
     m_Enabled: 1
     m_Devices:
-    - HoloLens
+    - WindowsMR
   m_BuildTargetEnableVuforiaSettings:
   - m_BuildTarget: Metro
-    m_Enabled: 1
+    m_Enabled: 0
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   m_TemplateCustomTags: {}
@@ -615,14 +615,14 @@ PlayerSettings:
       HumanInterfaceDevice: False
       InputInjectionBrokered: False
       InternetClient: True
-      InternetClientServer: True
+      InternetClientServer: False
       Location: False
       Microphone: True
       MusicLibrary: False
       Objects3D: False
       PhoneCall: False
       PicturesLibrary: False
-      PrivateNetworkClientServer: True
+      PrivateNetworkClientServer: False
       Proximity: False
       RemovableStorage: False
       SharedUserCertificates: False
@@ -676,6 +676,7 @@ PlayerSettings:
   XboxOneSplashScreen: {fileID: 0}
   XboxOneAllowedProductIds: []
   XboxOnePersistentLocalStorageSize: 0
+  XboxOneXTitleMemory: 8
   xboxOneScriptCompiler: 0
   vrEditorSettings:
     daydream:
