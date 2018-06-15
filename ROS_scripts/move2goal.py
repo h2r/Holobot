@@ -41,17 +41,17 @@ class MovoTeleop:
                 continue
     
 
-    def move2goal(self, goal_x, goal_y):
+    def move2goal(self, goal_x, goal_y, goal_theta):
         assert self.curr_state == 'navigating'
-        print 'moving to ({},{})'.format(goal_x, goal_y)
+        print 'moving to ({},{},{})'.format(goal_x, goal_y, goal_theta)
         try:
-            result = movebase_client(goal_x, goal_y)
+            result = movebase_client(goal_x, goal_y, goal_theta)
             if result:
                 rospy.loginfo('Goal execution done!')
         except rospy.ROSInterruptException:
             rospy.loginfo('Navigation test finished.')
 
-def movebase_client(goal_x, goal_y):
+def movebase_client(goal_x, goal_y, goal_theta):
     client = actionlib.SimpleActionClient('movo_move_base', MoveBaseAction)
     client.wait_for_server()
 
@@ -60,7 +60,12 @@ def movebase_client(goal_x, goal_y):
     goal.target_pose.header.stamp = rospy.Time.now()
     goal.target_pose.pose.position.x = goal_x
     goal.target_pose.pose.position.y = goal_y
+
+    # TODO: input goal_theta as target orientation
+    # -------------------------------------------------------------
     goal.target_pose.pose.orientation.w = 1.0
+    #goal.target_pose.pose.orientation.y = np.deg2rad(goal_theta) # TODO: check if this works.
+    # -------------------------------------------------------------
 
     client.send_goal(goal)
     wait = client.wait_for_result()
@@ -85,16 +90,27 @@ def del_angle(v1, v2):
 
 def waypoint_callback(data):
     print 'waypoint callback:', data.data
-    coords = data.data.split(';')
-    print 'coords:', coords
+    pose = data.data.split(';')
+    print 'pose:', pose
     movo.curr_state = 'navigating'
     print 'set state to navigating'
-    for coord in coords:
-        coord = coord.split(',')
-        assert len(coord) == 2
-        goal_x = float(coord[0])
-        goal_y = float(coord[1])
-        movo.move2goal(goal_x, goal_y)
+    for p in pose:
+        pose_data = p.split(',')
+        assert len(pose_data) == 3
+        goal_x = float(pose_data[0])
+        goal_y = float(pose_data[1])
+        goal_theta = float(pose_data[2])
+        movo.move2goal(goal_x, goal_y, goal_theta)
+    #coords = data.data.split(';')
+    #print 'coords:', coords
+    #movo.curr_state = 'navigating'
+    #print 'set state to navigating'
+    #for coord in coords:
+    #    coord = coord.split(',')
+    #    assert len(coord) == 2
+    #    goal_x = float(coord[0])
+    #    goal_y = float(coord[1])
+    #    movo.move2goal(goal_x, goal_y)
     print 'set state to standby'
     movo.curr_state = 'standby'
 
