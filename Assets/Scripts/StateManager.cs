@@ -12,6 +12,7 @@ namespace Academy.HoloToolkit.Unity {
         public Pose MovoROSPose { get; set; }
         public Pose MovoROSStartPose { get; set; }
         public Pose MovoUnityStartPose { get; set; }
+        public Pose MovoUnityToROSOffset { get; set; }
         public string MovoState { get; set; }
         public bool UnityDebugMode = false;
         public float FloorY = -99; // The y-coordinate of the floor (initialized to impossible value)
