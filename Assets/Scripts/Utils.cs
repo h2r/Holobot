@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity {
-    public class Utils : MonoBehaviour {
+namespace HoloToolkit.Unity {
+//namespace Academy.HoloToolkit.Unity {
+    public class Utils {
         public static void InitWaypointPos(Camera cam, GameObject obj) {
             var headPosition = cam.transform.position;
             var gazeDirection = cam.transform.forward;

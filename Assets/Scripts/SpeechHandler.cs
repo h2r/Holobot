@@ -2,7 +2,8 @@
 using HoloToolkit.Unity.InputModule;
 using RosSharp.RosBridgeClient;
 
-namespace Academy.HoloToolkit.Unity {
+//namespace Academy.HoloToolkit.Unity {
+namespace HoloToolkit.Unity {
     public class SpeechHandler : MonoBehaviour, ISpeechHandler {
 
         //public MoveItGoalPublisher MoveItGoalPublisher;
@@ -14,8 +15,14 @@ namespace Academy.HoloToolkit.Unity {
                 case "calibrate":
                     Calibrate();
                     break;
+                case "move base":
+                    MoveBase();
+                    break;
                 case "place":
                     Place();
+                    break;
+                case "puppet":
+                    ManipulateArms();
                     break;
             }
         }
@@ -37,12 +44,26 @@ namespace Academy.HoloToolkit.Unity {
             }
         }
 
+        public void MoveBase() {
+            if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
+                return;
+            }
+            WaypointManager.Instance.InitializeWaypoints();
+            StateManager.Instance.CurrentState = StateManager.State.WaypointState;
+        }
+
         // Place waypoint
         public void Place() {
-            if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
-                Debug.Log("Placing waypoint!");
-                WaypointManager.Instance.AddWaypoint();
+            if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
+                Debug.Log("\"PLACE\" ERROR: Must be in WaypointState!");
+                return;
             }
+            Debug.Log("Generating waypoint!");
+            WaypointManager.Instance.AddWaypoint();
+        }
+
+        public void ManipulateArms() {
+
         }
 
         // Sends the goal position to MoveIt

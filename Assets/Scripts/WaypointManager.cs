@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity {
+namespace HoloToolkit.Unity {
+//namespace Academy.HoloToolkit.Unity {
     public class WaypointManager : Singleton<WaypointManager> {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
