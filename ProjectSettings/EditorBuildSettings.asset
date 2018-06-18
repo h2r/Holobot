@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Movo2.unity
     guid: 056a2fed1ed9a4941948a26c817b8831
   - enabled: 0
@@ -17,3 +17,6 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Movo.unity
     guid: e78ed3db88dd97745903814c11a66980
+  - enabled: 1
+    path: Assets/Scenes/MovoDeepTeleop.unity
+    guid: 3c78373254b7b1647b1dfe978953d336
