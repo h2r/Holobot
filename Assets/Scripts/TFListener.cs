@@ -5,7 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Academy.HoloToolkit.Unity;
 
-namespace Academy.HoloToolkit.Unity {
+//namespace Academy.HoloToolkit.Unity {
+namespace HoloToolkit.Unity {
     public class TFListener : MonoBehaviour {
 
         //private UWPWebSocketClient UWPwsc;
@@ -123,7 +124,6 @@ namespace Academy.HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.NavigatingState) {
                 return;
             }
-            Debug.Log("ay");
             if (StateManager.Instance.MovoState == "standby" && hasPublishedWaypoints) {
                 if (frameCounter - frameCountStart < 20) { // Give ROS enough time to receive waypoints
                     frameCounter++;
@@ -132,13 +132,14 @@ namespace Academy.HoloToolkit.Unity {
                 frameCounter = 0;
                 currentlyNavigating = false;
                 hasPublishedWaypoints = false;
-                // TODO: is this necessary?
+                // TODO: switch to StandbyState
                 // ------------------------------------------------
-                WaypointManager.Instance.InitializeWaypoints();
+                //WaypointManager.Instance.InitializeWaypoints();
+                StateManager.Instance.CurrentState = StateManager.State.StandbyState;
                 // ------------------------------------------------
                 //Utils.SetSpatialMapping(true);
-                StateManager.Instance.TransitionedToWaypointState = true;
-                StateManager.Instance.CurrentState = StateManager.State.WaypointState;
+                //StateManager.Instance.TransitionedToWaypointState = true;
+                //StateManager.Instance.CurrentState = StateManager.State.WaypointState;
             }
             else if (StateManager.Instance.MovoState == "standby" && !currentlyNavigating && !hasPublishedWaypoints) {
                 Debug.Log("Check");

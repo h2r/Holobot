@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 
-namespace Academy.HoloToolkit.Unity {
+namespace HoloToolkit.Unity {
+//namespace Academy.HoloToolkit.Unity {
     public class WaypointPlace : MonoBehaviour {
         //bool placingEnabled;
         bool waypointPlaced;
@@ -20,7 +21,7 @@ namespace Academy.HoloToolkit.Unity {
             //placingEnabled = true;
             //waypointPlaced = false;
             Debug.Log("WaypointPlace Reset()");
-            //WaypointManager.Instance.InitializeWaypoints();
+            WaypointManager.Instance.InitializeWaypoints();
         }
 
         public void Disable() {
@@ -40,11 +41,11 @@ namespace Academy.HoloToolkit.Unity {
         // Update is called once per frame
         void Update() {
             //Debug.Log("Update");
-            if (StateManager.Instance.TransitionedToWaypointState) {
-                Debug.Log("Transitioned to WaypointState");
-                Reset();
-                StateManager.Instance.TransitionedToWaypointState = false;
-            }
+            //if (StateManager.Instance.TransitionedToWaypointState) {
+            //    Debug.Log("Transitioned to WaypointState");
+            //    Reset();
+            //    StateManager.Instance.TransitionedToWaypointState = false;
+            //}
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 Disable();
                 return;
