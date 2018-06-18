@@ -23,7 +23,7 @@ namespace Academy.HoloToolkit.Unity {
         // Calibrate Movo
         public void Calibrate() {
             if (StateManager.Instance.CurrentState == StateManager.State.CalibratingState) {
-                //Debug.Log("Calibrating!");
+                Debug.Log("Calibrating!");
                 GameObject movoObj = GameObject.Find("Movo");
                 StateManager.Instance.FloorY = movoObj.transform.position.y;
                 Vector3 movoUnityPos = movoObj.transform.position;
@@ -33,13 +33,14 @@ namespace Academy.HoloToolkit.Unity {
                 StateManager.Instance.RobotCalibrated = true;
                 StateManager.Instance.CurrentState = StateManager.State.WaypointState;
                 Utils.InitWaypointPos(Camera.main, WaypointManager.Instance.Waypoints[0].WaypointObj);
+                StateManager.Instance.MovoUnityToROSOffset = StateManager.Instance.MovoROSStartPose - StateManager.Instance.MovoUnityStartPose;
             }
         }
 
         // Place waypoint
         public void Place() {
             if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
-                //Debug.Log("Placing waypoint!");
+                Debug.Log("Placing waypoint!");
                 WaypointManager.Instance.AddWaypoint();
             }
         }
