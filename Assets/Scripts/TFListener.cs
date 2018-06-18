@@ -11,11 +11,11 @@ namespace Academy.HoloToolkit.Unity {
         //private UWPWebSocketClient UWPwsc;
         //private WebsocketClient wsc;
         private UniversalWebsocketClient wsc;
-        private string unityTopic = "holocontrol/unity_waypoint_pub";
-        private string movoStateTopic = "holocontrol/ros_movo_state_pub";
-        private string movoPoseTopic = "holocontrol/ros_movo_pose_pub";
-        private string movoStateRequestTopic = "holocontrol/movo_state_request";
-        private string movoPoseRequestTopic = "holocontrol/movo_pose_request";
+        private readonly string movoStateTopic = "holocontrol/ros_movo_state_pub";
+        private readonly string movoPoseTopic = "holocontrol/ros_movo_pose_pub";
+        private readonly string unityWaypointPubTopic = "holocontrol/unity_waypoint_pub";
+        private readonly string movoStateRequestTopic = "holocontrol/movo_state_request";
+        private readonly string movoPoseRequestTopic = "holocontrol/movo_pose_request";
         private bool currentlyNavigating = false;
         private bool hasPublishedWaypoints = false;
         private int frameCounter;
@@ -33,7 +33,7 @@ namespace Academy.HoloToolkit.Unity {
 #endif
             wsc.Subscribe(movoStateTopic, "std_msgs/String", "none", 0);
             wsc.Subscribe(movoPoseTopic, "std_msgs/String", "none", 0);
-            wsc.Advertise(unityTopic, "std_msgs/String");
+            wsc.Advertise(unityWaypointPubTopic, "std_msgs/String");
             wsc.Advertise(movoStateRequestTopic, "std_msgs/String");
             wsc.Advertise(movoPoseRequestTopic, "std_msgs/String");
             currentlyNavigating = false;
@@ -59,11 +59,14 @@ namespace Academy.HoloToolkit.Unity {
             int num_waypoints = waypoints.Count;
             string coord_message = "";
             foreach (Waypoint waypoint in waypoints) {
-                Vector2 waypoint_coords = waypoint.GetCoords();
-                string coord_str = waypoint_coords[0].ToString() + "," + waypoint_coords[1].ToString();
+                //Vector2 waypoint_coords = waypoint.GetCoords();
+                //string coord_str = waypoint_coords[0].ToString() + "," + waypoint_coords[1].ToString();
+                Debug.Assert(waypoint != null);
+                Pose waypoint_pose = waypoint.GetPose();
+                string coord_str = waypoint_pose.X.ToString() + "," + waypoint_pose.Y.ToString() + "," + waypoint_pose.Theta.ToString();
                 coord_message += coord_str + ";";
             }
-            wsc.Publish(unityTopic, coord_message.TrimEnd(';'));
+            wsc.Publish(unityWaypointPubTopic, coord_message.TrimEnd(';'));
             Debug.Log("Published: " + coord_message);
             currentlyNavigating = true;
             hasPublishedWaypoints = true;
@@ -80,13 +83,13 @@ namespace Academy.HoloToolkit.Unity {
                 return;
             }
             wsc.Publish(movoPoseRequestTopic, "True");
-            Debug.Log("Published PoseRequestTopic");
+            //Debug.Log("Published PoseRequestTopic");
             string ros_msg = wsc.messages[movoPoseTopic];
             while (ros_msg == null) {
                 Debug.Log("Waiting for message...");
                 ros_msg = wsc.messages[movoPoseTopic];
             }
-            Debug.Log(ros_msg);
+            //Debug.Log(ros_msg);
             List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
             //Debug.Log(poseStr);
             List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
@@ -106,14 +109,14 @@ namespace Academy.HoloToolkit.Unity {
         }
 
         void Update() {
-            Debug.Log("Current state: " + StateManager.Instance.CurrentState);
+            //Debug.Log("Current state: " + StateManager.Instance.CurrentState);
             frameCounter++;
             try {
                 UpdateMovoROSPose();
                 UpdateMovoState();
             }
             catch {
-                Debug.Log("Bluh");
+                //Debug.Log("Bluh");
                 return;
             }
 
