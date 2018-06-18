@@ -76,6 +76,12 @@ namespace Academy.HoloToolkit.Unity {
             y_coord += StateManager.Instance.MovoROSStartPose.Y;
             return new Vector2(x_coord, y_coord);
         }
+        public Pose GetPose() {
+            Vector2 coords = GetCoords();
+            Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
+            float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta;
+            return new Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
+        }
         public Waypoint(GameObject waypointObj, int waypointInd) {
             Name = String.Format("Waypoint{0}", waypointInd);
             waypointObj.name = Name;
