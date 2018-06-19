@@ -12,16 +12,15 @@ namespace HoloToolkit.Unity {
             //Debug.Log(eventData.RecognizedText);
             switch (eventData.RecognizedText.ToLower()) {
                 case "calibrate":
-                    Calibrate();
+                    MovoPlace.CalibrateMovo();
                     break;
-                //case "move base":
-                //    MoveBase();
-                //    break;
                 case "place":
                     Place();
                     break;
                 case "move":
-                    WaypointManager.Instance.TransitionToNavigation();
+                    if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
+                        WaypointManager.Instance.TransitionToNavigatingState();
+                    }
                     break;
                 case "puppet":
                     ManipulateArms();
@@ -29,29 +28,7 @@ namespace HoloToolkit.Unity {
             }
         }
 
-        // Calibrate Movo
-        public void Calibrate() {
-            if (StateManager.Instance.CurrentState == StateManager.State.CalibratingState) {
-                Debug.Log("Calibrating!");
-                GameObject movoObj = GameObject.Find("Movo");
-                StateManager.Instance.FloorY = movoObj.transform.position.y;
-                Vector3 movoUnityPos = movoObj.transform.position;
-                StateManager.Instance.MovoUnityStartPose = new Pose(-movoUnityPos.z, movoUnityPos.x, movoObj.transform.eulerAngles.y);
-                Debug.Assert(StateManager.Instance.MovoROSPose != null);
-                StateManager.Instance.MovoROSStartPose = StateManager.Instance.MovoROSPose;
-                Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
-                StateManager.Instance.RobotCalibrated = true;
-                Debug.Assert(WaypointManager.Instance.Waypoints.Count > 0);
-                UtilFunctions.InitWaypointPos(Camera.main, WaypointManager.Instance.Waypoints[0].WaypointObj);
-                StateManager.Instance.MovoUnityToROSOffset = StateManager.Instance.MovoROSStartPose - StateManager.Instance.MovoUnityStartPose;
-                Debug.Assert(StateManager.Instance.MovoUnityStartPose != null);
-                Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
-                Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
-                StateManager.Instance.CurrentState = StateManager.State.WaypointState;
-            }
-        }
-
-        public void MoveBase() {
+        public void TransitionToWaypointState() {
             if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
                 return;
             }
