@@ -10,6 +10,8 @@ ModelImporter:
     2100000: Material
     2100002: Material_001
     2100004: Material_002
+    2100006: Material_003
+    2100008: Material_001_002
     2300000: //RootNode
     3300000: //RootNode
     4300000: finger_knuckle2

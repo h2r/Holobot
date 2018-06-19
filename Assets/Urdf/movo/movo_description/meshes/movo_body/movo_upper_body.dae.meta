@@ -11,6 +11,10 @@ ModelImporter:
     2100002: Material_001
     2100004: Material_002
     2100006: Material_003
+    2100008: Material_005
+    2100010: Material_001_006
+    2100012: Material_002_002
+    2100014: Material_003_001
     2300000: //RootNode
     3300000: //RootNode
     4300000: movo_body_moving3

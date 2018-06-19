@@ -9,6 +9,8 @@ ModelImporter:
     400000: //RootNode
     2100000: Material_001
     2100002: Material_002
+    2100004: Material_001_009
+    2100006: Material_002_005
     2300000: //RootNode
     3300000: //RootNode
     4300000: kinect_one

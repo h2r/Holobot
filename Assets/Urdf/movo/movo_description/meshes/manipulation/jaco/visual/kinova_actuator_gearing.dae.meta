@@ -12,6 +12,9 @@ ModelImporter:
     2100004: Material_002
     2100006: Material_003
     2100008: Material_006
+    2100010: Material_004_001
+    2100012: Material_001_003
+    2100014: Material_002_001
     2300000: //RootNode
     3300000: //RootNode
     4300000: kinova_link6

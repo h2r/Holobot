@@ -15,6 +15,12 @@ ModelImporter:
     2100010: Material_003
     2100012: Material_004
     2100014: Material_005
+    2100016: Material_001_008
+    2100018: Material_007
+    2100020: Material_002_004
+    2100022: Material_003_003
+    2100024: Material_004_005
+    2100026: Material_005_002
     2300000: //RootNode
     3300000: //RootNode
     4300000: vector_base
