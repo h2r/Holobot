@@ -69,6 +69,10 @@ namespace HoloToolkit.Unity {
             return Waypoints[Waypoints.Count - 1];
         }
 
+        private void TransitionToNavigation() {
+
+        }
+
         private void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 //ClearWaypoints(); // TODO: remove in case of bugs

@@ -73,7 +73,7 @@ namespace HoloToolkit.Unity {
             coordText = coordTextObj.GetComponent<Text>();
             //Vector2 coords = curr_waypoint.GetCoords();
             //string msg = string.Format("{0}\n({1}, {2})", waypointObj.name, Math.Round(coords[0], 1), Math.Round(coords[1], 1));
-            Debug.Log("Culprit 1");
+            //Debug.Log("Culprit 1");
             Pose pose = curr_waypoint.GetPose();
             string msg = string.Format("{0}\n({1}, {2}, {3})", waypointObj.name, Math.Round(pose.X, 1), Math.Round(pose.Y, 1), Math.Round(pose.Theta, 1));
             coordText.text = msg;
