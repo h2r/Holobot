@@ -14,11 +14,14 @@ namespace HoloToolkit.Unity {
                 case "calibrate":
                     Calibrate();
                     break;
-                case "move base":
-                    MoveBase();
-                    break;
+                //case "move base":
+                //    MoveBase();
+                //    break;
                 case "place":
                     Place();
+                    break;
+                case "move":
+                    WaypointManager.Instance.TransitionToNavigation();
                     break;
                 case "puppet":
                     ManipulateArms();
