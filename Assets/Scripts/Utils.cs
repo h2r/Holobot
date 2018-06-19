@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace HoloToolkit.Unity {
 //namespace Academy.HoloToolkit.Unity {
-    public class Utils {
+    public class UtilFunctions {
         public static void InitWaypointPos(Camera cam, GameObject obj) {
             var headPosition = cam.transform.position;
             var gazeDirection = cam.transform.forward;

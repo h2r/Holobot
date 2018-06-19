@@ -51,6 +51,7 @@ namespace HoloToolkit.Unity {
         }
 
         private void Update() {
+            //Debug.Log("Current state: " + CurrentState);
             ParseStates();
             Debug.Assert(MovoState == "standby" || MovoState == "navigating");
         }

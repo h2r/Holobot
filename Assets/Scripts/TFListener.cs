@@ -58,11 +58,13 @@ namespace HoloToolkit.Unity {
             Debug.Log("Publishing waypoints!");
             List<Waypoint> waypoints = WaypointManager.Instance.Waypoints;
             int num_waypoints = waypoints.Count;
+            Debug.Log(num_waypoints + " waypoints exist.");
             string coord_message = "";
             foreach (Waypoint waypoint in waypoints) {
                 //Vector2 waypoint_coords = waypoint.GetCoords();
                 //string coord_str = waypoint_coords[0].ToString() + "," + waypoint_coords[1].ToString();
                 Debug.Assert(waypoint != null);
+                Debug.Log("Culprit 2");
                 Pose waypoint_pose = waypoint.GetPose();
                 string coord_str = waypoint_pose.X.ToString() + "," + waypoint_pose.Y.ToString() + "," + waypoint_pose.Theta.ToString();
                 coord_message += coord_str + ";";
@@ -86,6 +88,7 @@ namespace HoloToolkit.Unity {
             wsc.Publish(movoPoseRequestTopic, "True");
             //Debug.Log("Published PoseRequestTopic");
             string ros_msg = wsc.messages[movoPoseTopic];
+            //Debug.Log("Received Pose response");
             while (ros_msg == null) {
                 Debug.Log("Waiting for message...");
                 ros_msg = wsc.messages[movoPoseTopic];

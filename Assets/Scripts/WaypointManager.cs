@@ -51,7 +51,7 @@ namespace HoloToolkit.Unity {
             //    waypointObj = Instantiate(GetLastWaypoint().WaypointObj);
             //}
             if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) { // If in WaypointState, then place waypoint in front of user.
-                Utils.InitWaypointPos(Camera.main, waypointObj);
+                UtilFunctions.InitWaypointPos(Camera.main, waypointObj);
             }
             Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
             WaypointInd++;
@@ -71,7 +71,11 @@ namespace HoloToolkit.Unity {
 
         private void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
+                //ClearWaypoints(); // TODO: remove in case of bugs
                 return;
+            }
+            if (Waypoints.Count == 0) {
+                InitializeWaypoints();
             }
             if (Waypoints.Count == 3) {
                 if (StateManager.Instance.UnityDebugMode) {

@@ -2,7 +2,6 @@
 using HoloToolkit.Unity.InputModule;
 using RosSharp.RosBridgeClient;
 
-//namespace Academy.HoloToolkit.Unity {
 namespace HoloToolkit.Unity {
     public class SpeechHandler : MonoBehaviour, ISpeechHandler {
 
@@ -35,12 +34,17 @@ namespace HoloToolkit.Unity {
                 StateManager.Instance.FloorY = movoObj.transform.position.y;
                 Vector3 movoUnityPos = movoObj.transform.position;
                 StateManager.Instance.MovoUnityStartPose = new Pose(-movoUnityPos.z, movoUnityPos.x, movoObj.transform.eulerAngles.y);
+                Debug.Assert(StateManager.Instance.MovoROSPose != null);
                 StateManager.Instance.MovoROSStartPose = StateManager.Instance.MovoROSPose;
                 Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
                 StateManager.Instance.RobotCalibrated = true;
-                StateManager.Instance.CurrentState = StateManager.State.WaypointState;
-                Utils.InitWaypointPos(Camera.main, WaypointManager.Instance.Waypoints[0].WaypointObj);
+                Debug.Assert(WaypointManager.Instance.Waypoints.Count > 0);
+                UtilFunctions.InitWaypointPos(Camera.main, WaypointManager.Instance.Waypoints[0].WaypointObj);
                 StateManager.Instance.MovoUnityToROSOffset = StateManager.Instance.MovoROSStartPose - StateManager.Instance.MovoUnityStartPose;
+                Debug.Assert(StateManager.Instance.MovoUnityStartPose != null);
+                Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
+                Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
+                StateManager.Instance.CurrentState = StateManager.State.WaypointState;
             }
         }
 
