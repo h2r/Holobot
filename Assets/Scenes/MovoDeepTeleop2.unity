@@ -557,6 +557,8 @@ MonoBehaviour:
     KeyCode: 106
   - Keyword: place
     KeyCode: 107
+  - Keyword: move
+    KeyCode: 108
   recognitionConfidenceLevel: 0
 --- !u!114 &35384993
 MonoBehaviour:
