@@ -138,7 +138,7 @@ namespace HoloToolkit.Unity {
                 // TODO: switch to StandbyState
                 // ------------------------------------------------
                 //WaypointManager.Instance.InitializeWaypoints();
-                StateManager.Instance.CurrentState = StateManager.State.StandbyState;
+                StateManager.Instance.CurrentState = StateManager.State.WaypointState; // TODO: switch to standby state
                 // ------------------------------------------------
                 //Utils.SetSpatialMapping(true);
                 //StateManager.Instance.TransitionedToWaypointState = true;
