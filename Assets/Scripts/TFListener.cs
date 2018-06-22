@@ -109,7 +109,7 @@ namespace HoloToolkit.Unity {
             //Debug.Log("Updating MovoState");
             wsc.Publish(movoStateRequestTopic, "True");
             StateManager.Instance.MovoState = GetROSMessage(wsc.messages[movoStateTopic]);
-            //Debug.Log(StateManager.Instance.MovoState);
+            //Debug.Log("MovoROSState updated!");
         }
 
         void Update() {
