@@ -2,12 +2,12 @@
 using UnityEngine;
 
 namespace HoloToolkit.Unity {
-//namespace Academy.HoloToolkit.Unity {
+    //namespace Academy.HoloToolkit.Unity {
     public class StateManager : Singleton<StateManager> {
-    //public class StateManager : MonoBehaviour {
+        //public class StateManager : MonoBehaviour {
         public bool RobotCalibrated { get; set; }
         //public bool TransitionedToWaypointState { get; set; }
-        public enum State { CalibratingState, StandbyState, WaypointState, NavigatingState, ArmManipulationState };
+        public enum State { CalibratingState, StandbyState, WaypointState, NavigatingState };
         public State CurrentState { get; set; }
         //public Pose MovoROSToUnityOffset { get; set; }
         //public Pose MovoUnityToROSOffset { get; set; }
@@ -18,41 +18,45 @@ namespace HoloToolkit.Unity {
         public string MovoState { get; set; }
         public bool UnityDebugMode = false;
         public float FloorY = -99; // The y-coordinate of the floor (initialized to impossible value)
+        public GameObject RightGripper;
+        public GameObject LeftGripper;
 
-        //void Awake() {
         private void Start() {
             Debug.Log("Initialized StateManager");
-            //MovoROSToUnityOffset = null;
-            MovoROSPose = null;
-            RobotCalibrated = false;
-            CurrentState = State.CalibratingState;
-            //TransitionedToWaypointState = false;
+            //MovoROSPose = null;
+            RightGripper = GameObject.Find("RightGripper");
+            LeftGripper = GameObject.Find("LeftGripper");
+            TransitionToCalibrateState();
             MovoState = "standby";
         }
 
-        private void ParseStates() {
-            //if (CurrentState == State.CalibratingState || CurrentState == State.WaypointState) {
-            //    Utils.SetSpatialMapping(true);
-            //}
-            //else {
-            //    Utils.SetSpatialMapping(false);
-            //}
-            if (CurrentState == State.StandbyState) {
-                Debug.Log("Standing by...");
+        public void TransitionToWaypointState() {
+            if (CurrentState == State.WaypointState) {
                 return;
             }
-            if (!RobotCalibrated && CurrentState != State.NavigatingState) {
-                CurrentState = State.CalibratingState;
-            }
-            if (RobotCalibrated && CurrentState == State.CalibratingState) {
-                //Debug.Assert(MovoROSToUnityOffset != null);
-                CurrentState = State.WaypointState;
-            }
+            WaypointManager.Instance.InitializeWaypoints();
+            UtilFunctions.SetGrippersActive(true);
+            Instance.CurrentState = State.WaypointState;
+            Debug.Log("Transitioned to waypoint state");
+        }
+
+        public void TransitionToCalibrateState() {
+            RobotCalibrated = false;
+            WaypointManager.Instance.ClearWaypoints();
+            UtilFunctions.SetGrippersActive(false);
+            CurrentState = State.CalibratingState;
+            Debug.Log("Transitioned to calibrate state");
+        }
+
+        public void TransitionToStandbyState() {
+            WaypointManager.Instance.ClearWaypoints();
+            UtilFunctions.SetGrippersActive(true);
+            CurrentState = State.StandbyState;
+            Debug.Log("Transitioned to standby state");
         }
 
         private void Update() {
             //Debug.Log("Current state: " + CurrentState);
-            ParseStates();
             Debug.Assert(MovoState == "standby" || MovoState == "navigating");
         }
     }

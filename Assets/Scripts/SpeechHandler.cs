@@ -9,46 +9,73 @@ namespace HoloToolkit.Unity {
         //public DisplayTrajectoryReceiver DisplayTrajectoryReceiver;
 
         void ISpeechHandler.OnSpeechKeywordRecognized(SpeechEventData eventData) {
-            //Debug.Log(eventData.RecognizedText);
-            switch (eventData.RecognizedText.ToLower()) {
+            string command = eventData.RecognizedText.ToLower();
+            Debug.Log("Command: " + command);
+            if (command == "state") {
+                Debug.Log(StateManager.Instance.CurrentState);
+                return;
+            }
+            if (command.Contains("transition")) {
+                switch (command) {
+                    case "transition standby":
+                        if (!StateManager.Instance.RobotCalibrated) {
+                            return;
+                        }
+                        StateManager.Instance.TransitionToStandbyState();
+                        break;
+                    case "transition calibrate":
+                        StateManager.Instance.TransitionToCalibrateState();
+                        break;
+                    case "transition waypoints":
+                        if (!StateManager.Instance.RobotCalibrated) {
+                            return;
+                        }
+                        StateManager.Instance.TransitionToWaypointState();
+                        break;
+                }
+                return;
+            }
+            switch (StateManager.Instance.CurrentState) {
+                case StateManager.State.CalibratingState:
+                    ParseCalibrateCommands(command);
+                    break;
+                case StateManager.State.WaypointState:
+                    ParseWaypointCommands(command);
+                    break;
+            }
+        }
+
+        private void ParseCalibrateCommands(string command) {
+            Debug.Log("ParseCalibrateCommands()");
+            if (StateManager.Instance.CurrentState != StateManager.State.CalibratingState) {
+                return;
+            }
+            switch (command) {
                 case "calibrate":
                     MovoPlace.CalibrateMovo();
                     break;
-                case "place":
-                    Place();
+            }
+            Debug.Log("done!");
+        }
+
+        private void ParseWaypointCommands(string command) {
+            if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
+                return;
+            }
+            switch (command) {
+                case "another":
+                    WaypointManager.Instance.AddWaypoint();
                     break;
                 case "move":
-                    if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
-                        WaypointManager.Instance.TransitionToNavigatingState();
-                    }
+                    WaypointManager.Instance.TransitionToNavigatingState();
                     break;
-                case "puppet":
-                    ManipulateArms();
+                case "restart":
+                    WaypointManager.Instance.InitializeWaypoints();
                     break;
             }
         }
 
-        public void TransitionToWaypointState() {
-            if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
-                return;
-            }
-            WaypointManager.Instance.InitializeWaypoints();
-            StateManager.Instance.CurrentState = StateManager.State.WaypointState;
-        }
 
-        // Place waypoint
-        public void Place() {
-            if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
-                Debug.Log("\"PLACE\" ERROR: Must be in WaypointState!");
-                return;
-            }
-            Debug.Log("Generating waypoint!");
-            WaypointManager.Instance.AddWaypoint();
-        }
-
-        public void ManipulateArms() {
-
-        }
 
         // Sends the goal position to MoveIt
         //public void Plan() {
