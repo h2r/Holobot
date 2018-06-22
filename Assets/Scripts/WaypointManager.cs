@@ -18,7 +18,7 @@ namespace HoloToolkit.Unity {
             Waypoints = new List<Waypoint>();
             //ClearWaypoints();
             Debug.Log("WaypointManager Awake()");
-            InitializeWaypoints();
+            //InitializeWaypoints();
             DebugStop = false;
         }
 
@@ -53,12 +53,16 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) { // If in WaypointState, then place waypoint in front of user.
                 UtilFunctions.InitWaypointPos(Camera.main, waypointObj);
             }
-            Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
             WaypointInd++;
             waypointObj.name = String.Format("Waypoint{0}", WaypointInd);
             GameObject coordTextObj = GetCoordTextObj(waypointObj);
             Debug.Assert(coordTextObj != null);
             coordTextObj.name = String.Format("WaypointCoord{0}", WaypointInd);
+            Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
+            Debug.Log(Waypoints.Count + " waypoints exist.");
+            Debug.Log("waypointObj name: " + waypointObj.name);
+            Debug.Log("last waypoint name: " + GetLastWaypoint().Name);
+            Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
             //Debug.Log(WaypointManager.Instance.Waypoints.Count + " Waypoints exist.");
         }
 
@@ -77,8 +81,8 @@ namespace HoloToolkit.Unity {
                 InitializeWaypoints();
             }
             else {
-                Destroy(GetLastWaypoint().WaypointObj);
-                Waypoints.RemoveAt(Waypoints.Count - 1);
+                //Destroy(GetLastWaypoint().WaypointObj);
+                //Waypoints.RemoveAt(Waypoints.Count - 1);
                 StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
             }
         }
@@ -89,6 +93,10 @@ namespace HoloToolkit.Unity {
             }
             if (Waypoints.Count == 0) {
                 InitializeWaypoints();
+            }
+            Waypoint lastWaypoint = GetLastWaypoint();
+            if (!lastWaypoint.Placed) {
+                UtilFunctions.FollowGaze(Camera.main, lastWaypoint.WaypointObj);
             }
         }
 
