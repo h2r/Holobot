@@ -13,6 +13,21 @@ namespace HoloToolkit.Unity {
             obj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
         }
 
+        //public static void ReportState() {
+        //    Debug.Log("Current state: " + StateManager.Instance.CurrentState);
+        //}
+
+        public static void FollowGaze(Camera cam, GameObject obj, float dist=2.0f) {
+            var headPosition = cam.transform.position;
+            var gazeDirection = cam.transform.forward;
+            obj.transform.position = headPosition + gazeDirection * dist;
+        }
+
+        public static void SetGrippersActive(bool state) {
+            StateManager.Instance.RightGripper.SetActive(state);
+            StateManager.Instance.LeftGripper.SetActive(state);
+        }
+
         //public static void RaycastPlace(Camera cam, GameObject obj, bool isMovo = false) {
         //    Debug.Assert(SpatialMapping.Instance.DrawVisualMeshes == true);
         //    // Do a raycast into the world that will only hit the Spatial Mapping mesh.
@@ -54,6 +69,7 @@ namespace HoloToolkit.Unity {
         public GameObject WaypointObj { get; private set; }
         public GameObject CoordTextObj { get; private set; }
         public String Name { get; private set; }
+        public Boolean Placed { get; set; }
         private double Deg2rad(float angle) {
             return (Math.PI / 180) * angle;
         }
@@ -88,6 +104,7 @@ namespace HoloToolkit.Unity {
             waypointObj.name = Name;
             WaypointObj = waypointObj;
             CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);
+            Placed = false;
         }
     }
 
