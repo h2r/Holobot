@@ -366,6 +366,13 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
         }
 
         private void OnManipulationStarted() {
+            Debug.Log("OnManipulationStarted " + gameObject.name);
+            if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
+                Waypoint lastWaypoint = WaypointManager.Instance.GetLastWaypoint();
+                if (gameObject.name == lastWaypoint.Name) {
+                    lastWaypoint.Placed = true;
+                }
+            }
             InputManager.Instance.PushModalInputHandler(gameObject);
 
             //Show Bounding Box visual on manipulation interaction
