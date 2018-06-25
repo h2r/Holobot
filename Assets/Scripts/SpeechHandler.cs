@@ -8,15 +8,21 @@ namespace HoloToolkit.Unity {
         //public MoveItGoalPublisher MoveItGoalPublisher;
         //public DisplayTrajectoryReceiver DisplayTrajectoryReceiver;
 
+        [HideInInspector]
+        public static string CurrentCommand;
+        private int frameCounter = 0;
+        private bool commandDetected = false;
+
         void ISpeechHandler.OnSpeechKeywordRecognized(SpeechEventData eventData) {
-            string command = eventData.RecognizedText.ToLower();
-            Debug.Log("Command: " + command);
-            if (command == "state") {
+            CurrentCommand = eventData.RecognizedText.ToLower();
+            commandDetected = true;
+            Debug.Log("Command: " + CurrentCommand);
+            if (CurrentCommand == "state") {
                 Debug.Log(StateManager.Instance.CurrentState);
                 return;
             }
-            if (command.Contains("transition")) {
-                switch (command) {
+            if (CurrentCommand.Contains("transition")) {
+                switch (CurrentCommand) {
                     case "transition standby":
                         if (!StateManager.Instance.RobotCalibrated) {
                             return;
@@ -37,10 +43,10 @@ namespace HoloToolkit.Unity {
             }
             switch (StateManager.Instance.CurrentState) {
                 case StateManager.State.CalibratingState:
-                    ParseCalibrateCommands(command);
+                    ParseCalibrateCommands(CurrentCommand);
                     break;
                 case StateManager.State.WaypointState:
-                    ParseWaypointCommands(command);
+                    ParseWaypointCommands(CurrentCommand);
                     break;
             }
         }
@@ -75,7 +81,16 @@ namespace HoloToolkit.Unity {
             }
         }
 
-
+        private void Update() {
+            if (commandDetected) {
+                frameCounter++;
+            }
+            if (frameCounter == 40) {
+                commandDetected = false;
+                frameCounter = 0;
+                CurrentCommand = "";
+            }
+        }
 
         // Sends the goal position to MoveIt
         //public void Plan() {
