@@ -135,7 +135,10 @@ namespace HoloToolkit.Unity {
                 frameCounter = 0;
                 currentlyNavigating = false;
                 hasPublishedWaypoints = false;
-                StateManager.Instance.CurrentState = StateManager.State.StandbyState;
+
+                //WaypointManager.Instance.ClearWaypoints();
+                //StateManager.Instance.CurrentState = StateManager.State.StandbyState;
+                StateManager.Instance.TransitionToStandbyState();
             }
             else if (StateManager.Instance.MovoState == "standby" && !currentlyNavigating && !hasPublishedWaypoints) {
                 Debug.Log("Check");
