@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MovoDeepTeleop.unity
     guid: 3c78373254b7b1647b1dfe978953d336
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MovoDeepTeleop2.unity
     guid: 226ecd1997f0a0d4abfa23fc6beb48c1
+  - enabled: 1
+    path: Assets/Scenes/MovoArmTeleop.unity
+    guid: 241953fd061c90041a0d60c3237148bb

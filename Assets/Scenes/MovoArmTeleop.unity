@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f9b8f32224ca04498ffd0a2e2bc0567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RosBridgeServerUrl: ws://192.168.160.193:9090
+  RosBridgeServerUrl: ws://192.168.160.160:9090
 --- !u!114 &8210067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,6 +616,8 @@ Transform:
   - {fileID: 572721356}
   - {fileID: 529426467}
   - {fileID: 1331250913}
+  - {fileID: 104871638}
+  - {fileID: 716655899}
   m_Father: {fileID: 2132092020}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1079,7 +1081,7 @@ GameObject:
   - component: {fileID: 68538734}
   - component: {fileID: 68538736}
   m_Layer: 0
-  m_Name: Text
+  m_Name: StateReporter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1622,8 +1624,8 @@ Transform:
   - {fileID: 693866232}
   - {fileID: 491564279}
   - {fileID: 1539389815}
-  m_Father: {fileID: 2132092020}
-  m_RootOrder: 1
+  m_Father: {fileID: 35888331}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &104871639
 Rigidbody:
@@ -9081,8 +9083,8 @@ Transform:
   - {fileID: 834043711}
   - {fileID: 1545801543}
   - {fileID: 1427061526}
-  m_Father: {fileID: 2132092020}
-  m_RootOrder: 2
+  m_Father: {fileID: 35888331}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &716655900
 Rigidbody:
@@ -25163,8 +25165,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 35888331}
-  - {fileID: 104871638}
-  - {fileID: 716655899}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
