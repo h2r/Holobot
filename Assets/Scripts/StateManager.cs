@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace HoloToolkit.Unity {
     //namespace Academy.HoloToolkit.Unity {
@@ -55,9 +56,15 @@ namespace HoloToolkit.Unity {
             Debug.Log("Transitioned to standby state");
         }
 
+        public void DisplayState() {
+            Text stateMsg = GameObject.Find("StateReporter").GetComponent<Text>();
+            stateMsg.text = CurrentState.ToString() + "\n" + SpeechHandler.CurrentCommand;
+        }
+
         private void Update() {
             //Debug.Log("Current state: " + CurrentState);
             Debug.Assert(MovoState == "standby" || MovoState == "navigating");
+            DisplayState();
         }
     }
 }
