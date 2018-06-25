@@ -128,7 +128,7 @@ namespace HoloToolkit.Unity {
                 return;
             }
             if (StateManager.Instance.MovoState == "standby" && hasPublishedWaypoints) {
-                if (frameCounter - frameCountStart < 20) { // Give ROS enough time to receive waypoints
+                if (frameCounter - frameCountStart < 40) { // Give ROS enough time to receive waypoints
                     frameCounter++;
                     return;
                 }
