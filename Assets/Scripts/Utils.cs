@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace HoloToolkit.Unity {
-//namespace Academy.HoloToolkit.Unity {
+    //namespace Academy.HoloToolkit.Unity {
     public class UtilFunctions {
         public static void InitWaypointPos(Camera cam, GameObject obj) {
             var headPosition = cam.transform.position;
@@ -17,7 +17,7 @@ namespace HoloToolkit.Unity {
         //    Debug.Log("Current state: " + StateManager.Instance.CurrentState);
         //}
 
-        public static void FollowGaze(Camera cam, GameObject obj, float dist=2.0f) {
+        public static void FollowGaze(Camera cam, GameObject obj, float dist = 2.0f) {
             var headPosition = cam.transform.position;
             var gazeDirection = cam.transform.forward;
             obj.transform.position = headPosition + gazeDirection * dist;
@@ -26,6 +26,10 @@ namespace HoloToolkit.Unity {
         public static void SetGrippersActive(bool state) {
             StateManager.Instance.RightGripper.SetActive(state);
             StateManager.Instance.LeftGripper.SetActive(state);
+        }
+
+        public static float Deg2Rad(float deg) {
+            return (float)(Math.PI / 180) * deg;
         }
 
         //public static void RaycastPlace(Camera cam, GameObject obj, bool isMovo = false) {
