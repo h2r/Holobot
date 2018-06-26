@@ -8,7 +8,7 @@ namespace HoloToolkit.Unity {
         //public class StateManager : MonoBehaviour {
         public bool RobotCalibrated { get; set; }
         //public bool TransitionedToWaypointState { get; set; }
-        public enum State { CalibratingState, StandbyState, WaypointState, NavigatingState };
+        public enum State { CalibratingState, StandbyState, WaypointState, NavigatingState, PuppetState };
         public State CurrentState { get; set; }
         //public Pose MovoROSToUnityOffset { get; set; }
         //public Pose MovoUnityToROSOffset { get; set; }
@@ -21,6 +21,9 @@ namespace HoloToolkit.Unity {
         public float FloorY = -99; // The y-coordinate of the floor (initialized to impossible value)
         public GameObject RightGripper;
         public GameObject LeftGripper;
+        public GameObject MovoBaseLink;
+        public List<string> EinCommandsToExecute;
+        public bool LookAtUser;
 
         private void Start() {
             Debug.Log("Initialized StateManager");
@@ -29,6 +32,9 @@ namespace HoloToolkit.Unity {
             LeftGripper = GameObject.Find("LeftGripper");
             TransitionToCalibrateState();
             MovoState = "standby";
+            EinCommandsToExecute = new List<string>();
+            LookAtUser = false;
+            MovoBaseLink = GameObject.Find("base_link");
         }
 
         public void TransitionToWaypointState() {
@@ -36,7 +42,7 @@ namespace HoloToolkit.Unity {
                 return;
             }
             WaypointManager.Instance.InitializeWaypoints();
-            UtilFunctions.SetGrippersActive(true);
+            UtilFunctions.SetGrippersActive(false);
             Instance.CurrentState = State.WaypointState;
             Debug.Log("Transitioned to waypoint state");
         }
@@ -51,9 +57,16 @@ namespace HoloToolkit.Unity {
 
         public void TransitionToStandbyState() {
             WaypointManager.Instance.ClearWaypoints();
-            UtilFunctions.SetGrippersActive(true);
+            UtilFunctions.SetGrippersActive(false);
             CurrentState = State.StandbyState;
             Debug.Log("Transitioned to standby state");
+        }
+
+        public void TransitionToPuppetState() {
+            WaypointManager.Instance.ClearWaypoints();
+            UtilFunctions.SetGrippersActive(true);
+            CurrentState = State.PuppetState;
+            Debug.Log("Transitioned to puppet state");
         }
 
         public void DisplayState() {
