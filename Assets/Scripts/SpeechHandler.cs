@@ -11,6 +11,7 @@ namespace HoloToolkit.Unity {
         [HideInInspector]
         public static string CurrentCommand;
         private int frameCounter = 0;
+        [HideInInspector]
         private bool commandDetected = false;
 
         void ISpeechHandler.OnSpeechKeywordRecognized(SpeechEventData eventData) {
@@ -21,25 +22,40 @@ namespace HoloToolkit.Unity {
                 Debug.Log(StateManager.Instance.CurrentState);
                 return;
             }
-            if (CurrentCommand.Contains("transition")) {
-                switch (CurrentCommand) {
-                    case "transition standby":
-                        if (!StateManager.Instance.RobotCalibrated) {
-                            return;
-                        }
-                        StateManager.Instance.TransitionToStandbyState();
-                        break;
-                    case "transition calibrate":
-                        StateManager.Instance.TransitionToCalibrateState();
-                        break;
-                    case "transition waypoints":
-                        if (!StateManager.Instance.RobotCalibrated) {
-                            return;
-                        }
-                        StateManager.Instance.TransitionToWaypointState();
-                        break;
-                }
-                return;
+            switch (CurrentCommand) {
+                case "transition standby":
+                    if (!StateManager.Instance.RobotCalibrated) {
+                        return;
+                    }
+                    StateManager.Instance.TransitionToStandbyState();
+                    break;
+                case "transition calibrate":
+                    StateManager.Instance.TransitionToCalibrateState();
+                    break;
+                case "transition waypoints":
+                    if (!StateManager.Instance.RobotCalibrated) {
+                        return;
+                    }
+                    StateManager.Instance.TransitionToWaypointState();
+                    break;
+                case "transition puppet":
+                    if (!StateManager.Instance.RobotCalibrated) {
+                        return;
+                    }
+                    StateManager.Instance.TransitionToPuppetState();
+                    break;
+                case "look straight":
+                    StateManager.Instance.EinCommandsToExecute.Add("lookStraight");
+                    break;
+                case "look smug":
+                    StateManager.Instance.EinCommandsToExecute.Add("lookSmug");
+                    break;
+                case "look at me":
+                    StateManager.Instance.LookAtUser = true;
+                    break;
+                case "stop looking":
+                    StateManager.Instance.LookAtUser = false;
+                    break;
             }
             switch (StateManager.Instance.CurrentState) {
                 case StateManager.State.CalibratingState:
@@ -47,6 +63,9 @@ namespace HoloToolkit.Unity {
                     break;
                 case StateManager.State.WaypointState:
                     ParseWaypointCommands(CurrentCommand);
+                    break;
+                case StateManager.State.PuppetState:
+                    ParsePuppetCommands(CurrentCommand);
                     break;
             }
         }
@@ -77,6 +96,38 @@ namespace HoloToolkit.Unity {
                     break;
                 case "restart":
                     WaypointManager.Instance.InitializeWaypoints();
+                    break;
+            }
+        }
+
+        private void ParsePuppetCommands(string command) {
+            if (StateManager.Instance.CurrentState != StateManager.State.PuppetState) {
+                return;
+            }
+            switch (command) {
+                case "open right":
+                    StateManager.Instance.EinCommandsToExecute.Add("switchToRightArm openGripper");
+                    break;
+                case "open left":
+                    StateManager.Instance.EinCommandsToExecute.Add("switchToLeftArm openGripper");
+                    break;
+                case "close right":
+                    StateManager.Instance.EinCommandsToExecute.Add("switchToRightArm closeGripper");
+                    break;
+                case "close left":
+                    StateManager.Instance.EinCommandsToExecute.Add("switchToLeftArm closeGripper");
+                    break;
+                case "move right arm":
+                    StateManager.Instance.UpdateRightArm = true;
+                    StateManager.Instance.UpdateLeftArm = false;
+                    break;
+                case "move left arm":
+                    StateManager.Instance.UpdateRightArm = false;
+                    StateManager.Instance.UpdateLeftArm = true;
+                    break;
+                case "done":
+                    StateManager.Instance.UpdateRightArm = false;
+                    StateManager.Instance.UpdateLeftArm = false;
                     break;
             }
         }
