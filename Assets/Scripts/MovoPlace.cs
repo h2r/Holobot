@@ -33,7 +33,8 @@ namespace HoloToolkit.Unity {
                 Debug.Assert(StateManager.Instance.RobotCalibrated == true);
                 Pose movoROSStartPose = StateManager.Instance.MovoROSStartPose;
                 Pose movoROSPose = StateManager.Instance.MovoROSPose;
-                GameObject baseLink = GameObject.Find("base_link");
+                //GameObject baseLink = GameObject.Find("base_link");
+                GameObject baseLink = StateManager.Instance.MovoBaseLink;
                 baseLink.transform.localPosition = (movoROSPose - movoROSStartPose).ToUnityCoordsMovo(0);
                 float ROSDelTheta = movoROSPose.Theta - movoROSStartPose.Theta;
                 baseLink.transform.localRotation = Quaternion.Euler(0, ROSDelTheta, 0);
