@@ -24,6 +24,10 @@ namespace HoloToolkit.Unity {
         public GameObject MovoBaseLink;
         public List<string> EinCommandsToExecute;
         public bool LookAtUser;
+        [HideInInspector]
+        public bool UpdateRightArm = false;
+        [HideInInspector]
+        public bool UpdateLeftArm = false;
 
         private void Start() {
             Debug.Log("Initialized StateManager");
@@ -38,12 +42,11 @@ namespace HoloToolkit.Unity {
         }
 
         public void TransitionToWaypointState() {
-            if (CurrentState == State.WaypointState) {
-                return;
-            }
             WaypointManager.Instance.InitializeWaypoints();
             UtilFunctions.SetGrippersActive(false);
             Instance.CurrentState = State.WaypointState;
+            UpdateRightArm = false;
+            UpdateLeftArm = false;
             Debug.Log("Transitioned to waypoint state");
         }
 
@@ -52,6 +55,8 @@ namespace HoloToolkit.Unity {
             WaypointManager.Instance.ClearWaypoints();
             UtilFunctions.SetGrippersActive(false);
             CurrentState = State.CalibratingState;
+            UpdateRightArm = false;
+            UpdateLeftArm = false;
             Debug.Log("Transitioned to calibrate state");
         }
 
@@ -59,6 +64,8 @@ namespace HoloToolkit.Unity {
             WaypointManager.Instance.ClearWaypoints();
             UtilFunctions.SetGrippersActive(false);
             CurrentState = State.StandbyState;
+            UpdateRightArm = false;
+            UpdateLeftArm = false;
             Debug.Log("Transitioned to standby state");
         }
 
@@ -66,12 +73,21 @@ namespace HoloToolkit.Unity {
             WaypointManager.Instance.ClearWaypoints();
             UtilFunctions.SetGrippersActive(true);
             CurrentState = State.PuppetState;
+            UpdateRightArm = false;
+            UpdateLeftArm = false;
             Debug.Log("Transitioned to puppet state");
         }
 
         public void DisplayState() {
             Text stateMsg = GameObject.Find("StateReporter").GetComponent<Text>();
-            stateMsg.text = CurrentState.ToString() + "\n" + SpeechHandler.CurrentCommand;
+            string msg = CurrentState.ToString() + "\n" + SpeechHandler.CurrentCommand + "\n";
+            if (UpdateRightArm) {
+                msg += "updating right arm...";
+            }
+            else if (UpdateLeftArm) {
+                msg += "updating left arm...";
+            }
+            stateMsg.text = msg;
         }
 
         private void Update() {
