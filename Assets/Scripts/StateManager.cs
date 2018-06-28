@@ -18,11 +18,13 @@ namespace HoloToolkit.Unity {
         public Pose MovoUnityToROSOffset { get; set; }
         public string MovoState { get; set; }
         public bool UnityDebugMode = false;
+        [HideInInspector]
         public float FloorY = -99; // The y-coordinate of the floor (initialized to impossible value)
-        public GameObject RightGripper;
-        public GameObject LeftGripper;
-        public GameObject MovoBaseLink;
+        [HideInInspector]
+        public GameObject RightGripper, LeftGripper, MovoBaseLink;
+        [HideInInspector]
         public List<string> EinCommandsToExecute;
+        [HideInInspector]
         public bool LookAtUser;
         [HideInInspector]
         public bool UpdateRightArm = false;
@@ -31,7 +33,6 @@ namespace HoloToolkit.Unity {
 
         private void Start() {
             Debug.Log("Initialized StateManager");
-            //MovoROSPose = null;
             RightGripper = GameObject.Find("RightGripper");
             LeftGripper = GameObject.Find("LeftGripper");
             TransitionToCalibrateState();
