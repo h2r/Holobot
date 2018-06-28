@@ -125,7 +125,7 @@ namespace HoloToolkit.Unity {
                     StateManager.Instance.UpdateRightArm = false;
                     StateManager.Instance.UpdateLeftArm = true;
                     break;
-                case "done":
+                case "stop":
                     StateManager.Instance.UpdateRightArm = false;
                     StateManager.Instance.UpdateLeftArm = false;
                     break;
