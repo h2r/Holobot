@@ -583,14 +583,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Holocontrol
+  metroPackageName: Movocontrol
   metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
   metroCertificateIssuer: DefaultCompany
   metroCertificateNotAfter: 806809d851bed301
-  metroApplicationDescription: Holobot
+  metroApplicationDescription: Movocontrol
   wsaImages: {}
   metroTileShortName: Holobot
   metroCommandLineArgsFile: 
