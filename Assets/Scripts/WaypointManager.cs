@@ -12,7 +12,8 @@ namespace HoloToolkit.Unity {
         private bool DebugStop;
         // Use this for initialization
 
-        void Awake() {
+        //void Awake() {
+        void Start() {
             Debug.Log("Initialized WaypointManager");
             WaypointTemplate = GameObject.Find("Waypoint0");
             Waypoints = new List<Waypoint>();
@@ -77,9 +78,9 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
-            if (StateManager.Instance.UnityDebugMode) {
-                InitializeWaypoints();
-            }
+            //if (StateManager.Instance.UnityDebugMode) {
+            //    InitializeWaypoints();
+            //}
             else {
                 //Destroy(GetLastWaypoint().WaypointObj);
                 //Waypoints.RemoveAt(Waypoints.Count - 1);
