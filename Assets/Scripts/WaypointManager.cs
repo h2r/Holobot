@@ -24,6 +24,9 @@ namespace HoloToolkit.Unity {
         }
 
         public void ClearWaypoints() {
+            if (Waypoints == null) { // if there's a bug, change Start() back to Awake().
+                return;
+            }
             foreach (Waypoint wp in Waypoints) {
                 Destroy(wp.WaypointObj);
             }
