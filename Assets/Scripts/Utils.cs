@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity {
-    public class Utils : MonoBehaviour {
+namespace HoloToolkit.Unity {
+    //namespace Academy.HoloToolkit.Unity {
+    public class UtilFunctions {
         public static void InitWaypointPos(Camera cam, GameObject obj) {
             var headPosition = cam.transform.position;
             var gazeDirection = cam.transform.forward;
@@ -10,6 +11,25 @@ namespace Academy.HoloToolkit.Unity {
             var pos = obj.transform.position;
             Debug.Assert(StateManager.Instance.FloorY != -99);
             obj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
+        }
+
+        //public static void ReportState() {
+        //    Debug.Log("Current state: " + StateManager.Instance.CurrentState);
+        //}
+
+        public static void FollowGaze(Camera cam, GameObject obj, float dist = 2.0f) {
+            var headPosition = cam.transform.position;
+            var gazeDirection = cam.transform.forward;
+            obj.transform.position = headPosition + gazeDirection * dist;
+        }
+
+        public static void SetGrippersActive(bool state) {
+            StateManager.Instance.RightGripper.SetActive(state);
+            StateManager.Instance.LeftGripper.SetActive(state);
+        }
+
+        public static float Deg2Rad(float deg) {
+            return (float)(Math.PI / 180) * deg;
         }
 
         //public static void RaycastPlace(Camera cam, GameObject obj, bool isMovo = false) {
@@ -53,6 +73,7 @@ namespace Academy.HoloToolkit.Unity {
         public GameObject WaypointObj { get; private set; }
         public GameObject CoordTextObj { get; private set; }
         public String Name { get; private set; }
+        public Boolean Placed { get; set; }
         private double Deg2rad(float angle) {
             return (Math.PI / 180) * angle;
         }
@@ -76,11 +97,18 @@ namespace Academy.HoloToolkit.Unity {
             y_coord += StateManager.Instance.MovoROSStartPose.Y;
             return new Vector2(x_coord, y_coord);
         }
+        public Pose GetPose() {
+            Vector2 coords = GetCoords();
+            Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
+            float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta;
+            return new Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
+        }
         public Waypoint(GameObject waypointObj, int waypointInd) {
             Name = String.Format("Waypoint{0}", waypointInd);
             waypointObj.name = Name;
             WaypointObj = waypointObj;
             CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);
+            Placed = false;
         }
     }
 

@@ -18,26 +18,27 @@ limitations under the License.
 using RosSharp.RosBridgeClient;
 using UnityEngine;
 
-public class RosConnector : MonoBehaviour
-{
+public class RosConnector : MonoBehaviour {
 
     public RosSocket RosSocket { get; private set; }
-    public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
+    public string RosBridgeServerUrl = "ws://138.16.160.222:5564";
+    //#if UNITY_EDITOR
+    //    public string RosBridgeServerUrl = "ws://192.168.160.193:9090";
+    //#elif !UNITY_EDITOR
+    //    public string RosBridgeServerUrl = "ws://138.16.160.222:5564";
+    //#endif
 
-    public void Awake()
-    {
+    public void Awake() {
         RosSocket = new RosSocket(RosBridgeServerUrl);
         Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
     }
 
-    public void Disconnect()
-    {
+    public void Disconnect() {
         RosSocket.Close();
         Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
     }
 
-    private void OnApplicationQuit()
-    {
+    private void OnApplicationQuit() {
         RosSocket.Close();
         Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
     }

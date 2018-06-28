@@ -9,6 +9,8 @@ ModelImporter:
     400000: //RootNode
     2100000: Material
     2100002: Material_001
+    2100004: Material_011
+    2100006: Material_001_010
     2300000: //RootNode
     3300000: //RootNode
     4300000: sick_tim

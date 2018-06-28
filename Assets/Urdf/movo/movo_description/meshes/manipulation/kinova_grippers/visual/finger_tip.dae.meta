@@ -9,6 +9,8 @@ ModelImporter:
     400000: //RootNode
     2100000: Material
     2100002: Material_001
+    2100004: Material_002
+    2100006: Material_001_001
     2300000: //RootNode
     3300000: //RootNode
     4300000: finger_tip2

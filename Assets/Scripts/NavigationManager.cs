@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity {
+namespace HoloToolkit.Unity {
     public class NavigationManager : Singleton<NavigationManager> {
         bool navigating = false;
         // Use this for initialization

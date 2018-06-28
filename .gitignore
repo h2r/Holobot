@@ -6,6 +6,8 @@
 /Assets/AssetStoreTools*
 [Aa]pp/
 [Aa]pp2/
+[Aa]pp*/
+UWP/
 
 # Visual Studio 2015 cache directory
 /.vs/

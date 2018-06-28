@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Academy.HoloToolkit.Unity {
+namespace HoloToolkit.Unity {
+//namespace Academy.HoloToolkit.Unity {
     public class WaypointManager : Singleton<WaypointManager> {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
@@ -11,17 +12,21 @@ namespace Academy.HoloToolkit.Unity {
         private bool DebugStop;
         // Use this for initialization
 
-        void Awake() {
+        //void Awake() {
+        void Start() {
             Debug.Log("Initialized WaypointManager");
             WaypointTemplate = GameObject.Find("Waypoint0");
             Waypoints = new List<Waypoint>();
             //ClearWaypoints();
             Debug.Log("WaypointManager Awake()");
-            InitializeWaypoints();
+            //InitializeWaypoints();
             DebugStop = false;
         }
 
         public void ClearWaypoints() {
+            if (Waypoints == null) { // if there's a bug, change Start() back to Awake().
+                return;
+            }
             foreach (Waypoint wp in Waypoints) {
                 Destroy(wp.WaypointObj);
             }
@@ -50,14 +55,18 @@ namespace Academy.HoloToolkit.Unity {
             //    waypointObj = Instantiate(GetLastWaypoint().WaypointObj);
             //}
             if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) { // If in WaypointState, then place waypoint in front of user.
-                Utils.InitWaypointPos(Camera.main, waypointObj);
+                UtilFunctions.InitWaypointPos(Camera.main, waypointObj);
             }
-            Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
             WaypointInd++;
             waypointObj.name = String.Format("Waypoint{0}", WaypointInd);
             GameObject coordTextObj = GetCoordTextObj(waypointObj);
             Debug.Assert(coordTextObj != null);
             coordTextObj.name = String.Format("WaypointCoord{0}", WaypointInd);
+            Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
+            Debug.Log(Waypoints.Count + " waypoints exist.");
+            Debug.Log("waypointObj name: " + waypointObj.name);
+            Debug.Log("last waypoint name: " + GetLastWaypoint().Name);
+            Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
             //Debug.Log(WaypointManager.Instance.Waypoints.Count + " Waypoints exist.");
         }
 
@@ -68,19 +77,30 @@ namespace Academy.HoloToolkit.Unity {
             return Waypoints[Waypoints.Count - 1];
         }
 
+        public void TransitionToNavigatingState() {
+            if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
+                return;
+            }
+            //if (StateManager.Instance.UnityDebugMode) {
+            //    InitializeWaypoints();
+            //}
+            else {
+                //Destroy(GetLastWaypoint().WaypointObj);
+                //Waypoints.RemoveAt(Waypoints.Count - 1);
+                StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+            }
+        }
+
         private void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
-            if (Waypoints.Count == 3) {
-                if (StateManager.Instance.UnityDebugMode) {
-                    InitializeWaypoints();
-                }
-                else {
-                    Destroy(GetLastWaypoint().WaypointObj);
-                    Waypoints.RemoveAt(Waypoints.Count - 1);
-                    StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
-                }
+            if (Waypoints.Count == 0) {
+                InitializeWaypoints();
+            }
+            Waypoint lastWaypoint = GetLastWaypoint();
+            if (!lastWaypoint.Placed) {
+                UtilFunctions.FollowGaze(Camera.main, lastWaypoint.WaypointObj);
             }
         }
 
