@@ -18,14 +18,14 @@ namespace HoloToolkit.Unity {
 
         public bool movingRightArm = false;
         public bool movingLeftArm = false;
-        
+
         protected override void Start() {
             rosSocket = GetComponent<RosConnector>().RosSocket;
 
             publicationId = rosSocket.Advertise(Topic, "std_msgs/String");
             message = new StandardString();
             SendCommand("baseGoCfg");
-            InvokeRepeating("SendEinCommands", .1f, .1f);
+            InvokeRepeating("SendEinCommands", .1f, .25f);
         }
 
         float NormalizeRadRotation(float theta) {
@@ -56,11 +56,6 @@ namespace HoloToolkit.Unity {
             }
         }
 
-        private Quaternion PreprocessControllerRotation(Quaternion quat) {
-            Vector3 euler = quat.eulerAngles;
-            return Quaternion.Euler(euler.x, euler.y, -euler.z + 180);
-        }
-
         void SendEinCommands() {
             List<string> cmds = StateManager.Instance.EinCommandsToExecute;
             while (cmds.Count > 0) {
@@ -75,13 +70,8 @@ namespace HoloToolkit.Unity {
             }
             Vector3 outLeftPos = UnityToRosPositionAxisConversion(leftController.transform.localPosition);
             Vector3 outRightPos = UnityToRosPositionAxisConversion(rightController.transform.localPosition);
-            //Quaternion leftRot = leftController.transform.localRotation;
-            //Vector3 leftEuler = leftRot.eulerAngles;
-            //leftRot = Quaternion.Euler(leftEuler.x, leftEuler.y, -leftEuler.z + 180);
-            //Quaternion outLeftQuat = UnityToRosRotationAxisConversion(leftRot);
-            Quaternion outLeftQuat = UnityToRosRotationAxisConversion(PreprocessControllerRotation(leftController.transform.localRotation));
-            //Quaternion outRightQuat = UnityToRosRotationAxisConversion(rightController.transform.localRotation);
-            Quaternion outRightQuat = UnityToRosRotationAxisConversion(PreprocessControllerRotation(rightController.transform.localRotation));
+            Quaternion outLeftQuat = UnityToRosRotationAxisConversion(leftController.transform.localRotation);
+            Quaternion outRightQuat = UnityToRosRotationAxisConversion(rightController.transform.localRotation);
 
             leftArmCmd = "switchToLeftArm " + outLeftPos.x + " " + outLeftPos.y + " " + outLeftPos.z + " " +
                     outLeftQuat.x + " " + outLeftQuat.y + " " + outLeftQuat.z + " " + outLeftQuat.w + " moveToEEPose";
@@ -354,10 +344,8 @@ namespace HoloToolkit.Unity {
 
         //Convert 4D Unity quaternion to ROS quaternion
         Quaternion UnityToRosRotationAxisConversion(Quaternion qIn) {
-            Quaternion qOut = new Quaternion(-qIn.w, qIn.y, qIn.x, qIn.z);
-            return qOut;
-            //Vector3 euler = qOut.eulerAngles; 
-            //return Quaternion.Euler(euler.x, euler.y, -euler.z);
+            return new Quaternion(qIn.z, -qIn.x, qIn.y, -qIn.w);
+            //return new Quaternion(-qIn.z, qIn.x, -qIn.y, qIn.w); // try this if above fails
         }
     }
 }
