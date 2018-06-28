@@ -15,12 +15,8 @@ namespace HoloToolkit.Unity {
                 StateManager.Instance.MovoROSStartPose = StateManager.Instance.MovoROSPose;
                 Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
                 StateManager.Instance.RobotCalibrated = true;
-                //Debug.Assert(WaypointManager.Instance.Waypoints.Count > 0);
-                //UtilFunctions.InitWaypointPos(Camera.main, WaypointManager.Instance.Waypoints[0].WaypointObj);
                 StateManager.Instance.MovoUnityToROSOffset = StateManager.Instance.MovoROSStartPose - StateManager.Instance.MovoUnityStartPose;
                 Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
-                //StateManager.Instance.CurrentState = StateManager.State.WaypointState;
-                //StateManager.Instance.CurrentState = StateManager.State.StandbyState;
                 StateManager.Instance.TransitionToStandbyState();
             }
         }
