@@ -44,6 +44,12 @@ namespace HoloToolkit.Unity {
                     }
                     StateManager.Instance.TransitionToPuppetState();
                     break;
+                case "transition arm trail":
+                    if (!StateManager.Instance.RobotCalibrated) {
+                        return;
+                    }
+                    StateManager.Instance.TransitionToArmTrailState();
+                    break;
                 case "look straight":
                     StateManager.Instance.EinCommandsToExecute.Add("lookStraight");
                     break;
@@ -128,6 +134,24 @@ namespace HoloToolkit.Unity {
                 case "stop":
                     StateManager.Instance.UpdateRightArm = false;
                     StateManager.Instance.UpdateLeftArm = false;
+                    break;
+            }
+        }
+
+        private void ParseArmTrailCommands(string command) {
+            if (StateManager.Instance.CurrentState != StateManager.State.ArmTrailState) {
+                return;
+            }
+            switch (command) {
+                case "switch right arm":
+                    break;
+                case "switch left arm":
+                    break;
+                case "plan":
+                    break;
+                case "move":
+                    break;
+                case "stop":
                     break;
             }
         }
