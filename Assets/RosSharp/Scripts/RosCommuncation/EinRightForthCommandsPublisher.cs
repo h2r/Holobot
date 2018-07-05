@@ -16,9 +16,6 @@ namespace HoloToolkit.Unity {
         private string rightArmCmd;
         private string leftArmCmd;
 
-        public bool movingRightArm = false;
-        public bool movingLeftArm = false;
-
         protected override void Start() {
             rosSocket = GetComponent<RosConnector>().RosSocket;
 
