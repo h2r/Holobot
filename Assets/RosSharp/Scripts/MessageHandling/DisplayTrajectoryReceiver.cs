@@ -30,18 +30,19 @@ namespace RosSharp.RosBridgeClient {
         public Color TrailColor = Color.magenta;
 
         public MoveItDisplayTrajectory message;
-
         private void Awake() {
             MessageReception += ReceiveMessage;
         }
 
         private void Start() {
             foreach (JointStateWriter jsw in JointStateWriters) {
-                //Debug.Log(jsw);
-                //string name = jsw.name.Split(new char[] { ':' })[1];
-                //name = name.Substring(1, name.Length - 2);
-                //JointDict.Add(name, jsw);
+                //for(int i = 0; i < 10; i++) {
+                //JointStateWriter jsw = JointStateWriters[i];
+                string name = jsw.name.Split(new char[] { ':' })[1];
                 //Debug.Log(name);
+                name = name.Substring(1, name.Length - 2);
+                Debug.Log(name);
+                JointDict.Add(name, jsw);
             }
             TrailPoints = new List<GameObject>();
             prev_color = color;
