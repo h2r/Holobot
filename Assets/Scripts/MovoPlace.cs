@@ -22,18 +22,26 @@ namespace HoloToolkit.Unity {
         }
 
         void Update() {
+            GameObject baseLink = StateManager.Instance.MovoBaseLink;
+            Pose movoROSPose = StateManager.Instance.MovoROSPose;
+            float ROSDelTheta = 0;
+            if (movoROSPose == null) {
+                return;
+            }
+            if (!StateManager.Instance.RobotCalibrated) {
+                StateManager.Instance.CalibrateThetaOffset = movoROSPose.Theta;
+                Debug.Log("CalibrateThetaOffset: " + movoROSPose.Theta);
+                baseLink.transform.localRotation = Quaternion.Euler(0, ROSDelTheta + StateManager.Instance.CalibrateThetaOffset, 0);
+            }
             if (StateManager.Instance.CurrentState != StateManager.State.CalibratingState) {
                 if (StateManager.Instance.UnityDebugMode) {
                     return;
                 }
-                Debug.Assert(StateManager.Instance.RobotCalibrated == true);
+                Debug.Assert(StateManager.Instance.RobotCalibrated);
                 Pose movoROSStartPose = StateManager.Instance.MovoROSStartPose;
-                Pose movoROSPose = StateManager.Instance.MovoROSPose;
-                //GameObject baseLink = GameObject.Find("base_link");
-                GameObject baseLink = StateManager.Instance.MovoBaseLink;
-                baseLink.transform.localPosition = (movoROSPose - movoROSStartPose).ToUnityCoordsMovo(0);
-                float ROSDelTheta = movoROSPose.Theta - movoROSStartPose.Theta;
-                baseLink.transform.localRotation = Quaternion.Euler(0, ROSDelTheta, 0);
+                baseLink.transform.localPosition = (movoROSPose - movoROSStartPose).ToUnityCoordsMovo();
+                ROSDelTheta = movoROSPose.Theta - movoROSStartPose.Theta;
+                baseLink.transform.localRotation = Quaternion.Euler(0, ROSDelTheta + StateManager.Instance.CalibrateThetaOffset, 0);
             }
         }
     }
