@@ -83,15 +83,15 @@ namespace HoloToolkit.Unity {
             //float delTheta = StateManager.Instance.MovoUnityToROSOffset.Theta;
             //Debug.Log(StateManager.Instance.MovoUnityStartPose.Theta);
             //double delTheta = StateManager.Instance.MovoROSStartPose.Theta - StateManager.Instance.MovoUnityStartPose.Theta;
-            double delTheta = -StateManager.Instance.MovoROSStartPose.Theta;
+            //double delTheta = -StateManager.Instance.MovoROSStartPose.Theta;
             //Debug.Log(delTheta);
-            delTheta = (Math.PI / 180) * delTheta; // deg to rad
+            //delTheta = (Math.PI / 180) * delTheta; // deg to rad
             var x_coord = relativePos.z; // + StateManager.Instance.MovoROSStartPose.X;
             var y_coord = -relativePos.x; // + StateManager.Instance.MovoROSStartPose.Y;
             // Rotating the coordinates to match ROS coordinate system
             // ----------------------------------------
-            x_coord = (float)(x_coord * Math.Cos(delTheta) - y_coord * Math.Sin(delTheta));
-            y_coord = (float)(x_coord * Math.Sin(delTheta) + y_coord * Math.Cos(delTheta));
+            //x_coord = (float)(x_coord * Math.Cos(delTheta) - y_coord * Math.Sin(delTheta));
+            //y_coord = (float)(x_coord * Math.Sin(delTheta) + y_coord * Math.Cos(delTheta));
             // ----------------------------------------
             x_coord += StateManager.Instance.MovoROSStartPose.X;
             y_coord += StateManager.Instance.MovoROSStartPose.Y;
@@ -121,8 +121,8 @@ namespace HoloToolkit.Unity {
             Y = y;
             Theta = theta;
         }
-        public Vector3 ToUnityCoordsMovo(float unityY) {
-            return new Vector3(-Y, unityY, X);
+        public Vector3 ToUnityCoordsMovo() {
+            return new Vector3(-Y, 0.0f, X);
         }
         //public Vector3 ToUnityCoords(float unityY, bool flipX = true) {
         //    if (flipX) {
