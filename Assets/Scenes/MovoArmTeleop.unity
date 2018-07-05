@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f9b8f32224ca04498ffd0a2e2bc0567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RosBridgeServerUrl: ws://138.16.160.222:5564
+  RosBridgeServerUrl: ws://192.168.160.160:9090
 --- !u!114 &8210067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,8 +300,6 @@ MonoBehaviour:
   leftController: {fileID: 1221464692}
   rightController: {fileID: 2096556556}
   Robot: {fileID: 35888330}
-  movingRightArm: 0
-  movingLeftArm: 0
 --- !u!1 &8794578
 GameObject:
   m_ObjectHideFlags: 0
@@ -516,6 +514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6b40488ae653254fa044f43e05cf4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CalibrateThetaOffset: 0
   UnityDebugMode: 0
   FloorY: 0
   RightGripper: {fileID: 0}
@@ -525,6 +524,7 @@ MonoBehaviour:
   LookAtUser: 0
   UpdateRightArm: 0
   UpdateLeftArm: 0
+  ShowPointCloud: 0
 --- !u!114 &35384990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,9 +571,9 @@ MonoBehaviour:
   - Keyword: transition waypoints
     KeyCode: 0
   - Keyword: transition calibrate
-    KeyCode: 0
+    KeyCode: 116
   - Keyword: transition standby
-    KeyCode: 0
+    KeyCode: 115
   - Keyword: transition puppet
     KeyCode: 112
   - Keyword: state
@@ -581,7 +581,7 @@ MonoBehaviour:
   - Keyword: restart
     KeyCode: 0
   - Keyword: look smug
-    KeyCode: 0
+    KeyCode: 9
   - Keyword: look straight
     KeyCode: 0
   - Keyword: look at me
@@ -602,6 +602,8 @@ MonoBehaviour:
     KeyCode: 102
   - Keyword: stop
     KeyCode: 100
+  - Keyword: transition arm trail
+    KeyCode: 32
   recognitionConfidenceLevel: 0
 --- !u!114 &35384993
 MonoBehaviour:
