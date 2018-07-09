@@ -124,14 +124,8 @@ GameObject:
   - component: {fileID: 8210066}
   - component: {fileID: 8210067}
   - component: {fileID: 8210069}
-  - component: {fileID: 8210065}
-  - component: {fileID: 8210073}
-  - component: {fileID: 8210072}
-  - component: {fileID: 8210071}
-  - component: {fileID: 8210070}
-  - component: {fileID: 8210074}
   - component: {fileID: 8210075}
-  - component: {fileID: 8210076}
+  - component: {fileID: 8210065}
   m_Layer: 0
   m_Name: RosConnector
   m_TagString: Untagged
@@ -150,9 +144,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 599399f87ee56d541ac06a68cbe1fc1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Topic: /movo/right_arm/joint_states
+  Topic: /move_group/display_planned_path
   TimeStep: 0
-  MessageReceiver: {fileID: 745213673}
+  MessageReceiver: {fileID: 1736098714}
 --- !u!114 &8210066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,76 +210,6 @@ MonoBehaviour:
   UrdfModel: {fileID: 2132092019}
   LeftTargetModel: {fileID: 1221464692}
   RightTargetModel: {fileID: 2096556556}
---- !u!114 &8210070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 8210064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 599399f87ee56d541ac06a68cbe1fc1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /movo/head/joint_states
-  TimeStep: 0
-  MessageReceiver: {fileID: 745213673}
---- !u!114 &8210071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 8210064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 599399f87ee56d541ac06a68cbe1fc1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /movo/right_gripper/joint_states
-  TimeStep: 0
-  MessageReceiver: {fileID: 745213673}
---- !u!114 &8210072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 8210064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 599399f87ee56d541ac06a68cbe1fc1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /movo/left_gripper/joint_states
-  TimeStep: 0
-  MessageReceiver: {fileID: 0}
---- !u!114 &8210073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 8210064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 599399f87ee56d541ac06a68cbe1fc1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /movo/left_arm/joint_states
-  TimeStep: 0
-  MessageReceiver: {fileID: 745213673}
---- !u!114 &8210074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 8210064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 599399f87ee56d541ac06a68cbe1fc1f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Topic: /movo/linear_actuator/joint_states
-  TimeStep: 0
-  MessageReceiver: {fileID: 745213673}
 --- !u!114 &8210075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,27 +226,8 @@ MonoBehaviour:
   leftController: {fileID: 1221464692}
   rightController: {fileID: 2096556556}
   Robot: {fileID: 35888330}
---- !u!114 &8210076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 8210064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8546820515b3ca545b5f857bef8ca082, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UrdfModel: {fileID: 2132092019}
-  EnableRigidbodiesGravity: 0
-  SetRigidbodiesKinematic: 1
-  SetMeshCollidersConvex: 0
-  AddPoseProvider: 0
-  AddPoseReceiver: 0
-  AddJointStateReaders: 0
-  jointStateProvider: {fileID: 0}
-  AddJointStateWriters: 1
-  jointStateReceiver: {fileID: 745213673}
+  MoveItGoalPublisher: {fileID: 0}
+  PlanTopic: /goal_pose
 --- !u!1 &8794578
 GameObject:
   m_ObjectHideFlags: 0
@@ -9377,71 +9282,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 338290241}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &745213672
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 745213674}
-  - component: {fileID: 745213673}
-  m_Layer: 0
-  m_Name: JointStateReceiver
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &745213673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 745213672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d5c18a937d34f3438237874fd838a97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  JointStateWriters:
-  - {fileID: 1928780928}
-  - {fileID: 281259274}
-  - {fileID: 1454655884}
-  - {fileID: 1992736014}
-  - {fileID: 441320521}
-  - {fileID: 552483556}
-  - {fileID: 416252906}
-  - {fileID: 1196785771}
-  - {fileID: 2004369787}
-  - {fileID: 1005346628}
-  - {fileID: 666006701}
-  - {fileID: 256404758}
-  - {fileID: 1580776666}
-  - {fileID: 1128739232}
-  - {fileID: 1611566587}
-  - {fileID: 2018335670}
-  - {fileID: 814031188}
-  - {fileID: 972714964}
-  - {fileID: 649167823}
-  - {fileID: 963186489}
-  - {fileID: 1627592958}
-  - {fileID: 1332097353}
-  - {fileID: 1913425472}
-  - {fileID: 132603588}
---- !u!4 &745213674
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 745213672}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.54877716, y: 1.0052847, z: 0.4789064}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &750112460
 GameObject:
@@ -20647,30 +20487,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UrdfModel: {fileID: 2132092019}
   JointStateWriters:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1928780928}
+  - {fileID: 281259274}
+  - {fileID: 1454655884}
+  - {fileID: 1992736014}
+  - {fileID: 441320521}
+  - {fileID: 552483556}
+  - {fileID: 416252906}
+  - {fileID: 1196785771}
+  - {fileID: 2004369787}
+  - {fileID: 1005346628}
+  - {fileID: 666006701}
+  - {fileID: 256404758}
+  - {fileID: 1580776666}
+  - {fileID: 1128739232}
+  - {fileID: 1611566587}
+  - {fileID: 2018335670}
+  - {fileID: 814031188}
+  - {fileID: 972714964}
+  - {fileID: 649167823}
+  - {fileID: 963186489}
+  - {fileID: 1627592958}
+  - {fileID: 1332097353}
+  - {fileID: 1913425472}
+  - {fileID: 132603588}
   loop: 0
   trail: 0
   color: 0
@@ -25363,6 +25203,7 @@ GameObject:
   - component: {fileID: 2132092021}
   - component: {fileID: 2132092022}
   - component: {fileID: 2132092023}
+  - component: {fileID: 2132092024}
   m_Layer: 0
   m_Name: Movo
   m_TagString: Untagged
@@ -25424,6 +25265,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 586ea2c1558643543b44f93f4dd2a225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2132092024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2132092019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1ef14b0e18cc5d4b81e085efe6ddf6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FrameId: 
 --- !u!1 &2133120252
 GameObject:
   m_ObjectHideFlags: 0
