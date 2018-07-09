@@ -22,6 +22,20 @@ class PlanHandler(object):
         print self.robot.get_current_state()
         print "============================================="
 
+    def get_pose_right_arm(self):
+        """
+        Get the pose of the right end-effector.
+        :return: geometry_msgs.msg.Pose
+        """
+        return self.group_right.get_current_pose().pose
+        
+    def get_pose_left_arm(self):
+        """
+        Get the pose of the left end-effector.
+        :return: geometry_msgs.msg.Pose
+        """
+        return self.group_left.get_current_pose().pose
+    
     def generate_plan_right_arm(self, goal_pose):
         """
         Moves the left end effector to the specified pose.
@@ -53,6 +67,19 @@ class PlanHandler(object):
         :return: Boolean indicating success.
         """
         return execute_plan(self.group_left, plan)
+        
+    def generate_identity_plan(self, execute=False):
+        """
+        Generate a plan to move to the current pose - used to force joint state updates in unity.
+        :return: moveit_msgs.msg.RobotTrajectory (None if failed)
+        """
+        pose = self.get_pose_right_arm()
+        poselist = [pose.position.x, pose.position.y, pose.position.z, pose.orientation.x, pose.orientation.y,
+                    pose.orientation.z, pose.orientation.w]
+        plan = self.generate_plan_right_arm(pose, poselist)
+        if execute:
+            self.execute_plan_right_arm(plan)
+        return plan        
 
 
 def generate_plan(group, goal_pose):
@@ -100,3 +127,10 @@ def generate_pose_target(pose):
     pose_target.orientation.z = pose[5]
     pose_target.orientation.w = pose[6]
     return pose_target
+    
+def identity_pose_request_callback(data):
+    planHandler = new PlanHandler()
+    planHandler.generate_identity_plan(execute=True)
+
+if __name__ == '__main__':
+    rospy.Subscriber('/holocontrol/identity_pose_request', String, identity_pose_request_callback)
