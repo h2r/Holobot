@@ -299,7 +299,6 @@ MonoBehaviour:
   rightController: {fileID: 2096556556}
   Robot: {fileID: 35888330}
   MoveItGoalPublisher: {fileID: 0}
-  PlanTopic: /goal_pose
 --- !u!1 &8794578
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,6 +471,7 @@ GameObject:
   - component: {fileID: 35384991}
   - component: {fileID: 35384992}
   - component: {fileID: 35384993}
+  - component: {fileID: 35384994}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -525,6 +525,7 @@ MonoBehaviour:
   UpdateRightArm: 0
   UpdateLeftArm: 0
   ROSDelTheta: 0
+  MoveitPlanIdentityPose: 0
 --- !u!114 &35384990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,6 +605,12 @@ MonoBehaviour:
     KeyCode: 100
   - Keyword: transition arm trail
     KeyCode: 32
+  - Keyword: save labels
+    KeyCode: 121
+  - Keyword: transition label
+    KeyCode: 98
+  - Keyword: add label
+    KeyCode: 101
   recognitionConfidenceLevel: 0
 --- !u!114 &35384993
 MonoBehaviour:
@@ -619,6 +626,19 @@ MonoBehaviour:
   Keywords: []
   IsGlobalListener: 1
   PersistentKeywords: 0
+--- !u!114 &35384994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 35384986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9b37147abee1dc439730b67e54bc821, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WaypointTemplate: {fileID: 1619474318283704, guid: 8075eda3eed8137418d65905c916ef0c,
+    type: 2}
 --- !u!1 &35888330
 GameObject:
   m_ObjectHideFlags: 0

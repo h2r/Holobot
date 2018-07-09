@@ -9,7 +9,7 @@ namespace HoloToolkit.Unity {
         public bool RobotCalibrated { get; set; }
         public float CalibrateThetaOffset; // offset baseLink by this amount to account for intial ROS theta
         //public bool TransitionedToWaypointState { get; set; }
-        public enum State { CalibratingState, StandbyState, WaypointState, NavigatingState, PuppetState, ArmTrailState };
+        public enum State { CalibratingState, StandbyState, WaypointState, NavigatingState, PuppetState, ArmTrailState, LabelState };
         public State CurrentState { get; set; }
         //public Pose MovoROSToUnityOffset { get; set; }
         //public Pose MovoUnityToROSOffset { get; set; }
@@ -67,6 +67,13 @@ namespace HoloToolkit.Unity {
             else {
                 CurrentState = State.NavigatingState;
             }
+        }
+
+        public void TransitionToLabelState() 
+        {
+            CurrentState = State.LabelState;
+            UpdateRightArm = false;
+            UpdateLeftArm = false;
         }
 
         public void TransitionToCalibrateState() {

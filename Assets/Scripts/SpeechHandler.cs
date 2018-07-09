@@ -38,6 +38,13 @@ namespace HoloToolkit.Unity {
                     }
                     StateManager.Instance.TransitionToWaypointState();
                     break;
+                case "transition label":
+                    if (!StateManager.Instance.RobotCalibrated) {
+                        return;
+                    }
+                    Debug.Log("Transitioned to label state");
+                    StateManager.Instance.TransitionToLabelState();
+                    break;
                 case "transition puppet":
                     if (!StateManager.Instance.RobotCalibrated) {
                         return;
@@ -73,6 +80,9 @@ namespace HoloToolkit.Unity {
                 case StateManager.State.PuppetState:
                     ParsePuppetCommands(CurrentCommand);
                     break;
+                case StateManager.State.LabelState:
+                    ParseLabelCommands(CurrentCommand);
+                    break;
             }
         }
 
@@ -84,6 +94,25 @@ namespace HoloToolkit.Unity {
             switch (command) {
                 case "calibrate":
                     MovoPlace.CalibrateMovo();
+                    break;
+            }
+        }
+
+        private void ParseLabelCommands(string command) {
+            Debug.Log("ParseLabelCommands()");
+            if (StateManager.Instance.CurrentState != StateManager.State.LabelState) {
+                return;
+            }
+            switch (command) {
+                case "save labels":
+                    Debug.Log("Imma save the labels");
+                    //MovoPlace.CalibrateMovo();
+                    break;
+            }
+            switch (command) {
+                case "add label":
+                    Debug.Log("Imma add the labels");
+                    LabelManager.Instance.AddLabel();
                     break;
             }
         }

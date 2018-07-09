@@ -94,6 +94,41 @@ namespace HoloToolkit.Unity {
         }
     }
 
+    public class Label {
+        public GameObject WaypointObj { get; private set; }
+        public GameObject CoordTextObj { get; private set; }
+        public String Name { get; private set; }
+        public Boolean Placed { get; set; }
+        public Pose Pose { get; private set; }
+        private double Deg2rad(float angle) {
+            return (Math.PI / 180) * angle;
+        }
+        public Vector2 GetCoords() {
+            Transform robotObjTransform = GameObject.Find("Movo").transform;
+            Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
+            var x_coord = relativePos.z; // + StateManager.Instance.MovoROSStartPose.X;
+            var y_coord = -relativePos.x; // + StateManager.Instance.MovoROSStartPose.Y;
+            x_coord += StateManager.Instance.MovoROSStartPose.X;
+            y_coord += StateManager.Instance.MovoROSStartPose.Y;
+            return new Vector2(x_coord, y_coord);
+        }
+        public void UpdatePose(float calibThetaOffset = 0) {
+            Vector2 coords = GetCoords();
+            Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
+            float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta + calibThetaOffset;
+            Debug.Log("theta: " + theta);
+            Pose = new Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
+        }
+        public Label(GameObject waypointObj, int waypointInd) {
+            Name = String.Format("Waypoint{0}", waypointInd);
+            waypointObj.name = Name;
+            WaypointObj = waypointObj;
+            CoordTextObj = LabelManager.Instance.GetCoordTextObj(waypointObj);
+            Placed = false;
+            UpdatePose();
+        }
+    }
+
     public class Pose {
         public float X { get; private set; }
         public float Y { get; private set; }
