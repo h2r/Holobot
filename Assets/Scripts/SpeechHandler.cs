@@ -86,7 +86,6 @@ namespace HoloToolkit.Unity {
                     MovoPlace.CalibrateMovo();
                     break;
             }
-            Debug.Log("done!");
         }
 
         private void ParseWaypointCommands(string command) {

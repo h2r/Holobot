@@ -9,7 +9,6 @@ namespace HoloToolkit.Unity {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
         private GameObject WaypointTemplate;
-        private bool DebugStop;
         // Use this for initialization
 
         //void Awake() {
@@ -18,7 +17,6 @@ namespace HoloToolkit.Unity {
             WaypointTemplate = GameObject.Find("Waypoint0");
             Waypoints = new List<Waypoint>();
             Debug.Log("WaypointManager Awake()");
-            DebugStop = false;
         }
 
         public void ClearWaypoints() {
@@ -55,8 +53,6 @@ namespace HoloToolkit.Unity {
             coordTextObj.name = String.Format("WaypointCoord{0}", WaypointInd);
             Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
             Debug.Log(Waypoints.Count + " waypoints exist.");
-            Debug.Log("waypointObj name: " + waypointObj.name);
-            Debug.Log("last waypoint name: " + GetLastWaypoint().Name);
             Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
         }
 
@@ -66,18 +62,6 @@ namespace HoloToolkit.Unity {
             }
             return Waypoints[Waypoints.Count - 1];
         }
-
-        //public void TransitionToNavigatingState() {
-        //    if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
-        //        return;
-        //    }
-        //    if (StateManager.Instance.UnityDebugMode) {
-        //        InitializeWaypoints();
-        //    }
-        //    else {
-        //        StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
-        //    }
-        //}
 
         private void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {

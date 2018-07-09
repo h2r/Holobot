@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections;
 using HoloToolkit.Unity.InputModule.Utilities.Interactions;
+using HoloToolkit.Unity;
 
 namespace RosSharp.RosBridgeClient {
 
@@ -16,7 +17,6 @@ namespace RosSharp.RosBridgeClient {
         public JointStateWriter[] JointStateWriters;
         public Dictionary<string, JointStateWriter> JointDict = new Dictionary<string, JointStateWriter>();
         private List<GameObject> TrailPoints;
-        
 
         public Boolean loop = false;
         public Boolean trail = false;
@@ -28,6 +28,8 @@ namespace RosSharp.RosBridgeClient {
         private Boolean new_trajectory = false;
 
         public Color TrailColor = Color.magenta;
+
+        public static bool moveToIdentityPose = true;
 
         public MoveItDisplayTrajectory message;
         private void Awake() {
@@ -45,22 +47,26 @@ namespace RosSharp.RosBridgeClient {
         }
 
         private void Update() {
-            
-            if (Input.GetKeyDown("f") || new_trajectory) {
+            if (StateManager.Instance.CurrentState != StateManager.State.ArmTrailState) {
+                // TODO: Tell moveit script to create empty plan
+                return;
+            }
+            //if (Input.GetKeyDown("f") || new_trajectory) {
+            if (new_trajectory) {
                 Debug.Log("f detected");
                 new_trajectory = false;
-                //DestroyTrail();
+                DestroyTrail();
                 StopCoroutine("Animate");
                 StartCoroutine("Animate");
             }
         }
 
-        //private void DestroyTrail() {
-        //    foreach(GameObject trailPoint in TrailPoints) {
-        //        Destroy(trailPoint);
-        //    }
-        //    TrailPoints.Clear();
-        //}
+        private void DestroyTrail() {
+            foreach (GameObject trailPoint in TrailPoints) {
+                Destroy(trailPoint);
+            }
+            TrailPoints.Clear();
+        }
 
         private void ReceiveMessage(object sender, MessageEventArgs e) {
             message = (MoveItDisplayTrajectory)e.Message;

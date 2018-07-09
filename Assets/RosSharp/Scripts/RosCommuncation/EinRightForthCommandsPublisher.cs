@@ -13,20 +13,20 @@ namespace HoloToolkit.Unity {
         public GameObject Robot;
 
         public MoveItGoalPublisher MoveItGoalPublisher;
-        public string PlanTopic = "/goal_pose";
 
-        private StandardString message;
         private string rightArmCmd;
         private string leftArmCmd;
 
         private Vector3 outLeftPos, outRightPos;
         private Quaternion outLeftQuat, outRightQuat;
 
+        private int moveitIdentityPoseRequestId;
+
         protected override void Start() {
             rosSocket = GetComponent<RosConnector>().RosSocket;
 
             publicationId = rosSocket.Advertise(Topic, "std_msgs/String");
-            message = new StandardString();
+            moveitIdentityPoseRequestId = rosSocket.Advertise("/holocontrol/identity_pose_request", "std_msgs/String");
             SendCommand("baseGoCfg");
             InvokeRepeating("SendEinCommands", .1f, .25f);
         }
@@ -96,32 +96,19 @@ namespace HoloToolkit.Unity {
             Debug.Log("Sent command: " + msg.data);
         }
 
-        private GeometryQuaternion QuaternionToGeometryQuaternion(Quaternion q) {
-            return new GeometryQuaternion {
-                x = q.x,
-                y = q.y,
-                z = q.z,
-                w = q.w
-            };
-        }
-
-        private GeometryPoint Vector3ToGeometryPoint(Vector3 v) {
-            return new GeometryPoint {
-                x = v.x,
-                y = v.y,
-                z = v.z
-            };
-        }
-
         public void SendPlanRequest() {
+            var currState = StateManager.Instance.CurrentState;
+            if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
+                return;
+            }
             try {
                 GeometryPose rightTargetPose = new GeometryPose {
-                    position = Vector3ToGeometryPoint(outRightPos),
-                    orientation = QuaternionToGeometryQuaternion(outRightQuat)
+                    position = UtilFunctions.Vector3ToGeometryPoint(outRightPos),
+                    orientation = UtilFunctions.QuaternionToGeometryQuaternion(outRightQuat)
                 };
                 GeometryPose leftTargetPose = new GeometryPose {
-                    position = Vector3ToGeometryPoint(outLeftPos),
-                    orientation = QuaternionToGeometryQuaternion(outLeftQuat)
+                    position = UtilFunctions.Vector3ToGeometryPoint(outLeftPos),
+                    orientation = UtilFunctions.QuaternionToGeometryQuaternion(outLeftQuat)
                 };
                 MoveitTarget moveitTarget = new MoveitTarget {
                     right_arm = rightTargetPose,

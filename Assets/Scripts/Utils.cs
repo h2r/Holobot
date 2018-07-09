@@ -40,6 +40,23 @@ namespace HoloToolkit.Unity {
         public static Quaternion UnityToRosRotationAxisConversion(Quaternion qIn) {
             return new Quaternion(qIn.z, -qIn.x, qIn.y, -qIn.w);
         }
+
+        public static GeometryQuaternion QuaternionToGeometryQuaternion(Quaternion q) {
+            return new GeometryQuaternion {
+                x = q.x,
+                y = q.y,
+                z = q.z,
+                w = q.w
+            };
+        }
+
+        public static GeometryPoint Vector3ToGeometryPoint(Vector3 v) {
+            return new GeometryPoint {
+                x = v.x,
+                y = v.y,
+                z = v.z
+            };
+        }
     }
 
     public class Waypoint {
@@ -47,6 +64,7 @@ namespace HoloToolkit.Unity {
         public GameObject CoordTextObj { get; private set; }
         public String Name { get; private set; }
         public Boolean Placed { get; set; }
+        public Pose Pose { get; private set; }
         private double Deg2rad(float angle) {
             return (Math.PI / 180) * angle;
         }
@@ -59,11 +77,12 @@ namespace HoloToolkit.Unity {
             y_coord += StateManager.Instance.MovoROSStartPose.Y;
             return new Vector2(x_coord, y_coord);
         }
-        public Pose GetPose() {
+        public void UpdatePose(float calibThetaOffset = 0) {
             Vector2 coords = GetCoords();
             Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
-            float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta;
-            return new Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
+            float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta + calibThetaOffset;
+            Debug.Log("theta: " + theta);
+            Pose = new Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
         }
         public Waypoint(GameObject waypointObj, int waypointInd) {
             Name = String.Format("Waypoint{0}", waypointInd);
@@ -71,13 +90,14 @@ namespace HoloToolkit.Unity {
             WaypointObj = waypointObj;
             CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);
             Placed = false;
+            UpdatePose();
         }
     }
 
     public class Pose {
         public float X { get; private set; }
         public float Y { get; private set; }
-        public float Theta { get; private set; }
+        public float Theta { get; set; }
         public Pose(float x, float y, float theta) {
             X = x;
             Y = y;

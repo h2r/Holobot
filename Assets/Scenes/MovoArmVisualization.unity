@@ -208,8 +208,6 @@ MonoBehaviour:
   PlanTopic: /goal_pose
   ExecuteTopic: /ros_reality/move_to_goal
   UrdfModel: {fileID: 2132092019}
-  LeftTargetModel: {fileID: 1221464692}
-  RightTargetModel: {fileID: 2096556556}
 --- !u!114 &8210075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,7 +224,7 @@ MonoBehaviour:
   leftController: {fileID: 1221464692}
   rightController: {fileID: 2096556556}
   Robot: {fileID: 35888330}
-  MoveItGoalPublisher: {fileID: 0}
+  MoveItGoalPublisher: {fileID: 8210069}
   PlanTopic: /goal_pose
 --- !u!1 &8794578
 GameObject:
@@ -452,6 +450,8 @@ MonoBehaviour:
   LookAtUser: 0
   UpdateRightArm: 0
   UpdateLeftArm: 0
+  ROSDelTheta: 0
+  MoveitPlanIdentityPose: 0
 --- !u!114 &35384990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20511,7 +20511,7 @@ MonoBehaviour:
   - {fileID: 1332097353}
   - {fileID: 1913425472}
   - {fileID: 132603588}
-  loop: 0
+  loop: 1
   trail: 0
   color: 0
   TrailColor: {r: 1, g: 0, b: 1, a: 1}
