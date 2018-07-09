@@ -61,8 +61,6 @@ namespace HoloToolkit.Unity {
             Debug.Log(num_waypoints + " waypoints exist.");
             string coord_message = "";
             foreach (Waypoint waypoint in waypoints) {
-                //Vector2 waypoint_coords = waypoint.GetCoords();
-                //string coord_str = waypoint_coords[0].ToString() + "," + waypoint_coords[1].ToString();
                 Debug.Assert(waypoint != null);
                 Debug.Log("Culprit 2");
                 Pose waypoint_pose = waypoint.GetPose();
@@ -96,7 +94,7 @@ namespace HoloToolkit.Unity {
             //Debug.Log(ros_msg);
             List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
             //Debug.Log(poseStr);
-            List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };//poseStr.Cast<float>().ToList();
+            List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };
             Debug.Assert(pose.Count == 3);
             StateManager.Instance.MovoROSPose = new Pose(pose[0], pose[1], -pose[2]); // Unity rotation goes clockwise
             //Debug.Log("MovoROSPose updated!");
@@ -135,9 +133,6 @@ namespace HoloToolkit.Unity {
                 frameCounter = 0;
                 currentlyNavigating = false;
                 hasPublishedWaypoints = false;
-
-                //WaypointManager.Instance.ClearWaypoints();
-                //StateManager.Instance.CurrentState = StateManager.State.StandbyState;
                 StateManager.Instance.TransitionToStandbyState();
             }
             else if (StateManager.Instance.MovoState == "standby" && !currentlyNavigating && !hasPublishedWaypoints) {
