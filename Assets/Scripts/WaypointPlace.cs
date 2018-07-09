@@ -17,12 +17,17 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
-            // Ensure that all waypoints are at floor level
-            foreach (Waypoint wp in WaypointManager.Instance.Waypoints) {
-                var pos = wp.WaypointObj.transform.position;
-                Debug.Assert(StateManager.Instance.FloorY != -99);
-                wp.WaypointObj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
+            if (name == "Waypoint0") {
+                return;
             }
+            var pos = transform.position;
+            transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
+            //// Ensure that all waypoints are at floor level
+            //foreach (Waypoint wp in WaypointManager.Instance.Waypoints) {
+            //    var pos = wp.WaypointObj.transform.position;
+            //    Debug.Assert(StateManager.Instance.FloorY != -99);
+            //    wp.WaypointObj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
+            //}
             Debug.Assert(StateManager.Instance.CurrentState == StateManager.State.WaypointState);
             Waypoint curr_waypoint = WaypointManager.Instance.GetLastWaypoint();
             waypointObj = curr_waypoint.WaypointObj;
