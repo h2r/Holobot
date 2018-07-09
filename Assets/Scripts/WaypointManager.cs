@@ -17,9 +17,7 @@ namespace HoloToolkit.Unity {
             Debug.Log("Initialized WaypointManager");
             WaypointTemplate = GameObject.Find("Waypoint0");
             Waypoints = new List<Waypoint>();
-            //ClearWaypoints();
             Debug.Log("WaypointManager Awake()");
-            //InitializeWaypoints();
             DebugStop = false;
         }
 
@@ -47,13 +45,6 @@ namespace HoloToolkit.Unity {
         public void AddWaypoint() {
             Debug.Log("AddWaypoint()");
             GameObject waypointObj = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
-            //if (Waypoints.Count == 0) {
-            //    waypointObj = Instantiate(WaypointTemplate);
-            //}
-            ////waypointObj.GetComponent<Renderer>().enabled = true; // if doesn't work, enable template then disable immediately after
-            //else {
-            //    waypointObj = Instantiate(GetLastWaypoint().WaypointObj);
-            //}
             if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) { // If in WaypointState, then place waypoint in front of user.
                 UtilFunctions.InitWaypointPos(Camera.main, waypointObj);
             }
@@ -67,7 +58,6 @@ namespace HoloToolkit.Unity {
             Debug.Log("waypointObj name: " + waypointObj.name);
             Debug.Log("last waypoint name: " + GetLastWaypoint().Name);
             Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
-            //Debug.Log(WaypointManager.Instance.Waypoints.Count + " Waypoints exist.");
         }
 
         public Waypoint GetLastWaypoint() {
@@ -81,12 +71,10 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
-            //if (StateManager.Instance.UnityDebugMode) {
-            //    InitializeWaypoints();
-            //}
+            if (StateManager.Instance.UnityDebugMode) {
+                InitializeWaypoints();
+            }
             else {
-                //Destroy(GetLastWaypoint().WaypointObj);
-                //Waypoints.RemoveAt(Waypoints.Count - 1);
                 StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
             }
         }
