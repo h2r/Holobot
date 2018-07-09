@@ -212,8 +212,6 @@ MonoBehaviour:
   PlanTopic: /goal_pose
   ExecuteTopic: /ros_reality/move_to_goal
   UrdfModel: {fileID: 0}
-  LeftTargetModel: {fileID: 0}
-  RightTargetModel: {fileID: 0}
 --- !u!114 &8210070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,6 +298,8 @@ MonoBehaviour:
   leftController: {fileID: 1221464692}
   rightController: {fileID: 2096556556}
   Robot: {fileID: 35888330}
+  MoveItGoalPublisher: {fileID: 0}
+  PlanTopic: /goal_pose
 --- !u!1 &8794578
 GameObject:
   m_ObjectHideFlags: 0
@@ -524,7 +524,7 @@ MonoBehaviour:
   LookAtUser: 0
   UpdateRightArm: 0
   UpdateLeftArm: 0
-  ShowPointCloud: 0
+  ROSDelTheta: 0
 --- !u!114 &35384990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -569,9 +569,9 @@ MonoBehaviour:
   - Keyword: move
     KeyCode: 108
   - Keyword: transition waypoints
-    KeyCode: 0
-  - Keyword: transition calibrate
     KeyCode: 116
+  - Keyword: transition calibrate
+    KeyCode: 0
   - Keyword: transition standby
     KeyCode: 115
   - Keyword: transition puppet
@@ -12344,7 +12344,7 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 983372434}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 100, z: 1.368}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
