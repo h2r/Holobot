@@ -26,9 +26,27 @@ public class Message {
 public class MoveitTarget : Message {
     public GeometryPose left_arm;
     public GeometryPose right_arm;
+    public StandardString left_open;
+    public StandardString right_open;
+    public StandardString id;
+    public StandardString prev_id;
+    public StandardString next_id;
     public MoveitTarget() {
         left_arm = new GeometryPose();
         right_arm = new GeometryPose();
+        left_open = new StandardString();
+        right_open = new StandardString();
+        id = new StandardString();
+        prev_id = new StandardString();
+        next_id = new StandardString();
+
+        left_open.data = "0";
+        right_open.data = "0";
+        id.data = "";
+        prev_id.data = "";
+        next_id.data = "";
+
+
     }
 }
 
@@ -40,6 +58,16 @@ public class MoveItDisplayTrajectory : Message {
         model_id = "";
         trajectory = new MoveItRobotTrajectory[0];
         trajectory_start = new MoveItRobotState();
+    }
+}
+
+// wrapper for a MoveItRobotTrajectory with an id field -Samir
+public class MoveitPlan : Message {
+    public string id;
+    public MoveItRobotTrajectory plan;
+    public MoveitPlan() {
+        id = "";
+        plan = new MoveItRobotTrajectory();
     }
 }
 
