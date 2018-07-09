@@ -32,6 +32,16 @@ namespace HoloToolkit.Unity {
             return (float)(Math.PI / 180) * deg;
         }
 
+        public static Vector3 UnityToRosPositionAxisConversion(Vector3 rosIn) {
+            return new Vector3(rosIn.z, -rosIn.x, rosIn.y);
+        }
+
+        //Convert 4D Unity quaternion to ROS quaternion
+        public static Quaternion UnityToRosRotationAxisConversion(Quaternion qIn) {
+            return new Quaternion(qIn.z, -qIn.x, qIn.y, -qIn.w);
+            //return new Quaternion(-qIn.z, qIn.x, -qIn.y, qIn.w); // try this if above fails
+        }
+
         //public static void RaycastPlace(Camera cam, GameObject obj, bool isMovo = false) {
         //    Debug.Assert(SpatialMapping.Instance.DrawVisualMeshes == true);
         //    // Do a raycast into the world that will only hit the Spatial Mapping mesh.
