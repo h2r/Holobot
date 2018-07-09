@@ -40,6 +40,23 @@ namespace HoloToolkit.Unity {
         public static Quaternion UnityToRosRotationAxisConversion(Quaternion qIn) {
             return new Quaternion(qIn.z, -qIn.x, qIn.y, -qIn.w);
         }
+
+        public static GeometryQuaternion QuaternionToGeometryQuaternion(Quaternion q) {
+            return new GeometryQuaternion {
+                x = q.x,
+                y = q.y,
+                z = q.z,
+                w = q.w
+            };
+        }
+
+        public static GeometryPoint Vector3ToGeometryPoint(Vector3 v) {
+            return new GeometryPoint {
+                x = v.x,
+                y = v.y,
+                z = v.z
+            };
+        }
     }
 
     public class Waypoint {
