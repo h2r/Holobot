@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using Academy.HoloToolkit.Unity;
 
 //namespace Academy.HoloToolkit.Unity {
 namespace HoloToolkit.Unity {
@@ -17,6 +16,7 @@ namespace HoloToolkit.Unity {
         private readonly string unityWaypointPubTopic = "holocontrol/unity_waypoint_pub";
         private readonly string movoStateRequestTopic = "holocontrol/movo_state_request";
         private readonly string movoPoseRequestTopic = "holocontrol/movo_pose_request";
+        private readonly string moveitIdentityPoseRequestTopic = "holocontrol/moveit_identity_pose_request";
         private bool currentlyNavigating = false;
         private bool hasPublishedWaypoints = false;
         private int frameCounter;
@@ -37,6 +37,7 @@ namespace HoloToolkit.Unity {
             wsc.Advertise(unityWaypointPubTopic, "std_msgs/String");
             wsc.Advertise(movoStateRequestTopic, "std_msgs/String");
             wsc.Advertise(movoPoseRequestTopic, "std_msgs/String");
+            wsc.Advertise(moveitIdentityPoseRequestTopic, "std_msgs/String");
             currentlyNavigating = false;
             hasPublishedWaypoints = false;
             frameCounter = 0;
@@ -82,7 +83,7 @@ namespace HoloToolkit.Unity {
                 StateManager.Instance.MovoROSPose = new Pose(0, 0, 0);
                 return;
             }
-            wsc.Publish(movoPoseRequestTopic, "True");
+            wsc.Publish(movoPoseRequestTopic, ""); // if bug, change to "True"
             //Debug.Log("Published PoseRequestTopic");
             string ros_msg = wsc.messages[movoPoseTopic];
             //Debug.Log("Received Pose response");
@@ -104,7 +105,7 @@ namespace HoloToolkit.Unity {
                 return;
             }
             //Debug.Log("Updating MovoState");
-            wsc.Publish(movoStateRequestTopic, "True");
+            wsc.Publish(movoStateRequestTopic, ""); // if bug, change to "True"
             StateManager.Instance.MovoState = GetROSMessage(wsc.messages[movoStateTopic]);
             //Debug.Log("MovoROSState updated!");
         }
@@ -115,6 +116,10 @@ namespace HoloToolkit.Unity {
             try {
                 UpdateMovoROSPose();
                 UpdateMovoState();
+                if (StateManager.Instance.MoveitPlanIdentityPose) {
+                    wsc.Publish(moveitIdentityPoseRequestTopic, "");
+                    StateManager.Instance.MoveitPlanIdentityPose = false;
+                }
             }
             catch {
                 //Debug.Log("Bluh");
