@@ -29,8 +29,6 @@ namespace RosSharp.RosBridgeClient {
 
         public Color TrailColor = Color.magenta;
 
-        public static bool moveToIdentityPose = true;
-
         public MoveItDisplayTrajectory message;
         private void Awake() {
             MessageReception += ReceiveMessage;
