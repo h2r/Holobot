@@ -98,7 +98,8 @@ namespace HoloToolkit.Unity {
                     WaypointManager.Instance.AddWaypoint();
                     break;
                 case "move":
-                    WaypointManager.Instance.TransitionToNavigatingState();
+                    //WaypointManager.Instance.TransitionToNavigatingState();
+                    StateManager.Instance.TransitionToNavigatingState();
                     break;
                 case "restart":
                     WaypointManager.Instance.InitializeWaypoints();

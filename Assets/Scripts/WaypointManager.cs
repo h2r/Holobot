@@ -67,17 +67,17 @@ namespace HoloToolkit.Unity {
             return Waypoints[Waypoints.Count - 1];
         }
 
-        public void TransitionToNavigatingState() {
-            if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
-                return;
-            }
-            if (StateManager.Instance.UnityDebugMode) {
-                InitializeWaypoints();
-            }
-            else {
-                StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
-            }
-        }
+        //public void TransitionToNavigatingState() {
+        //    if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
+        //        return;
+        //    }
+        //    if (StateManager.Instance.UnityDebugMode) {
+        //        InitializeWaypoints();
+        //    }
+        //    else {
+        //        StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+        //    }
+        //}
 
         private void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {

@@ -46,10 +46,22 @@ namespace HoloToolkit.Unity {
         public void TransitionToWaypointState() {
             WaypointManager.Instance.InitializeWaypoints();
             UtilFunctions.SetGrippersActive(false);
-            Instance.CurrentState = State.WaypointState;
+            CurrentState = State.WaypointState;
             UpdateRightArm = false;
             UpdateLeftArm = false;
             Debug.Log("Transitioned to waypoint state");
+        }
+
+        public void TransitionToNavigatingState() {
+            if (CurrentState != State.WaypointState) {
+                return;
+            }
+            if (UnityDebugMode) {
+                WaypointManager.Instance.InitializeWaypoints();
+            }
+            else {
+                CurrentState = State.NavigatingState;
+            }
         }
 
         public void TransitionToCalibrateState() {
@@ -102,7 +114,6 @@ namespace HoloToolkit.Unity {
         }
 
         private void Update() {
-            //Debug.Log("Current state: " + CurrentState);
             Debug.Assert(MovoState == "standby" || MovoState == "navigating");
             DisplayState();
         }
