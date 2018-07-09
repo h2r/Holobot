@@ -36,12 +36,8 @@ namespace RosSharp.RosBridgeClient {
 
         private void Start() {
             foreach (JointStateWriter jsw in JointStateWriters) {
-                //for(int i = 0; i < 10; i++) {
-                //JointStateWriter jsw = JointStateWriters[i];
                 string name = jsw.name.Split(new char[] { ':' })[1];
-                //Debug.Log(name);
                 name = name.Substring(1, name.Length - 2);
-                Debug.Log(name);
                 JointDict.Add(name, jsw);
             }
             TrailPoints = new List<GameObject>();
@@ -51,11 +47,11 @@ namespace RosSharp.RosBridgeClient {
         private void Update() {
             
             if (Input.GetKeyDown("f") || new_trajectory) {
-                //Debug.Log("f detected");
+                Debug.Log("f detected");
                 new_trajectory = false;
                 //DestroyTrail();
                 StopCoroutine("Animate");
-                //StartCoroutine("Animate");
+                StartCoroutine("Animate");
             }
         }
 
