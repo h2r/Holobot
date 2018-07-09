@@ -89,8 +89,9 @@ namespace HoloToolkit.Unity {
         }
 
         public void SendCommand(string command) {
-            StandardString msg = new StandardString();
-            msg.data = command;
+            StandardString msg = new StandardString {
+                data = command
+            };
             rosSocket.Publish(publicationId, msg);
             Debug.Log("Sent command: " + msg.data);
         }
@@ -129,6 +130,7 @@ namespace HoloToolkit.Unity {
                 MoveItGoalPublisher.PublishPlan(moveitTarget);
             }
             catch {
+                Debug.Log("SendPlanRequest failed :(");
                 return;
             }
         }
