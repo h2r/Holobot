@@ -33,6 +33,8 @@ namespace HoloToolkit.Unity {
         public bool UpdateLeftArm = false;
         [HideInInspector]
         public float ROSDelTheta;
+        [HideInInspector]
+        public bool MoveitPlanIdentityPose = false; // if true, make moveit plan movement to current arm poses (e.g. to initialize model joint states)
 
         private void Start() {
             Debug.Log("Initialized StateManager");
