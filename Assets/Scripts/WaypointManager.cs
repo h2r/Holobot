@@ -9,7 +9,6 @@ namespace HoloToolkit.Unity {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
         private GameObject WaypointTemplate;
-        private bool DebugStop;
         // Use this for initialization
 
         //void Awake() {
@@ -18,7 +17,6 @@ namespace HoloToolkit.Unity {
             WaypointTemplate = GameObject.Find("Waypoint0");
             Waypoints = new List<Waypoint>();
             Debug.Log("WaypointManager Awake()");
-            DebugStop = false;
         }
 
         public void ClearWaypoints() {
