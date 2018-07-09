@@ -55,8 +55,6 @@ namespace HoloToolkit.Unity {
             coordTextObj.name = String.Format("WaypointCoord{0}", WaypointInd);
             Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
             Debug.Log(Waypoints.Count + " waypoints exist.");
-            Debug.Log("waypointObj name: " + waypointObj.name);
-            Debug.Log("last waypoint name: " + GetLastWaypoint().Name);
             Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
         }
 
@@ -66,18 +64,6 @@ namespace HoloToolkit.Unity {
             }
             return Waypoints[Waypoints.Count - 1];
         }
-
-        //public void TransitionToNavigatingState() {
-        //    if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
-        //        return;
-        //    }
-        //    if (StateManager.Instance.UnityDebugMode) {
-        //        InitializeWaypoints();
-        //    }
-        //    else {
-        //        StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
-        //    }
-        //}
 
         private void Update() {
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {

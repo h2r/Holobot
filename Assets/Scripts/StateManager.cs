@@ -31,16 +31,19 @@ namespace HoloToolkit.Unity {
         public bool UpdateRightArm = false;
         [HideInInspector]
         public bool UpdateLeftArm = false;
+        [HideInInspector]
+        public float ROSDelTheta;
 
         private void Start() {
             Debug.Log("Initialized StateManager");
             RightGripper = GameObject.Find("RightGripper");
             LeftGripper = GameObject.Find("LeftGripper");
-            TransitionToCalibrateState();
             MovoState = "standby";
             EinCommandsToExecute = new List<string>();
             LookAtUser = false;
             MovoBaseLink = GameObject.Find("base_link");
+            TransitionToCalibrateState();
+            ROSDelTheta = 0;
         }
 
         public void TransitionToWaypointState() {
@@ -71,6 +74,9 @@ namespace HoloToolkit.Unity {
             CurrentState = State.CalibratingState;
             UpdateRightArm = false;
             UpdateLeftArm = false;
+            GameObject movoObj = GameObject.Find("Movo");
+            movoObj.transform.position = MovoBaseLink.transform.position;
+            MovoBaseLink.transform.localPosition = new Vector3(0, 0, 0);
             Debug.Log("Transitioned to calibrate state");
         }
 

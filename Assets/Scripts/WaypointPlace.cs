@@ -4,13 +4,16 @@ using UnityEngine.EventSystems;
 using System;
 
 namespace HoloToolkit.Unity {
-//namespace Academy.HoloToolkit.Unity {
+    //namespace Academy.HoloToolkit.Unity {
     public class WaypointPlace : MonoBehaviour {
-        //bool placingEnabled;
-        bool waypointPlaced;
         GameObject waypointObj;
         GameObject coordTextObj;
+        Waypoint thisWaypoint;
         Text coordText;
+
+        private void Start() {
+            thisWaypoint = null;
+        }
 
         // Update is called once per frame
         void Update() {
@@ -22,22 +25,22 @@ namespace HoloToolkit.Unity {
             }
             var pos = transform.position;
             transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
-            //// Ensure that all waypoints are at floor level
-            //foreach (Waypoint wp in WaypointManager.Instance.Waypoints) {
-            //    var pos = wp.WaypointObj.transform.position;
-            //    Debug.Assert(StateManager.Instance.FloorY != -99);
-            //    wp.WaypointObj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
-            //}
             Debug.Assert(StateManager.Instance.CurrentState == StateManager.State.WaypointState);
-            Waypoint curr_waypoint = WaypointManager.Instance.GetLastWaypoint();
-            waypointObj = curr_waypoint.WaypointObj;
+            //Waypoint curr_waypoint = WaypointManager.Instance.GetLastWaypoint();
+            if (thisWaypoint == null) {
+                thisWaypoint = WaypointManager.Instance.GetLastWaypoint();
+                Debug.Log(name + " waypoint set!");
+            }
+            waypointObj = thisWaypoint.WaypointObj;
             Debug.Assert(waypointObj != null);
 
-            //Utils.RaycastPlace(Camera.main, waypointObj);
-            coordTextObj = WaypointManager.Instance.GetLastWaypoint().CoordTextObj;
+            //coordTextObj = WaypointManager.Instance.GetLastWaypoint().CoordTextObj;
+            coordTextObj = thisWaypoint.CoordTextObj;
             Debug.Assert(coordTextObj != null);
             coordText = coordTextObj.GetComponent<Text>();
-            Pose pose = curr_waypoint.GetPose();
+            thisWaypoint.UpdatePose(calibThetaOffset: -StateManager.Instance.CalibrateThetaOffset);
+            Debug.Log(name + " Pose updated!");
+            Pose pose = thisWaypoint.Pose;
             string msg = string.Format("{0}\n({1}, {2}, {3})", waypointObj.name, Math.Round(pose.X, 1), Math.Round(pose.Y, 1), Math.Round(pose.Theta, 1));
             coordText.text = msg;
         }

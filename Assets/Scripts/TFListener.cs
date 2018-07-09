@@ -62,8 +62,7 @@ namespace HoloToolkit.Unity {
             string coord_message = "";
             foreach (Waypoint waypoint in waypoints) {
                 Debug.Assert(waypoint != null);
-                Debug.Log("Culprit 2");
-                Pose waypoint_pose = waypoint.GetPose();
+                Pose waypoint_pose = waypoint.Pose;
                 string coord_str = waypoint_pose.X.ToString() + "," + waypoint_pose.Y.ToString() + "," + waypoint_pose.Theta.ToString();
                 coord_message += coord_str + ";";
             }
