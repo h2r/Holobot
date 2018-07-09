@@ -15,7 +15,6 @@ namespace HoloToolkit.Unity {
         public MoveItGoalPublisher MoveItGoalPublisher;
         public string PlanTopic = "/goal_pose";
 
-        private StandardString message;
         private string rightArmCmd;
         private string leftArmCmd;
 
@@ -26,7 +25,6 @@ namespace HoloToolkit.Unity {
             rosSocket = GetComponent<RosConnector>().RosSocket;
 
             publicationId = rosSocket.Advertise(Topic, "std_msgs/String");
-            message = new StandardString();
             SendCommand("baseGoCfg");
             InvokeRepeating("SendEinCommands", .1f, .25f);
         }
@@ -114,6 +112,10 @@ namespace HoloToolkit.Unity {
         }
 
         public void SendPlanRequest() {
+            var currState = StateManager.Instance.CurrentState;
+            if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
+                return;
+            }
             try {
                 GeometryPose rightTargetPose = new GeometryPose {
                     position = Vector3ToGeometryPoint(outRightPos),
