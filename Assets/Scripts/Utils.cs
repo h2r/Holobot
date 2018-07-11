@@ -13,6 +13,16 @@ namespace HoloToolkit.Unity {
             obj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
         }
 
+        public static void InitLabelPos(Camera cam, GameObject obj1, GameObject obj2) {
+            var headPosition = cam.transform.position;
+            var gazeDirection = cam.transform.forward;
+            obj1.transform.position = headPosition + gazeDirection * 2.0f;
+            var pos = obj1.transform.position;
+            Debug.Assert(StateManager.Instance.FloorY != -99);
+            obj1.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
+            obj2.transform.position = new Vector3(pos.x+2, StateManager.Instance.FloorY, pos.z+2);
+        }
+
         //public static void ReportState() {
         //    Debug.Log("Current state: " + StateManager.Instance.CurrentState);
         //}

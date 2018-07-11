@@ -7,7 +7,8 @@ namespace HoloToolkit.Unity {
 //namespace Academy.HoloToolkit.Unity {
     public class LabelManager : Singleton<LabelManager> {
         public int WaypointInd { get; set; }
-        public List<Label> Labelpoints { get; private set; }
+        //public List<Label> Labelpoints { get; private set; }
+        public Dictionary<string, GameObject[]> LabelDict = new Dictionary<string, GameObject[]>();
         public GameObject WaypointTemplate;
         // Use this for initialization
 
@@ -15,7 +16,7 @@ namespace HoloToolkit.Unity {
         void Start() {
             Debug.Log("Initialized Label Manager");
             //WTemplate = GameObject.Find("Waypoint0");
-            Labelpoints = new List<Label>();
+            //Labelpoints = new List<Label>();
             Debug.Log("LabelManager Awake()");
         }
 
@@ -42,13 +43,16 @@ namespace HoloToolkit.Unity {
 
         public void AddLabel() {
             Debug.Log("AddLabel()");
-            GameObject waypointObj = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+            GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+            GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
 
 
             if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
-                UtilFunctions.InitWaypointPos(Camera.main, waypointObj);
+                UtilFunctions.InitLabelPos(Camera.main, label1, label2);
+                LabelDict.Add(LabelDict.Count.ToString(), new[] { label1, label2 });
             }
             Debug.Log("Finished adding");
+            Debug.Log(LabelDict.Count.ToString());
             //WaypointInd++;
             //waypointObj.name = String.Format("Waypoint{0}", WaypointInd);
             //GameObject coordTextObj = GetCoordTextObj(waypointObj);
@@ -75,7 +79,7 @@ namespace HoloToolkit.Unity {
             //}
             //Waypoint lastWaypoint = GetLastWaypoint();
             //if (!lastWaypoint.Placed) {
-            //    UtilFunctions.FollowGaze(Camera.main, lastWaypoint.WaypointObj);
+                //UtilFunctions.FollowGaze(Camera.main, lastWaypoint.WaypointObj);
             //}
         }
 
