@@ -81,10 +81,14 @@ namespace HoloToolkit.Unity {
             rightArmCmd = "switchToRightArm " + outRightPos.x + " " + outRightPos.y + " " + outRightPos.z + " " +
                     outRightQuat.x + " " + outRightQuat.y + " " + outRightQuat.z + " " + outRightQuat.w + " moveToEEPose";
             if (StateManager.Instance.UpdateRightArm) {
-                SendCommand(rightArmCmd);
+                //SendCommand(rightArmCmd);
+                SendPlanRequest("right");
+                GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
             }
             else if (StateManager.Instance.UpdateLeftArm) {
-                SendCommand(leftArmCmd);
+                //SendCommand(leftArmCmd);
+                SendPlanRequest("left");
+                GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
             }
         }
 
@@ -96,7 +100,17 @@ namespace HoloToolkit.Unity {
             Debug.Log("Sent command: " + msg.data);
         }
 
-        public void SendPlanRequest() {
+        private GeometryPoseStamped PoseToPoseStamped(GeometryPose pose, string frame_id) {
+            return new GeometryPoseStamped {
+                pose = pose,
+                header = new StandardHeader {
+                    frame_id = frame_id
+                }
+            };
+        }
+
+        public void SendPlanRequest(string arm_to_move) {
+            Debug.Assert(arm_to_move == "right" || arm_to_move == "left");
             var currState = StateManager.Instance.CurrentState;
             if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
                 return;
@@ -104,15 +118,17 @@ namespace HoloToolkit.Unity {
             try {
                 GeometryPose rightTargetPose = new GeometryPose {
                     position = UtilFunctions.Vector3ToGeometryPoint(outRightPos),
-                    orientation = UtilFunctions.QuaternionToGeometryQuaternion(outRightQuat)
+                    orientation = UtilFunctions.QuaternionToGeometryQuaternion(outRightQuat),
                 };
                 GeometryPose leftTargetPose = new GeometryPose {
                     position = UtilFunctions.Vector3ToGeometryPoint(outLeftPos),
                     orientation = UtilFunctions.QuaternionToGeometryQuaternion(outLeftQuat)
                 };
+
                 MoveitTarget moveitTarget = new MoveitTarget {
-                    right_arm = rightTargetPose,
-                    left_arm = leftTargetPose
+                    right_arm = PoseToPoseStamped(rightTargetPose, "/base_link"),
+                    left_arm = PoseToPoseStamped(leftTargetPose, "/base_link"),
+                    arm_to_move = new StandardString { data = arm_to_move }
                 };
                 MoveItGoalPublisher.PublishPlan(moveitTarget);
             }
