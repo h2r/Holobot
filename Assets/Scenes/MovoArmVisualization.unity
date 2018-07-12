@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b6421f17c65eb469afc6eb1d485ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlanTopic: /goal_pose
+  PlanTopic: /ros_reality/goal_pose
   ExecuteTopic: /ros_reality/move_to_goal
   UrdfModel: {fileID: 2132092019}
 --- !u!114 &8210075
@@ -225,7 +225,6 @@ MonoBehaviour:
   rightController: {fileID: 2096556556}
   Robot: {fileID: 35888330}
   MoveItGoalPublisher: {fileID: 8210069}
-  PlanTopic: /goal_pose
 --- !u!1 &8794578
 GameObject:
   m_ObjectHideFlags: 0
