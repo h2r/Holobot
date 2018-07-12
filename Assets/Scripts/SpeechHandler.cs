@@ -115,6 +115,12 @@ namespace HoloToolkit.Unity {
                     LabelManager.Instance.AddLabel();
                     break;
             }
+            switch (command) {
+                case "move first":
+                    Debug.Log("Imma move to first!");
+                    GameObject.Find("TFListener").GetComponent<TFListener>().MoveFirst();
+                    break;
+            }
         }
 
         private void ParseWaypointCommands(string command) {

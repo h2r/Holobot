@@ -637,7 +637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b37147abee1dc439730b67e54bc821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WaypointTemplate: {fileID: 1160520430092276, guid: 4d4619170c7daed49b5df2d942883a2d,
+  WaypointTemplate: {fileID: 1713567824672912, guid: 4d4619170c7daed49b5df2d942883a2d,
     type: 2}
 --- !u!1 &35888330
 GameObject:

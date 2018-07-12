@@ -37,6 +37,8 @@ namespace HoloToolkit.Unity {
             //AddWaypoint();
         }
 
+       
+
         public GameObject GetCoordTextObj(GameObject waypointObj) {
             return waypointObj.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject;
         }
