@@ -28,12 +28,13 @@ namespace RosSharp.RosBridgeClient {
         }
 
         public void PublishPlan(MoveitTarget moveitTarget) {
+            //Debug.Log("Published moveitTarget x:" + moveitTarget.right_arm.pose.position.x.ToString());
             rosSocket.Publish(planPublicationId, moveitTarget);
         }
 
         public void PublishMove() {
             Debug.Log("Sending execute message");
-            rosSocket.Publish(executePublicationId, new StandardString());
+            rosSocket.Publish(executePublicationId, new StandardString { data = "hoi!" });
         }
 
         void PlanHandler(object args) {
