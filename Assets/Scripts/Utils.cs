@@ -81,7 +81,7 @@ namespace HoloToolkit.Unity {
             Vector2 coords = GetCoords();
             Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
             float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta + calibThetaOffset;
-            Debug.Log("theta: " + theta);
+            //Debug.Log("theta: " + theta);
             Pose = new Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
         }
         public Waypoint(GameObject waypointObj, int waypointInd) {
