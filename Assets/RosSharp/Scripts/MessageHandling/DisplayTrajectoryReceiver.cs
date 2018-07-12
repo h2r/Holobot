@@ -45,10 +45,10 @@ namespace RosSharp.RosBridgeClient {
         }
 
         private void Update() {
-            if (StateManager.Instance.CurrentState != StateManager.State.ArmTrailState) {
-                // TODO: Tell moveit script to create empty plan
-                return;
-            }
+            //if (StateManager.Instance.CurrentState != StateManager.State.ArmTrailState) {
+            //    // TODO: Tell moveit script to create empty plan
+            //    return;
+            //}
             //if (Input.GetKeyDown("f") || new_trajectory) {
             if (new_trajectory) {
                 Debug.Log("f detected");
