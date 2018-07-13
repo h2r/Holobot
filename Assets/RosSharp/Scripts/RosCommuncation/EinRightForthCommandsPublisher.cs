@@ -5,17 +5,14 @@ using UnityEngine;
 using System;
 
 namespace HoloToolkit.Unity {
-    // This script publishes commands to the topic /ein/right/forth_commands
     public class EinRightForthCommandsPublisher : Publisher {
 
         public GameObject leftController;
         public GameObject rightController;
         public GameObject Robot;
 
+        [HideInInspector]
         public MoveItGoalPublisher MoveItGoalPublisher;
-
-        //private string rightArmCmd;
-        //private string leftArmCmd;
 
         private Vector3 outLeftPos, outRightPos;
         private Quaternion outLeftQuat, outRightQuat;
@@ -29,6 +26,7 @@ namespace HoloToolkit.Unity {
             moveitIdentityPoseRequestId = rosSocket.Advertise("/holocontrol/identity_pose_request", "std_msgs/String");
             SendCommand("baseGoCfg");
             InvokeRepeating("SendEinCommands", .1f, .1f);
+            MoveItGoalPublisher = GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>();
         }
 
         float NormalizeRadRotation(float theta) {
@@ -69,12 +67,11 @@ namespace HoloToolkit.Unity {
                 LookAtUser();
             }
             var currState = StateManager.Instance.CurrentState;
-            if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
+            if (currState != StateManager.State.PuppetState && currState != StateManager.State.MotionIntentState) {
                 return;
             }
-            if (currState == StateManager.State.PuppetState || StateManager.Instance.ExecuteMotionPlan) {
+            if (currState == StateManager.State.PuppetState) {
                 GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
-                StateManager.Instance.ExecuteMotionPlan = false;
             }
         }
 
@@ -105,7 +102,7 @@ namespace HoloToolkit.Unity {
         public void SendPlanRequest(string arm_to_move) {
             Debug.Assert(arm_to_move == "right" || arm_to_move == "left");
             var currState = StateManager.Instance.CurrentState;
-            if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
+            if (currState != StateManager.State.PuppetState && currState != StateManager.State.MotionIntentState) {
                 return;
             }
             UpdateEndEffectorPoses();
