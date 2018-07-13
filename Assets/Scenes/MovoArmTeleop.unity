@@ -611,6 +611,8 @@ MonoBehaviour:
     KeyCode: 98
   - Keyword: add label
     KeyCode: 101
+  - Keyword: move first
+    KeyCode: 111
   recognitionConfidenceLevel: 0
 --- !u!114 &35384993
 MonoBehaviour:

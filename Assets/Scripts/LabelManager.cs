@@ -48,11 +48,13 @@ namespace HoloToolkit.Unity {
             GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
             GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
 
-
             if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
                 UtilFunctions.InitLabelPos(Camera.main, label1, label2);
                 LabelDict.Add(LabelDict.Count.ToString(), new[] { label1, label2 });
+                label1.name = LabelDict.Count.ToString() + " L";
+                label2.name = LabelDict.Count.ToString() + " R";
             }
+
             Debug.Log("Finished adding");
             Debug.Log(LabelDict.Count.ToString());
             //WaypointInd++;

@@ -90,18 +90,21 @@ namespace HoloToolkit.Unity {
             //    string coord_str = waypoint_pose.X.ToString() + "," + waypoint_pose.Y.ToString() + "," + waypoint_pose.Theta.ToString();
             //    coord_message += coord_str + ";";
             //}
-            Pose labelPose = LabelManager.Instance.LabelDict["1"][0].GetComponent<LabelPlace>().ROSpose;
-            string coord_str = labelPose.X.ToString() + "," + labelPose.Y.ToString() + "," + labelPose.Theta.ToString();
+            Pose labelPose1 = LabelManager.Instance.LabelDict["0"][0].GetComponent<LabelPlace>().ROSpose;
+            Pose labelPose2 = LabelManager.Instance.LabelDict["0"][1].GetComponent<LabelPlace>().ROSpose;
+            float xpose = (labelPose1.X + labelPose2.X) / 2;
+            float ypose = (labelPose1.Y + labelPose2.Y) / 2;
+            string coord_str = xpose.ToString() + "," + ypose.ToString() + "," + labelPose1.Theta.ToString();
             coord_message += coord_str + ";";
             wsc.Publish(unityWaypointPubTopic, coord_message.TrimEnd(';'));
             Debug.Log("Published: " + coord_message);
             currentlyNavigating = true;
             hasPublishedWaypoints = true;
-            StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
+            //StateManager.Instance.CurrentState = StateManager.State.NavigatingState;
             frameCountStart = frameCounter;
-            if (StateManager.Instance.UnityDebugMode) {
-                StateManager.Instance.MovoState = "navigating";
-            }
+            //if (StateManager.Instance.UnityDebugMode) {
+                //StateManager.Instance.MovoState = "navigating";
+            //}
         }
 
         public void UpdateMovoROSPose() {
