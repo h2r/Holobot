@@ -45,12 +45,12 @@ namespace RosSharp.RosBridgeClient {
         }
 
         private void Update() {
-            if (StateManager.Instance.CurrentState != StateManager.State.ArmTrailState) {
-                return;
-            }
+            //if (StateManager.Instance.CurrentState != StateManager.State.ArmTrailState) {
+            //    return;
+            //}
             //if (Input.GetKeyDown("f") || new_trajectory) {
             if (new_trajectory) {
-                Debug.Log("f detected");
+                //Debug.Log("f detected");
                 new_trajectory = false;
                 DestroyTrail();
                 StopCoroutine("Animate");
