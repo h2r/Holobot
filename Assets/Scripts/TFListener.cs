@@ -1,15 +1,10 @@
 ﻿using UnityEngine;
 using System;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 
 //namespace Academy.HoloToolkit.Unity {
 namespace HoloToolkit.Unity {
     public class TFListener : MonoBehaviour {
-
-        //private UWPWebSocketClient UWPwsc;
-        //private WebsocketClient wsc;
         private UniversalWebsocketClient wsc;
         private readonly string movoStateTopic = "holocontrol/ros_movo_state_pub";
         private readonly string movoPoseTopic = "holocontrol/ros_movo_pose_pub";
