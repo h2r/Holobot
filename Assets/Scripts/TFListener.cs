@@ -38,6 +38,7 @@ namespace HoloToolkit.Unity {
             wsc.Advertise(movoStateRequestTopic, "std_msgs/String");
             wsc.Advertise(movoPoseRequestTopic, "std_msgs/String");
             wsc.Advertise(moveitIdentityPoseRequestTopic, "std_msgs/String");
+            
             currentlyNavigating = false;
             hasPublishedWaypoints = false;
             frameCounter = 0;

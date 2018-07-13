@@ -106,7 +106,7 @@ namespace HoloToolkit.Unity {
             switch (command) {
                 case "save labels":
                     Debug.Log("Imma save the labels");
-                    //MovoPlace.CalibrateMovo();
+                    LabelManager.Instance.SaveLabels();
                     break;
             }
             switch (command) {
@@ -119,6 +119,12 @@ namespace HoloToolkit.Unity {
                 case "move first":
                     Debug.Log("Imma move to first!");
                     GameObject.Find("TFListener").GetComponent<TFListener>().MoveFirst();
+                    break;
+            }
+            switch (command) {
+                case "load labels":
+                    Debug.Log("Imma load the labels!");
+                    LabelManager.Instance.LoadLabels();
                     break;
             }
         }
