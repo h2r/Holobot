@@ -380,10 +380,22 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
         }
 
         private void OnManipulationEnded() {
+            Debug.Log("OnManipulationEnded " + gameObject.name);
             InputManager.Instance.PopModalInputHandler();
 
             //Hide Bounding Box visual on release
             ShowBoundingBox = false;
+            var currState = StateManager.Instance.CurrentState;
+            if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
+                return;
+            }
+            EinRightForthCommandsPublisher motionpub = GameObject.Find("RosConnector").GetComponent<EinRightForthCommandsPublisher>();
+            if (gameObject.name == "RightGripper") {
+                motionpub.SendPlanRequest("right");
+            }
+            else if (gameObject.name == "LeftGripper") {
+                motionpub.SendPlanRequest("left");
+            }
         }
     }
 }
