@@ -99,8 +99,7 @@ namespace HoloToolkit.Unity {
             };
         }
 
-        public void SendPlanRequest(string arm_to_move) {
-            Debug.Assert(arm_to_move == "right" || arm_to_move == "left");
+        public void SendPlanRequest() {
             var currState = StateManager.Instance.CurrentState;
             if (currState != StateManager.State.PuppetState && currState != StateManager.State.MotionIntentState) {
                 return;
@@ -119,7 +118,6 @@ namespace HoloToolkit.Unity {
                 MoveitTarget moveitTarget = new MoveitTarget {
                     right_arm = PoseToPoseStamped(rightTargetPose, "/base_link"),
                     left_arm = PoseToPoseStamped(leftTargetPose, "/base_link"),
-                    arm_to_move = new StandardString { data = arm_to_move }
                 };
                 MoveItGoalPublisher.PublishPlan(moveitTarget);
             }

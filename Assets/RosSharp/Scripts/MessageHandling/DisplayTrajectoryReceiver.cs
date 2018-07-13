@@ -50,7 +50,6 @@ namespace RosSharp.RosBridgeClient {
             //}
             //if (Input.GetKeyDown("f") || new_trajectory) {
             if (new_trajectory) {
-                //Debug.Log("f detected");
                 new_trajectory = false;
                 DestroyTrail();
                 StopCoroutine("Animate");

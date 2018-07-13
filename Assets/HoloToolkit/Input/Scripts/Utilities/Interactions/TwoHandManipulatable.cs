@@ -390,11 +390,8 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
                 return;
             }
             EinRightForthCommandsPublisher motionpub = GameObject.Find("RosConnector").GetComponent<EinRightForthCommandsPublisher>();
-            if (gameObject.name == "RightGripper") {
-                motionpub.SendPlanRequest("right");
-            }
-            else if (gameObject.name == "LeftGripper") {
-                motionpub.SendPlanRequest("left");
+            if (gameObject.name.Contains("Gripper")) {
+                motionpub.SendPlanRequest();
             }
         }
     }

@@ -28,7 +28,6 @@ public class MoveitTarget : Message {
     public GeometryPoseStamped right_arm;
     public StandardString left_open;
     public StandardString right_open;
-    public StandardString arm_to_move;
     public MoveitTarget() {
         left_arm = new GeometryPoseStamped();
         right_arm = new GeometryPoseStamped();
