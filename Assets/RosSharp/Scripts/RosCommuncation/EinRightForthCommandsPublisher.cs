@@ -14,8 +14,8 @@ namespace HoloToolkit.Unity {
 
         public MoveItGoalPublisher MoveItGoalPublisher;
 
-        private string rightArmCmd;
-        private string leftArmCmd;
+        //private string rightArmCmd;
+        //private string leftArmCmd;
 
         private Vector3 outLeftPos, outRightPos;
         private Quaternion outLeftQuat, outRightQuat;
@@ -28,7 +28,7 @@ namespace HoloToolkit.Unity {
             publicationId = rosSocket.Advertise(Topic, "std_msgs/String");
             moveitIdentityPoseRequestId = rosSocket.Advertise("/holocontrol/identity_pose_request", "std_msgs/String");
             SendCommand("baseGoCfg");
-            InvokeRepeating("SendEinCommands", .1f, .25f);
+            InvokeRepeating("SendEinCommands", .1f, .1f);
         }
 
         float NormalizeRadRotation(float theta) {
@@ -68,31 +68,24 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.LookAtUser) {
                 LookAtUser();
             }
-            if (StateManager.Instance.CurrentState != StateManager.State.PuppetState) {
+            var currState = StateManager.Instance.CurrentState;
+            if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
                 return;
             }
+            if (currState == StateManager.State.PuppetState || StateManager.Instance.ExecuteMotionPlan) {
+                GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
+                StateManager.Instance.ExecuteMotionPlan = false;
+            }
+        }
+
+        private void UpdateEndEffectorPoses() {
             outLeftPos = UtilFunctions.UnityToRosPositionAxisConversion(leftController.transform.localPosition);
             outRightPos = UtilFunctions.UnityToRosPositionAxisConversion(rightController.transform.localPosition);
             outLeftQuat = UtilFunctions.UnityToRosRotationAxisConversion(leftController.transform.localRotation);
             outRightQuat = UtilFunctions.UnityToRosRotationAxisConversion(rightController.transform.localRotation);
-
-            leftArmCmd = "switchToLeftArm " + outLeftPos.x + " " + outLeftPos.y + " " + outLeftPos.z + " " +
-                    outLeftQuat.x + " " + outLeftQuat.y + " " + outLeftQuat.z + " " + outLeftQuat.w + " moveToEEPose";
-            rightArmCmd = "switchToRightArm " + outRightPos.x + " " + outRightPos.y + " " + outRightPos.z + " " +
-                    outRightQuat.x + " " + outRightQuat.y + " " + outRightQuat.z + " " + outRightQuat.w + " moveToEEPose";
-            if (StateManager.Instance.UpdateRightArm) {
-                //SendCommand(rightArmCmd);
-                SendPlanRequest("right");
-                GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
-            }
-            else if (StateManager.Instance.UpdateLeftArm) {
-                //SendCommand(leftArmCmd);
-                SendPlanRequest("left");
-                GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
-            }
         }
 
-        public void SendCommand(string command) {
+        private void SendCommand(string command) {
             StandardString msg = new StandardString {
                 data = command
             };
@@ -115,6 +108,7 @@ namespace HoloToolkit.Unity {
             if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
                 return;
             }
+            UpdateEndEffectorPoses();
             try {
                 GeometryPose rightTargetPose = new GeometryPose {
                     position = UtilFunctions.Vector3ToGeometryPoint(outRightPos),
