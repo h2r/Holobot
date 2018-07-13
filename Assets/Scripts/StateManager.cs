@@ -22,15 +22,17 @@ namespace HoloToolkit.Unity {
         [HideInInspector]
         public float FloorY = -99; // The y-coordinate of the floor (initialized to impossible value)
         [HideInInspector]
-        public GameObject RightGripper, LeftGripper, MovoBaseLink;
+        public GameObject RightGripper, LeftGripper, MovoBaseLink, MovoShadow;
         [HideInInspector]
         public List<string> EinCommandsToExecute;
         [HideInInspector]
         public bool LookAtUser;
+        //[HideInInspector]
+        //public bool UpdateRightArm = false; // TODO: remove
+        //[HideInInspector]
+        //public bool UpdateLeftArm = false; // TODO: remove
         [HideInInspector]
-        public bool UpdateRightArm = false;
-        [HideInInspector]
-        public bool UpdateLeftArm = false;
+        public bool ExecuteMotionPlan = false;
         [HideInInspector]
         public float ROSDelTheta;
         [HideInInspector]
@@ -40,6 +42,7 @@ namespace HoloToolkit.Unity {
             Debug.Log("Initialized StateManager");
             RightGripper = GameObject.Find("RightGripper");
             LeftGripper = GameObject.Find("LeftGripper");
+            MovoShadow = GameObject.Find("movo_moveit_shadow");
             MovoState = "standby";
             EinCommandsToExecute = new List<string>();
             LookAtUser = false;
@@ -52,8 +55,9 @@ namespace HoloToolkit.Unity {
             WaypointManager.Instance.InitializeWaypoints();
             UtilFunctions.SetGrippersActive(false);
             CurrentState = State.WaypointState;
-            UpdateRightArm = false;
-            UpdateLeftArm = false;
+            //UpdateRightArm = false;
+            //UpdateLeftArm = false;
+            MovoShadow.SetActive(false);
             Debug.Log("Transitioned to waypoint state");
         }
 
@@ -67,15 +71,18 @@ namespace HoloToolkit.Unity {
             else {
                 CurrentState = State.NavigatingState;
             }
+            MovoShadow.SetActive(false);
+            Debug.Log("Transitioned to navigation state");
         }
 
         public void TransitionToCalibrateState() {
             RobotCalibrated = false;
             WaypointManager.Instance.ClearWaypoints();
             UtilFunctions.SetGrippersActive(false);
+            MovoShadow.SetActive(false);
             CurrentState = State.CalibratingState;
-            UpdateRightArm = false;
-            UpdateLeftArm = false;
+            //UpdateRightArm = false;
+            //UpdateLeftArm = false;
             GameObject movoObj = GameObject.Find("Movo");
             movoObj.transform.position = MovoBaseLink.transform.position;
             MovoBaseLink.transform.localPosition = new Vector3(0, 0, 0);
@@ -85,39 +92,42 @@ namespace HoloToolkit.Unity {
         public void TransitionToStandbyState() {
             WaypointManager.Instance.ClearWaypoints();
             UtilFunctions.SetGrippersActive(false);
+            MovoShadow.SetActive(false);
             CurrentState = State.StandbyState;
-            UpdateRightArm = false;
-            UpdateLeftArm = false;
+            //UpdateRightArm = false;
+            //UpdateLeftArm = false;
             Debug.Log("Transitioned to standby state");
         }
 
         public void TransitionToPuppetState() {
             WaypointManager.Instance.ClearWaypoints();
             UtilFunctions.SetGrippersActive(true);
+            MovoShadow.SetActive(false);
             CurrentState = State.PuppetState;
-            UpdateRightArm = false;
-            UpdateLeftArm = false;
+            //UpdateRightArm = false;
+            //UpdateLeftArm = false;
             Debug.Log("Transitioned to puppet state");
         }
 
         public void TransitionToArmTrailState() {
             WaypointManager.Instance.ClearWaypoints();
             UtilFunctions.SetGrippersActive(true);
+            MovoShadow.SetActive(true);
             CurrentState = State.ArmTrailState;
-            UpdateRightArm = false;
-            UpdateLeftArm = false;
+            //UpdateRightArm = false;
+            //UpdateLeftArm = false;
             Debug.Log("Transitioned to arm trail state");
         }
 
         public void DisplayState() {
             Text stateMsg = GameObject.Find("StateReporter").GetComponent<Text>();
             string msg = CurrentState.ToString() + "\n" + SpeechHandler.CurrentCommand + "\n";
-            if (UpdateRightArm) {
-                msg += "updating right arm...";
-            }
-            else if (UpdateLeftArm) {
-                msg += "updating left arm...";
-            }
+            //if (UpdateRightArm) {
+            //    msg += "updating right arm...";
+            //}
+            //else if (UpdateLeftArm) {
+            //    msg += "updating left arm...";
+            //}
             stateMsg.text = msg;
         }
 
