@@ -613,6 +613,8 @@ MonoBehaviour:
     KeyCode: 101
   - Keyword: move first
     KeyCode: 111
+  - Keyword: load labels
+    KeyCode: 113
   recognitionConfidenceLevel: 0
 --- !u!114 &35384993
 MonoBehaviour:

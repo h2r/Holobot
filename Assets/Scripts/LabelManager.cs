@@ -20,6 +20,7 @@ namespace HoloToolkit.Unity {
         protected string text = " "; // assigned to allow first line to be read below
         private UniversalWebsocketClient wsc;
         private readonly string labelSaveTopic = "holocontrol/save_labels";
+        private readonly string labelLoadITopic = "holocontrol/load_labels_indicator";
 
         // Use this for initialization
 
@@ -64,6 +65,7 @@ namespace HoloToolkit.Unity {
         public void SaveLabels() 
         {
             string msg = "empty message here";
+            string c = "";
             string label_name;
             foreach (KeyValuePair <string, GameObject[]> label_pair in LabelDict) {
                 //Now you can access the key and value both separately from this attachStat as:
@@ -76,10 +78,12 @@ namespace HoloToolkit.Unity {
                 float ry = r1.GetComponent<LabelPlace>().ROSpose.Y; //ROS poses
                 msg = label_name + " " + lx.ToString() + " " + ly.ToString() + " " + rx.ToString() + " " + ry.ToString();
                 Debug.Log(msg);
-                wsc.Publish(labelSaveTopic, msg);
+                //wsc.Publish(labelSaveTopic, msg);
+                c = c + msg + ";";
             }
             //wsc.Publish(labelSaveTopic, msg);
-           // Debug.Log("please push a message");
+            Debug.Log(c);
+            wsc.Publish(labelSaveTopic, c);
             //wsc.Publish(labelSaveTopic, "heyo!");
 
         }
@@ -95,6 +99,7 @@ namespace HoloToolkit.Unity {
             //}
             //Debug.Log("done reading file!");
             //reader.Close();
+            wsc.Publish(labelLoadITopic, "loadem");
         }
 
         public void AddLabel() {
