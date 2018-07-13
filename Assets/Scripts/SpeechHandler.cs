@@ -44,11 +44,11 @@ namespace HoloToolkit.Unity {
                     }
                     StateManager.Instance.TransitionToPuppetState();
                     break;
-                case "transition arm trail":
+                case "transition motion intent":
                     if (!StateManager.Instance.RobotCalibrated) {
                         return;
                     }
-                    StateManager.Instance.TransitionToArmTrailState();
+                    StateManager.Instance.TransitionToMotionIntentState();
                     break;
                 case "look straight":
                     StateManager.Instance.EinCommandsToExecute.Add("lookStraight");
@@ -72,6 +72,9 @@ namespace HoloToolkit.Unity {
                     break;
                 case StateManager.State.PuppetState:
                     ParsePuppetCommands(CurrentCommand);
+                    break;
+                case StateManager.State.MotionIntentState:
+                    ParseArmTrailCommands(CurrentCommand);
                     break;
             }
         }
@@ -123,30 +126,21 @@ namespace HoloToolkit.Unity {
                 case "close left":
                     StateManager.Instance.EinCommandsToExecute.Add("switchToLeftArm closeGripper");
                     break;
-                //case "move right arm":
-                //    //StateManager.Instance.UpdateRightArm = true;
-                //    //StateManager.Instance.UpdateLeftArm = false;
-                //    break;
-                //case "move left arm":
-                //    //StateManager.Instance.UpdateRightArm = false;
-                //    //StateManager.Instance.UpdateLeftArm = true;
-                //    break;
-                case "stop":
-                    //StateManager.Instance.UpdateRightArm = false;
-                    //StateManager.Instance.UpdateLeftArm = false;
-                    break;
             }
         }
 
         private void ParseArmTrailCommands(string command) {
-            if (StateManager.Instance.CurrentState != StateManager.State.ArmTrailState) {
+            if (StateManager.Instance.CurrentState != StateManager.State.MotionIntentState) {
                 return;
             }
+            MoveItGoalPublisher moveitGoalPublisher = GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>();
             switch (command) {
                 case "move":
-                    StateManager.Instance.ExecuteMotionPlan = true;
+                    Debug.Log("Sending move command...");
+                    moveitGoalPublisher.PublishMove();
                     break;
                 case "stop":
+                    moveitGoalPublisher.RequestIdentityPlan();
                     break;
             }
         }
