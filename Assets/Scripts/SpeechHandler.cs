@@ -123,17 +123,17 @@ namespace HoloToolkit.Unity {
                 case "close left":
                     StateManager.Instance.EinCommandsToExecute.Add("switchToLeftArm closeGripper");
                     break;
-                case "move right arm":
-                    StateManager.Instance.UpdateRightArm = true;
-                    StateManager.Instance.UpdateLeftArm = false;
-                    break;
-                case "move left arm":
-                    StateManager.Instance.UpdateRightArm = false;
-                    StateManager.Instance.UpdateLeftArm = true;
-                    break;
+                //case "move right arm":
+                //    //StateManager.Instance.UpdateRightArm = true;
+                //    //StateManager.Instance.UpdateLeftArm = false;
+                //    break;
+                //case "move left arm":
+                //    //StateManager.Instance.UpdateRightArm = false;
+                //    //StateManager.Instance.UpdateLeftArm = true;
+                //    break;
                 case "stop":
-                    StateManager.Instance.UpdateRightArm = false;
-                    StateManager.Instance.UpdateLeftArm = false;
+                    //StateManager.Instance.UpdateRightArm = false;
+                    //StateManager.Instance.UpdateLeftArm = false;
                     break;
             }
         }
@@ -143,13 +143,8 @@ namespace HoloToolkit.Unity {
                 return;
             }
             switch (command) {
-                case "switch right arm":
-                    break;
-                case "switch left arm":
-                    break;
-                case "plan":
-                    break;
                 case "move":
+                    StateManager.Instance.ExecuteMotionPlan = true;
                     break;
                 case "stop":
                     break;
