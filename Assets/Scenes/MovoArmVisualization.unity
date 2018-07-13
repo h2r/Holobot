@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f9b8f32224ca04498ffd0a2e2bc0567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RosBridgeServerUrl: ws://192.168.160.160:9090
+  RosBridgeServerUrl: ws://192.168.160.193:9090
 --- !u!114 &8210067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1072,10 +1072,9 @@ MonoBehaviour:
   RightGripper: {fileID: 0}
   LeftGripper: {fileID: 0}
   MovoBaseLink: {fileID: 0}
+  MovoShadow: {fileID: 0}
   EinCommandsToExecute: []
   LookAtUser: 0
-  UpdateRightArm: 0
-  UpdateLeftArm: 0
   ROSDelTheta: 0
   MoveitPlanIdentityPose: 0
 --- !u!114 &35384990
@@ -1149,14 +1148,10 @@ MonoBehaviour:
     KeyCode: 120
   - Keyword: close left
     KeyCode: 122
-  - Keyword: move right arm
-    KeyCode: 106
-  - Keyword: move left arm
-    KeyCode: 102
+  - Keyword: transition motion intent
+    KeyCode: 32
   - Keyword: stop
     KeyCode: 100
-  - Keyword: transition arm trail
-    KeyCode: 32
   recognitionConfidenceLevel: 0
 --- !u!114 &35384993
 MonoBehaviour:
@@ -1202,8 +1197,11 @@ Transform:
   - {fileID: 572721356}
   - {fileID: 529426467}
   - {fileID: 1331250913}
+  - {fileID: 915856713}
+  - {fileID: 1221464693}
+  - {fileID: 2096556557}
   m_Father: {fileID: 2132092020}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &41132466
 GameObject:
@@ -19038,8 +19036,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1150718719}
-  m_Father: {fileID: 2132092020}
-  m_RootOrder: 0
+  m_Father: {fileID: 35888331}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &915856714
 MonoBehaviour:
@@ -25403,8 +25401,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 716655899}
-  m_Father: {fileID: 2132092020}
-  m_RootOrder: 2
+  m_Father: {fileID: 35888331}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!65 &1221464694
 BoxCollider:
@@ -42982,8 +42980,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 104871638}
-  m_Father: {fileID: 2132092020}
-  m_RootOrder: 3
+  m_Father: {fileID: 35888331}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!114 &2096556558
 MonoBehaviour:
@@ -43433,10 +43431,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 915856713}
   - {fileID: 35888331}
-  - {fileID: 1221464693}
-  - {fileID: 2096556557}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
