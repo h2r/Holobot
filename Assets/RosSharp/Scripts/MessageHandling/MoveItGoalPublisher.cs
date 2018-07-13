@@ -10,21 +10,26 @@ namespace RosSharp.RosBridgeClient {
 
         public string PlanTopic;
         public string ExecuteTopic;
+        private readonly string RequestIdentityPoseTopic = "/holocontrol/identity_pose_request";
 
         public GameObject UrdfModel; // the root gameobject of your robot
 
         private RosSocket rosSocket;
         private int planPublicationId;
         private int executePublicationId;
+        private int requestIdentityPlanPublicationId;
 
         // Use this for initialization
         void Start() {
             rosSocket = GetComponent<RosConnector>().RosSocket;
-            Debug.Log("PLANTOPIC: " + PlanTopic);
             planPublicationId = rosSocket.Advertise(PlanTopic, "ros_reality_bridge_msgs/MoveitTarget");
             executePublicationId = rosSocket.Advertise(ExecuteTopic, "std_msgs/String");
+            requestIdentityPlanPublicationId = rosSocket.Advertise(RequestIdentityPoseTopic, "std_msgs/String");
             ResetBackend();
-            //FadeManager.AssertIsInitialized();
+        }
+
+        public void RequestIdentityPlan() { // ask moveit_movo.py to create a non-moving plan, to stop MovoShadow from moving.
+            rosSocket.Publish(requestIdentityPlanPublicationId, new StandardString { data = "identity plan pls" });
         }
 
         public void PublishPlan(MoveitTarget moveitTarget) {
@@ -33,7 +38,7 @@ namespace RosSharp.RosBridgeClient {
         }
 
         public void PublishMove() {
-            Debug.Log("Sending execute message");
+            //Debug.Log("Sending execute message");
             rosSocket.Publish(executePublicationId, new StandardString { data = "hoi! (pls move)" });
         }
 
@@ -42,7 +47,8 @@ namespace RosSharp.RosBridgeClient {
         }
 
         public void ResetBackend() {
-            rosSocket.Publish(planPublicationId, new MoveitTarget());
+            RequestIdentityPlan();
+            //rosSocket.Publish(planPublicationId, new MoveitTarget());
         }
     }
 }
