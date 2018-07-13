@@ -17,6 +17,7 @@ namespace HoloToolkit.Unity {
         private readonly string movoStateRequestTopic = "holocontrol/movo_state_request";
         private readonly string movoPoseRequestTopic = "holocontrol/movo_pose_request";
         private readonly string moveitIdentityPoseRequestTopic = "holocontrol/moveit_identity_pose_request";
+        private readonly string initializeMovocontrolRequestTopic = "holocontrol/init_movocontrol_request"; // reset movocontrol_nav.py
         private bool currentlyNavigating = false;
         private bool hasPublishedWaypoints = false;
         private int frameCounter;
@@ -38,12 +39,14 @@ namespace HoloToolkit.Unity {
             wsc.Advertise(movoStateRequestTopic, "std_msgs/String");
             wsc.Advertise(movoPoseRequestTopic, "std_msgs/String");
             wsc.Advertise(moveitIdentityPoseRequestTopic, "std_msgs/String");
+            wsc.Advertise(initializeMovocontrolRequestTopic, "std_msgs/String");
+            wsc.Publish(initializeMovocontrolRequestTopic, "");
             currentlyNavigating = false;
             hasPublishedWaypoints = false;
             frameCounter = 0;
         }
 
-        private string GetROSMessage(string topic_input) {
+        private string ExtractROSMessage(string topic_input) {
             string[] components = topic_input.Split(':');
             foreach (string component in components) {
                 if (component.Contains("\"op\"")) {
@@ -92,7 +95,7 @@ namespace HoloToolkit.Unity {
                 ros_msg = wsc.messages[movoPoseTopic];
             }
             //Debug.Log(ros_msg);
-            List<string> poseStr = new List<string>(GetROSMessage(ros_msg).Split(','));
+            List<string> poseStr = new List<string>(ExtractROSMessage(ros_msg).Split(','));
             //Debug.Log(poseStr);
             List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };
             Debug.Assert(pose.Count == 3);
@@ -106,7 +109,7 @@ namespace HoloToolkit.Unity {
             }
             //Debug.Log("Updating MovoState");
             wsc.Publish(movoStateRequestTopic, ""); // if bug, change to "True"
-            StateManager.Instance.MovoState = GetROSMessage(wsc.messages[movoStateTopic]);
+            StateManager.Instance.MovoState = ExtractROSMessage(wsc.messages[movoStateTopic]);
             //Debug.Log("MovoROSState updated!");
         }
 
