@@ -366,7 +366,7 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
         }
 
         private void OnManipulationStarted() {
-            Debug.Log("OnManipulationStarted " + gameObject.name);
+            //Debug.Log("OnManipulationStarted " + gameObject.name);
             if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
                 Waypoint lastWaypoint = WaypointManager.Instance.GetLastWaypoint();
                 if (gameObject.name == lastWaypoint.Name) {
@@ -380,13 +380,13 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
         }
 
         private void OnManipulationEnded() {
-            Debug.Log("OnManipulationEnded " + gameObject.name);
+            //Debug.Log("OnManipulationEnded " + gameObject.name);
             InputManager.Instance.PopModalInputHandler();
 
             //Hide Bounding Box visual on release
             ShowBoundingBox = false;
             var currState = StateManager.Instance.CurrentState;
-            if (currState != StateManager.State.PuppetState && currState != StateManager.State.ArmTrailState) {
+            if (currState != StateManager.State.PuppetState && currState != StateManager.State.MotionIntentState) {
                 return;
             }
             EinRightForthCommandsPublisher motionpub = GameObject.Find("RosConnector").GetComponent<EinRightForthCommandsPublisher>();
