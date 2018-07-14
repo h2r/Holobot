@@ -22,11 +22,13 @@ namespace HoloToolkit.Unity {
         private readonly string labelSaveTopic = "holocontrol/save_labels";
         private readonly string labelLoadITopic = "holocontrol/load_labels_indicator";
         private readonly string labelLoadTopic = "holocontrol/loaded_labels";
+        private string lastLoadLabels;
 
         // Use this for initialization
 
         //void Awake() {
         void Start() {
+            lastLoadLabels = "nothing";
             Debug.Log("Initialized Label Manager");
             //WTemplate = GameObject.Find("Waypoint0");
             //Labelpoints = new List<Label>();
@@ -147,18 +149,27 @@ namespace HoloToolkit.Unity {
         }
 
         private void Update() {
+            Debug.Log(lastLoadLabels);
             try {
                 //Debug.Log(wsc.messages[labelLoadTopic]);
                 string msg = GetROSMessage(wsc.messages[labelLoadTopic]);
+
+                if (msg == lastLoadLabels)  //these labels have already been loaded
+                    {
+                    return;
+                }
+
                 Debug.Log(msg);
                 string[] lines = msg.Split('$');
                 Debug.Log(lines);
                 Debug.Log(lines[0]);
                 Debug.Log(lines[1]);
                 Debug.Log(lines.Length);
-                for (int i = 0; i < lines.Length; i++) {
+                for (int i = 0; i < lines.Length-2; i++) {
                     Debug.Log(lines[i]);
                 }
+
+                lastLoadLabels = msg;
             }
             catch (Exception e) {
                 Debug.Log("Waiting to load labels...");
