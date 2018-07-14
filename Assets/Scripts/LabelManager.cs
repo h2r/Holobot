@@ -21,6 +21,7 @@ namespace HoloToolkit.Unity {
         private UniversalWebsocketClient wsc;
         private readonly string labelSaveTopic = "holocontrol/save_labels";
         private readonly string labelLoadITopic = "holocontrol/load_labels_indicator";
+        private readonly string labelLoadTopic = "holocontrol/loaded_labels";
 
         // Use this for initialization
 
@@ -37,6 +38,7 @@ namespace HoloToolkit.Unity {
                     wsc = wso.GetComponent<UWPWebSocketClient>();
 #endif
             wsc.Advertise(labelSaveTopic, "std_msgs/String");
+            wsc.Subscribe(labelLoadTopic, "std_msgs/String", "none", 0);
         }
 
         //public void ClearWaypoints() {
@@ -132,8 +134,26 @@ namespace HoloToolkit.Unity {
         //    }
         //    return Waypoints[Waypoints.Count - 1];
         //}
+        private string GetROSMessage(string topic_input) {
+            string[] components = topic_input.Split(':');
+            foreach (string component in components) {
+                if (component.Contains("\"op\"")) {
+                    var dataPair = component.Split('}');
+                    var msg = dataPair[0].Trim(new Char[] { ' ', '"' });
+                    return msg;
+                }
+            }
+            return null;
+        }
 
         private void Update() {
+            try {
+                Debug.Log(wsc.messages[labelLoadTopic]);
+                Debug.Log(GetROSMessage(wsc.messages[labelLoadTopic]));
+            }
+            catch (Exception e) {
+                Debug.Log("Waiting to load labels...");
+            }
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
