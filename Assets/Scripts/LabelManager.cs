@@ -148,8 +148,17 @@ namespace HoloToolkit.Unity {
 
         private void Update() {
             try {
-                Debug.Log(wsc.messages[labelLoadTopic]);
-                Debug.Log(GetROSMessage(wsc.messages[labelLoadTopic]));
+                //Debug.Log(wsc.messages[labelLoadTopic]);
+                string msg = GetROSMessage(wsc.messages[labelLoadTopic]);
+                Debug.Log(msg);
+                string[] lines = msg.Split('$');
+                Debug.Log(lines);
+                Debug.Log(lines[0]);
+                Debug.Log(lines[1]);
+                Debug.Log(lines.Length);
+                for (int i = 0; i < lines.Length; i++) {
+                    Debug.Log(lines[i]);
+                }
             }
             catch (Exception e) {
                 Debug.Log("Waiting to load labels...");
