@@ -149,7 +149,7 @@ namespace HoloToolkit.Unity {
         }
 
         private void Update() {
-            Debug.Log(lastLoadLabels);
+            //Debug.Log(lastLoadLabels);
             try {
                 //Debug.Log(wsc.messages[labelLoadTopic]);
                 string msg = GetROSMessage(wsc.messages[labelLoadTopic]);
@@ -161,12 +161,15 @@ namespace HoloToolkit.Unity {
 
                 Debug.Log(msg);
                 string[] lines = msg.Split('$');
-                Debug.Log(lines);
-                Debug.Log(lines[0]);
-                Debug.Log(lines[1]);
-                Debug.Log(lines.Length);
+                //Debug.Log(lines);
+                //Debug.Log(lines[0]);
+                //Debug.Log(lines[1]);
+                //Debug.Log(lines.Length);
                 for (int i = 0; i < lines.Length-2; i++) {
+                    string line = lines[i];
+                    string[] split_line = line.Split(' ');
                     Debug.Log(lines[i]);
+                    Debug.Log(split_line[0]);
                 }
 
                 lastLoadLabels = msg;
