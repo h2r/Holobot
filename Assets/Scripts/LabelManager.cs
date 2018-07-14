@@ -170,6 +170,28 @@ namespace HoloToolkit.Unity {
                     string[] split_line = line.Split(' ');
                     Debug.Log(lines[i]);
                     Debug.Log(split_line[0]);
+                    string l_name = split_line[0];
+                    float xl = float.Parse(split_line[1]) - StateManager.Instance.MovoUnityToROSOffset.Y;
+                    float yl = float.Parse(split_line[2]) - StateManager.Instance.MovoUnityToROSOffset.X;
+                    float xr = float.Parse(split_line[3]) - StateManager.Instance.MovoUnityToROSOffset.Y; ;
+                    float yr = float.Parse(split_line[4]) - StateManager.Instance.MovoUnityToROSOffset.X;
+
+                    Debug.Log("Loading in a label");
+                    GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+                    GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+
+                    if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
+                        UtilFunctions.InitLabelPos(Camera.main, label1, label2);
+                        LabelDict.Add(l_name, new[] { label1, label2 });
+                        label1.name = l_name + " L";
+                        label2.name = l_name + " R";
+
+                        label1.transform.position =  new Vector3(xl, label1.transform.position.y, yl);
+                        label2.transform.position = new Vector3(xr, label1.transform.position.y, yr);
+                    }
+
+                    Debug.Log("Finished adding");
+                    Debug.Log(LabelDict.Count.ToString());
                 }
 
                 lastLoadLabels = msg;
