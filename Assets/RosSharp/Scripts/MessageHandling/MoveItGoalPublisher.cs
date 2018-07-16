@@ -11,6 +11,8 @@ namespace RosSharp.RosBridgeClient {
         public string PlanTopic;
         public string ExecuteTopic;
         private readonly string RequestIdentityPoseTopic = "/holocontrol/identity_pose_request";
+        private readonly string PublishRightGripperCommandTopic = "/holocontrol/right_gripper_command";
+        private readonly string PublishLeftGripperCommandTopic = "/holocontrol/left_gripper_command";
 
         public GameObject UrdfModel; // the root gameobject of your robot
 
@@ -18,6 +20,8 @@ namespace RosSharp.RosBridgeClient {
         private int planPublicationId;
         private int executePublicationId;
         private int requestIdentityPlanPublicationId;
+        private int rightGripperCommandPublicationId;
+        private int leftGripperCommandPublicationId;
 
         // Use this for initialization
         void Start() {
@@ -25,6 +29,8 @@ namespace RosSharp.RosBridgeClient {
             planPublicationId = rosSocket.Advertise(PlanTopic, "ros_reality_bridge_msgs/MoveitTarget");
             executePublicationId = rosSocket.Advertise(ExecuteTopic, "std_msgs/String");
             requestIdentityPlanPublicationId = rosSocket.Advertise(RequestIdentityPoseTopic, "std_msgs/String");
+            rightGripperCommandPublicationId = rosSocket.Advertise(PublishRightGripperCommandTopic, "std_msgs/String");
+            leftGripperCommandPublicationId = rosSocket.Advertise(PublishLeftGripperCommandTopic, "std_msgs/String");
             ResetBackend();
         }
 
@@ -33,13 +39,24 @@ namespace RosSharp.RosBridgeClient {
         }
 
         public void PublishPlan(MoveitTarget moveitTarget) {
-            //Debug.Log("Published moveitTarget x:" + moveitTarget.right_arm.pose.position.x.ToString());
+            Debug.Log("Published moveitTarget x:" + moveitTarget.right_arm.pose.position.x.ToString());
             rosSocket.Publish(planPublicationId, moveitTarget);
         }
 
         public void PublishMove() {
-            //Debug.Log("Sending execute message");
+            Debug.Log("Sending execute message");
             rosSocket.Publish(executePublicationId, new StandardString { data = "hoi! (pls move)" });
+        }
+
+        public void PublishGripperCommand(string gripperSide, string command) {
+            Debug.Assert(command == "open" || command == "close");
+            Debug.Assert(gripperSide == "right" || gripperSide == "left");
+            if (gripperSide == "right") {
+                rosSocket.Publish(rightGripperCommandPublicationId, new StandardString { data = command });
+            }
+            else if (gripperSide == "left") {
+                rosSocket.Publish(leftGripperCommandPublicationId, new StandardString { data = command });
+            }
         }
 
         void PlanHandler(object args) {

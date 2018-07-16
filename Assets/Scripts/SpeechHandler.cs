@@ -13,6 +13,11 @@ namespace HoloToolkit.Unity {
         private int frameCounter = 0;
         [HideInInspector]
         private bool commandDetected = false;
+        private MoveItGoalPublisher moveitGoalPublisher;
+
+        private void Start() {
+            moveitGoalPublisher = GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>();
+        }
 
         void ISpeechHandler.OnSpeechKeywordRecognized(SpeechEventData eventData) {
             CurrentCommand = eventData.RecognizedText.ToLower();
@@ -61,6 +66,18 @@ namespace HoloToolkit.Unity {
                     break;
                 case "stop looking":
                     StateManager.Instance.LookAtUser = false;
+                    break;
+                case "open left":
+                    moveitGoalPublisher.PublishGripperCommand("left", "open");
+                    break;
+                case "close left":
+                    moveitGoalPublisher.PublishGripperCommand("left", "close");
+                    break;
+                case "open right":
+                    moveitGoalPublisher.PublishGripperCommand("right", "open");
+                    break;
+                case "close right":
+                    moveitGoalPublisher.PublishGripperCommand("right", "close");
                     break;
             }
             switch (StateManager.Instance.CurrentState) {
@@ -114,12 +131,12 @@ namespace HoloToolkit.Unity {
                 return;
             }
             switch (command) {
-                case "open right":
-                    StateManager.Instance.EinCommandsToExecute.Add("switchToRightArm openGripper");
-                    break;
-                case "open left":
-                    StateManager.Instance.EinCommandsToExecute.Add("switchToLeftArm openGripper");
-                    break;
+                //case "open right":
+                //    StateManager.Instance.EinCommandsToExecute.Add("switchToRightArm openGripper");
+                //    break;
+                //case "open left":
+                //    StateManager.Instance.EinCommandsToExecute.Add("switchToLeftArm openGripper");
+                //    break;
                 case "close right":
                     StateManager.Instance.EinCommandsToExecute.Add("switchToRightArm closeGripper");
                     break;
