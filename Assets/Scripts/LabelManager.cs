@@ -40,6 +40,7 @@ namespace HoloToolkit.Unity {
                     wsc = wso.GetComponent<UWPWebSocketClient>();
 #endif
             wsc.Advertise(labelSaveTopic, "std_msgs/String");
+            wsc.Advertise(labelLoadITopic, "std_msgs/String");
             wsc.Subscribe(labelLoadTopic, "std_msgs/String", "none", 0);
         }
 
@@ -148,6 +149,45 @@ namespace HoloToolkit.Unity {
             return null;
         }
 
+        private Vector3 GetUnityPos(Vector3 pos) 
+        {
+            var x_coord = pos.x - StateManager.Instance.MovoROSStartPose.X;
+            var y_coord = pos.z - StateManager.Instance.MovoROSStartPose.Y;
+
+            y_coord = -y_coord;
+
+            Vector3 temp = new Vector3(x_coord, StateManager.Instance.FloorY, y_coord);
+
+            Transform robotObjTransform = GameObject.Find("Movo").transform;
+            Vector3 relativePos = robotObjTransform.TransformPoint(temp);
+            return relativePos;
+        }
+
+        public Vector3 GetUnityCoords(Vector2 RosPose) {
+            Vector2 ROSCoords = RosPose;
+            Vector2 UnityCoords = ROSCoords;
+            UnityCoords.x -= StateManager.Instance.MovoROSStartPose.X;
+            UnityCoords.y -= StateManager.Instance.MovoROSStartPose.Y;
+            Transform robotObjTransform = GameObject.Find("Movo").transform;
+            Vector3 UnityPosition = robotObjTransform.TransformPoint(-UnityCoords.y, StateManager.Instance.FloorY, UnityCoords.x);
+            return new Vector3(UnityPosition.x, StateManager.Instance.FloorY, UnityPosition.z);
+        }
+
+        private Vector3 GetUnityPos2(Vector3 pos) {
+            var x_coord = pos.x - StateManager.Instance.MovoUnityToROSOffset.X;
+            var y_coord = pos.z - StateManager.Instance.MovoUnityToROSOffset.Y;
+
+            y_coord = -y_coord;
+
+            Vector3 temp = new Vector3(x_coord, StateManager.Instance.FloorY, y_coord);
+
+            Transform robotObjTransform = GameObject.Find("Movo").transform;
+            Vector3 relativePos = robotObjTransform.TransformPoint(temp);
+            return relativePos;
+        }
+
+
+
         private void Update() {
             //Debug.Log(lastLoadLabels);
             try {
@@ -171,10 +211,10 @@ namespace HoloToolkit.Unity {
                     Debug.Log(lines[i]);
                     Debug.Log(split_line[0]);
                     string l_name = split_line[0];
-                    float xl = float.Parse(split_line[1]) - StateManager.Instance.MovoUnityToROSOffset.Y;
-                    float yl = float.Parse(split_line[2]) - StateManager.Instance.MovoUnityToROSOffset.X;
-                    float xr = float.Parse(split_line[3]) - StateManager.Instance.MovoUnityToROSOffset.Y; ;
-                    float yr = float.Parse(split_line[4]) - StateManager.Instance.MovoUnityToROSOffset.X;
+                    float xl = float.Parse(split_line[1]);// - StateManager.Instance.MovoUnityToROSOffset.Y;
+                    float yl = float.Parse(split_line[2]);// - StateManager.Instance.MovoUnityToROSOffset.X;
+                    float xr = float.Parse(split_line[3]);// - StateManager.Instance.MovoUnityToROSOffset.Y; ;
+                    float yr = float.Parse(split_line[4]);// - StateManager.Instance.MovoUnityToROSOffset.X;
 
                     Debug.Log("Loading in a label");
                     GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
@@ -186,8 +226,8 @@ namespace HoloToolkit.Unity {
                         label1.name = l_name + " L";
                         label2.name = l_name + " R";
 
-                        label1.transform.position =  new Vector3(xl, label1.transform.position.y, yl);
-                        label2.transform.position = new Vector3(xr, label1.transform.position.y, yr);
+                        label1.transform.position = GetUnityCoords(new Vector2(xl, yl));//GetUnityPos(new Vector3(xl, label1.transform.position.y, yl)); //new Vector3(xl - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yl - StateManager.Instance.MovoUnityToROSOffset.Y);
+                        label2.transform.position = GetUnityCoords(new Vector2(xr, yr));//GetUnityPos(new Vector3(xr, label1.transform.position.y, yr)); //new Vector3(xr - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yr - StateManager.Instance.MovoUnityToROSOffset.Y);
                     }
 
                     Debug.Log("Finished adding");

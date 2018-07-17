@@ -63,5 +63,6 @@ namespace HoloToolkit.Unity {
             y_coord += StateManager.Instance.MovoROSStartPose.Y;
             return new Vector2(x_coord, y_coord);
         }
+
     }
 }
