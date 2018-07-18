@@ -9,6 +9,8 @@ namespace HoloToolkit.Unity {
         public int WaypointInd { get; set; }
         public List<Waypoint> Waypoints { get; private set; }
         private GameObject WaypointTemplate;
+        public List<GeometryPoseStamped> PathPoses; // used to project the Movo's planned navigation path
+        public List<GameObject> MovoGhosts;
         // Use this for initialization
 
         //void Awake() {
@@ -16,6 +18,8 @@ namespace HoloToolkit.Unity {
             Debug.Log("Initialized WaypointManager");
             WaypointTemplate = GameObject.Find("Waypoint0");
             Waypoints = new List<Waypoint>();
+            PathPoses = new List<GeometryPoseStamped>();
+            MovoGhosts = new List<GameObject>();
             Debug.Log("WaypointManager Awake()");
         }
 
@@ -63,7 +67,33 @@ namespace HoloToolkit.Unity {
             return Waypoints[Waypoints.Count - 1];
         }
 
+        private void VisualizePlannedPath() {
+            if (PathPoses.Count == 0) {
+                return;
+            }
+            foreach (GameObject movoGhost in MovoGhosts) {
+                Destroy(movoGhost);
+            }
+            MovoGhosts.Clear();
+            foreach (GeometryPoseStamped stampedPose in PathPoses) {
+                GeometryPose pose = stampedPose.pose;
+                Vector2 unityCoords = UtilFunctions.RosToUnityCoords(new Vector2(pose.position.x, pose.position.y));
+                Vector3 unityPosition = new Vector3(unityCoords.x, StateManager.Instance.FloorY, unityCoords.y);
+                Quaternion ROSQuaternion = new Quaternion(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w);
+                //Quaternion unityQuaternion = UtilFunctions.RosToUnityRotationAxisConversion(ROSquaternion); // TODO: add back in
+                GameObject movoGhost = Instantiate(GameObject.Find("base_link"));
+                movoGhost.transform.position = unityPosition;
+                movoGhost.transform.rotation = ROSQuaternion;
+                MovoGhosts.Add(movoGhost);
+                Debug.Log("Num ghosts: " + MovoGhosts.Count);
+            }
+        }
+
         private void Update() {
+            // TODO: first get ROS to Unity conversions working, then visualize path(s) upon placing waypoint.
+            if (StateManager.Instance.CurrentState == StateManager.State.NavigatingState) {
+                VisualizePlannedPath();
+            }
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;
             }
@@ -74,6 +104,8 @@ namespace HoloToolkit.Unity {
             if (!lastWaypoint.Placed) {
                 UtilFunctions.FollowGaze(Camera.main, lastWaypoint.WaypointObj);
             }
+            //Debug.Log("AHHHHH");
+            //VisualizePlannedPath();
         }
 
     }
