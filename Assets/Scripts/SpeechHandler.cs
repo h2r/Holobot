@@ -91,7 +91,7 @@ namespace HoloToolkit.Unity {
                     ParsePuppetCommands(CurrentCommand);
                     break;
                 case StateManager.State.MotionIntentState:
-                    ParseArmTrailCommands(CurrentCommand);
+                    ParseMotionIntentCommands(CurrentCommand);
                     break;
             }
         }
@@ -117,7 +117,6 @@ namespace HoloToolkit.Unity {
                     WaypointManager.Instance.AddWaypoint();
                     break;
                 case "move":
-                    //WaypointManager.Instance.TransitionToNavigatingState();
                     StateManager.Instance.TransitionToNavigatingState();
                     break;
                 case "restart":
@@ -146,7 +145,7 @@ namespace HoloToolkit.Unity {
             }
         }
 
-        private void ParseArmTrailCommands(string command) {
+        private void ParseMotionIntentCommands(string command) {
             if (StateManager.Instance.CurrentState != StateManager.State.MotionIntentState) {
                 return;
             }
