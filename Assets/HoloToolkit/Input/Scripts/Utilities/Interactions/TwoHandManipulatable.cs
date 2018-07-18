@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-
+using RosSharp.RosBridgeClient;
 
 namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
     /// <summary>
@@ -327,6 +327,9 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
             if (gameObject.name == "Movo" && StateManager.Instance.CurrentState != StateManager.State.CalibratingState) {
                 return;
             }
+            if (gameObject.name.StartsWith("Transition") || gameObject.name.StartsWith("Command")) {
+                return;
+            }
             var targetPosition = moveLogic.Update(handsPressedLocationsMap.Values.First(), hostTransform.position);
 
             hostTransform.position = targetPosition;
@@ -367,6 +370,35 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
 
         private void OnManipulationStarted() {
             //Debug.Log("OnManipulationStarted " + gameObject.name);
+            if (gameObject.name.StartsWith("Transition") || gameObject.name.StartsWith("Command")) {
+                if (gameObject.name == "TransitionWaypointSphere") {
+                    StateManager.Instance.TransitionToWaypointState();
+                }
+                else if (gameObject.name == "TransitionStandbySphere") {
+                    StateManager.Instance.TransitionToStandbyState();
+                }
+                else if (gameObject.name == "TransitionPuppetSphere") {
+                    StateManager.Instance.TransitionToPuppetState();
+                }
+                else if (gameObject.name == "TransitionMotionIntentSphere") {
+                    StateManager.Instance.TransitionToMotionIntentState();
+                }
+                else if (gameObject.name == "TransitionCalibrateSphere") {
+                    StateManager.Instance.TransitionToCalibrateState();
+                }
+                else if (gameObject.name == "CommandCalibrateSphere") {
+                    MovoPlace.CalibrateMovo();
+                }
+                else if (gameObject.name == "CommandMoveSphere") {
+                    if (StateManager.Instance.CurrentState == StateManager.State.MotionIntentState) {
+                        GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
+                    }
+                    else if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
+                        StateManager.Instance.TransitionToNavigatingState();
+                    }
+                }
+                return;
+            }
             if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
                 Waypoint lastWaypoint = WaypointManager.Instance.GetLastWaypoint();
                 if (gameObject.name == lastWaypoint.Name) {
