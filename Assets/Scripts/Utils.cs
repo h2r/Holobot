@@ -41,6 +41,11 @@ namespace HoloToolkit.Unity {
             return new Quaternion(qIn.z, -qIn.x, qIn.y, -qIn.w);
         }
 
+        public static Quaternion RosToUnityRotationAxisConversion(Quaternion qIn) {
+            //return new Quaternion(qIn.y, -qIn.z, -qIn.x, qIn.w);
+            return new Quaternion(qIn.z, -qIn.x, qIn.y, -qIn.w);
+        }
+
         public static GeometryQuaternion QuaternionToGeometryQuaternion(Quaternion q) {
             return new GeometryQuaternion {
                 x = q.x,
@@ -56,6 +61,15 @@ namespace HoloToolkit.Unity {
                 y = v.y,
                 z = v.z
             };
+        }
+
+        public static Vector2 RosToUnityCoords(Vector2 ROSCoords) {
+            Vector2 UnityCoords = ROSCoords;
+            UnityCoords.x -= StateManager.Instance.MovoROSStartPose.X;
+            UnityCoords.y -= StateManager.Instance.MovoROSStartPose.Y;
+            Transform robotObjTransform = GameObject.Find("Movo").transform;
+            Vector3 UnityPosition = robotObjTransform.TransformPoint(-UnityCoords.y, StateManager.Instance.FloorY, UnityCoords.x);
+            return new Vector2(UnityPosition.x, UnityPosition.z);
         }
     }
 
@@ -76,6 +90,15 @@ namespace HoloToolkit.Unity {
             x_coord += StateManager.Instance.MovoROSStartPose.X;
             y_coord += StateManager.Instance.MovoROSStartPose.Y;
             return new Vector2(x_coord, y_coord);
+        }
+        public Vector2 GetUnityCoords() {
+            Vector2 ROSCoords = GetCoords();
+            Vector2 UnityCoords = ROSCoords;
+            UnityCoords.x -= StateManager.Instance.MovoROSStartPose.X;
+            UnityCoords.y -= StateManager.Instance.MovoROSStartPose.Y;
+            Transform robotObjTransform = GameObject.Find("Movo").transform;
+            Vector3 UnityPosition = robotObjTransform.TransformPoint(-UnityCoords.y, StateManager.Instance.FloorY, UnityCoords.x);
+            return new Vector2(UnityPosition.x, UnityPosition.z);
         }
         public void UpdatePose(float calibThetaOffset = 0) {
             Vector2 coords = GetCoords();
