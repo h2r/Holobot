@@ -42,6 +42,10 @@ namespace HoloToolkit.Unity {
             Debug.Log(name + " Pose updated!");
             Pose pose = thisWaypoint.Pose;
             string msg = string.Format("{0}\n({1}, {2}, {3})", waypointObj.name, Math.Round(pose.X, 1), Math.Round(pose.Y, 1), Math.Round(pose.Theta, 1));
+            //Vector2 predictedUnityPosition = thisWaypoint.GetUnityCoords();
+            //Vector3 actualUnityPosition = gameObject.transform.position;
+            //coordText.text = "ROS: " + msg + String.Format("\nPredict: ({0},{1})\nReal: ({2},{3})", predictedUnityPosition.x, predictedUnityPosition.y,
+            //    actualUnityPosition.x, actualUnityPosition.z);
             coordText.text = msg;
         }
     }
