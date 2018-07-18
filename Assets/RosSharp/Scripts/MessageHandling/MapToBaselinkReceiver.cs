@@ -17,47 +17,48 @@ using System;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient {
-    public class MapReceiver : MessageReceiver {
-        public override Type MessageType { get { return (typeof(NavigationMapMetaData)); } }
-
-        //public GameObject robotMap;
+    public class MapToBaselinkReceiver : MessageReceiver {
+        public override Type MessageType { get { return (typeof(StandardString)); } }
 
         // Variables for the metadata
-        private int height;
-        private int width;
-        private float resolution;
+        private String posQuatMessage;
+        private String[] posAndQuatsList;
+        public float robotX;
+        public float robotY;
+        public float robotZ;
+        public float robotQ1;
+        public float robotQ2;
+        public float robotQ3;
+        public float robotQ4;
 
         private bool isMessageReceived;
-
-        public float mapMetreWidth;
-        public float mapMetreHeight;
 
         private void Awake() {
             MessageReception += ReceiveMessage;
         }
         private void Start() {
-            Debug.Log("Mapping launched!");
-
+            // Make sure this thing only activates after the robot has been calibrated
         }
         private void Update() {
             if (isMessageReceived)
                 ProcessMessage();
         }
         private void ReceiveMessage(object sender, MessageEventArgs e) {
-            height = Convert.ToInt32(((NavigationMapMetaData)e.Message).height);
-            width = Convert.ToInt32(((NavigationMapMetaData)e.Message).width);
-            resolution = ((NavigationMapMetaData)e.Message).resolution;
-
-            //Debug.Log(height);
-            //Debug.Log(width);
-            //Debug.Log(resolution);
-
+            posQuatMessage = ((StandardString)e.Message).data;
+            Debug.Log(posQuatMessage);
+            posAndQuatsList = posQuatMessage.Split(',');
+            robotX = float.Parse(posAndQuatsList[0]);
+            robotY = float.Parse(posAndQuatsList[1]);
+            robotZ = float.Parse(posAndQuatsList[2]);
+            robotQ1 = float.Parse(posAndQuatsList[0]);
+            robotQ2 = float.Parse(posAndQuatsList[1]);
+            robotQ3 = float.Parse(posAndQuatsList[2]);
+            robotQ4 = float.Parse(posAndQuatsList[3]);
             isMessageReceived = true;
         }
 
         private void ProcessMessage() {
-            mapMetreWidth = resolution * width;
-            mapMetreHeight = resolution * height;
+            //robotMap.transform.localScale = new Vector3(resolution * width, 0.1f, resolution * height);
             isMessageReceived = false;
         }
     }

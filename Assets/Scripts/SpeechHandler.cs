@@ -94,6 +94,7 @@ namespace HoloToolkit.Unity {
             switch (command) {
                 case "calibrate":
                     MovoPlace.CalibrateMovo();
+                    MapManager.Instance.CalibrateMap();
                     break;
             }
         }
