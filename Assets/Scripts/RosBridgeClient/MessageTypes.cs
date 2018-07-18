@@ -58,6 +58,7 @@ public static class MessageTypes {
             { "shape_msgs/SolidPrimitive", typeof(ShapeSolidPrivitive)},
             { "shape_msgs/Mesh", typeof(ShapeMesh)},
             { "shape_msgs/MeshTriangle", typeof(ShapeMeshTriangle)},
+            { "nav_msgs/Path", typeof(NavPath)},
             { "shape_msgs/Plane", typeof(ShapePlane)}
         };
     public static string RosMessageType(Type messageType) {

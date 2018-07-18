@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 using Newtonsoft.Json;
-
+using System.Collections.Generic;
 
 public class Message {
     [JsonIgnore]
@@ -400,6 +400,15 @@ public class GeometryPoseStamped : Message {
     public GeometryPoseStamped() {
         header = new StandardHeader();
         pose = new GeometryPose();
+    }
+}
+
+public class NavPath : Message {
+    public StandardHeader header;
+    public List<GeometryPoseStamped> poses;
+    public NavPath() {
+        header = new StandardHeader();
+        poses = new List<GeometryPoseStamped>();
     }
 }
 
