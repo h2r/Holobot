@@ -21,8 +21,8 @@ public class UWPWebSocketClient : UniversalWebsocketClient {
     //General variables
     //System.Uri uri = new System.Uri("ws://138.16.160.16:9090");
     //System.Uri uri = new System.Uri("ws://192.168.160.160:9090");
-    //System.Uri uri = new System.Uri("ws://192.168.160.160:5564");
-    System.Uri uri = new System.Uri("ws://138.16.160.222:5564"); // try 9090 for local IP if doesn't work
+    System.Uri uri = new System.Uri("ws://192.168.160.160:9090");
+    //System.Uri uri = new System.Uri("ws://138.16.160.222:5564"); // try 9090 for local IP if doesn't work
     //public Dictionary<string, string> messages = new Dictionary<string, string>();
     private int counter = 1;
 
