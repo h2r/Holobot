@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using HoloToolkit.Unity;
 
 namespace RosSharp.RosBridgeClient {
 
@@ -31,7 +32,16 @@ namespace RosSharp.RosBridgeClient {
             requestIdentityPlanPublicationId = rosSocket.Advertise(RequestIdentityPoseTopic, "std_msgs/String");
             rightGripperCommandPublicationId = rosSocket.Advertise(PublishRightGripperCommandTopic, "std_msgs/String");
             leftGripperCommandPublicationId = rosSocket.Advertise(PublishLeftGripperCommandTopic, "std_msgs/String");
+            rosSocket.Subscribe("/move_base/GlobalPlanner/plan", "nav_msgs/Path", NavPathHandler);
             ResetBackend();
+        }
+
+        private void NavPathHandler(Message message) {
+            NavPath path = (NavPath)message;
+            if (path.poses.Count > 0) {
+                Debug.Log("Num poses in path: " + path.poses.Count);
+            }
+            WaypointManager.Instance.PathPoses = path.poses;
         }
 
         public void RequestIdentityPlan() { // ask moveit_movo.py to create a non-moving plan, to stop MovoShadow from moving.
