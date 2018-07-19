@@ -13,10 +13,6 @@ namespace HoloToolkit.Unity {
             obj.transform.position = new Vector3(pos.x, StateManager.Instance.FloorY, pos.z);
         }
 
-        //public static void ReportState() {
-        //    Debug.Log("Current state: " + StateManager.Instance.CurrentState);
-        //}
-
         public static void FollowGaze(Camera cam, GameObject obj, float dist = 2.0f) {
             var headPosition = cam.transform.position;
             var gazeDirection = cam.transform.forward;
@@ -70,50 +66,6 @@ namespace HoloToolkit.Unity {
             Transform robotObjTransform = GameObject.Find("Movo").transform;
             Vector3 UnityPosition = robotObjTransform.TransformPoint(-UnityCoords.y, StateManager.Instance.FloorY, UnityCoords.x);
             return new Vector2(UnityPosition.x, UnityPosition.z);
-        }
-    }
-
-    public class Waypoint {
-        public GameObject WaypointObj { get; private set; }
-        public GameObject CoordTextObj { get; private set; }
-        public String Name { get; private set; }
-        public Boolean Placed { get; set; }
-        public Pose Pose { get; private set; }
-        private double Deg2rad(float angle) {
-            return (Math.PI / 180) * angle;
-        }
-        public Vector2 GetCoords() {
-            Transform robotObjTransform = GameObject.Find("Movo").transform;
-            Vector3 relativePos = robotObjTransform.InverseTransformPoint(WaypointObj.transform.position);
-            var x_coord = relativePos.z; // + StateManager.Instance.MovoROSStartPose.X;
-            var y_coord = -relativePos.x; // + StateManager.Instance.MovoROSStartPose.Y;
-            x_coord += StateManager.Instance.MovoROSStartPose.X;
-            y_coord += StateManager.Instance.MovoROSStartPose.Y;
-            return new Vector2(x_coord, y_coord);
-        }
-        public Vector2 GetUnityCoords() {
-            Vector2 ROSCoords = GetCoords();
-            Vector2 UnityCoords = ROSCoords;
-            UnityCoords.x -= StateManager.Instance.MovoROSStartPose.X;
-            UnityCoords.y -= StateManager.Instance.MovoROSStartPose.Y;
-            Transform robotObjTransform = GameObject.Find("Movo").transform;
-            Vector3 UnityPosition = robotObjTransform.TransformPoint(-UnityCoords.y, StateManager.Instance.FloorY, UnityCoords.x);
-            return new Vector2(UnityPosition.x, UnityPosition.z);
-        }
-        public void UpdatePose(float calibThetaOffset = 0) {
-            Vector2 coords = GetCoords();
-            Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
-            float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta + calibThetaOffset;
-            //Debug.Log("theta: " + theta);
-            Pose = new Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
-        }
-        public Waypoint(GameObject waypointObj, int waypointInd) {
-            Name = String.Format("Waypoint{0}", waypointInd);
-            waypointObj.name = Name;
-            WaypointObj = waypointObj;
-            CoordTextObj = WaypointManager.Instance.GetCoordTextObj(waypointObj);
-            Placed = false;
-            UpdatePose();
         }
     }
 
