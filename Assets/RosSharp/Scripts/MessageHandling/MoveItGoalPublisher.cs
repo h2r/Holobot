@@ -42,6 +42,7 @@ namespace RosSharp.RosBridgeClient {
                 Debug.Log("Num poses in path: " + path.poses.Count);
             }
             WaypointManager.Instance.PathPoses = path.poses;
+            WaypointManager.Instance.PathPosesRefreshed = true;
         }
 
         public void RequestIdentityPlan() { // ask moveit_movo.py to create a non-moving plan, to stop MovoShadow from moving.
@@ -75,7 +76,6 @@ namespace RosSharp.RosBridgeClient {
 
         public void ResetBackend() {
             RequestIdentityPlan();
-            //rosSocket.Publish(planPublicationId, new MoveitTarget());
         }
     }
 }
