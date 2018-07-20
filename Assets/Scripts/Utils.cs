@@ -67,6 +67,37 @@ namespace HoloToolkit.Unity {
             Vector3 UnityPosition = robotObjTransform.TransformPoint(-UnityCoords.y, StateManager.Instance.FloorY, UnityCoords.x);
             return new Vector2(UnityPosition.x, UnityPosition.z);
         }
+
+        public static GeometryPoseStamped PoseToPoseStamped(GeometryPose pose, string frame_id) {
+            return new GeometryPoseStamped {
+                pose = pose,
+                header = new StandardHeader {
+                    frame_id = frame_id
+                }
+            };
+        }
+
+        public static GeometryPoseStamped PoseToPoseStamped(Pose pose, string frame_id) {
+            Quaternion quat = Quaternion.Euler(0, 0, pose.Theta);
+            return new GeometryPoseStamped {
+                header = new StandardHeader {
+                    frame_id = frame_id
+                },
+                pose = new GeometryPose {
+                    position = new GeometryPoint {
+                        x = pose.X,
+                        y = pose.Y,
+                        z = 0
+                    },
+                    orientation = new GeometryQuaternion {
+                        x = quat.x,
+                        y = quat.y,
+                        z = quat.z,
+                        w = quat.w
+                    }
+                }
+            };
+        }
     }
 
     public class Pose {

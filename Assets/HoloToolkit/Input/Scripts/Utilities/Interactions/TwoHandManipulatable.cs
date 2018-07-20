@@ -399,12 +399,13 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
                 }
                 return;
             }
-            if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
-                Waypoint lastWaypoint = WaypointManager.Instance.GetLastWaypoint();
-                if (gameObject.name == lastWaypoint.Name) {
-                    lastWaypoint.Placed = true;
-                }
-            }
+            //if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
+            //    //Waypoint lastWaypoint = WaypointManager.Instance.GetLastWaypoint();
+            //    Waypoint lastWaypoint = WaypointManager.Instance.LastWaypoint;
+            //    if (gameObject.name == lastWaypoint.Name) {
+            //        lastWaypoint.Placed = true;
+            //    }
+            //}
             InputManager.Instance.PushModalInputHandler(gameObject);
 
             //Show Bounding Box visual on manipulation interaction
@@ -418,12 +419,28 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
             //Hide Bounding Box visual on release
             ShowBoundingBox = false;
             var currState = StateManager.Instance.CurrentState;
-            if (currState != StateManager.State.PuppetState && currState != StateManager.State.MotionIntentState) {
-                return;
+            if (currState == StateManager.State.PuppetState || currState == StateManager.State.MotionIntentState) {
+                EinRightForthCommandsPublisher motionpub = GameObject.Find("RosConnector").GetComponent<EinRightForthCommandsPublisher>();
+                if (gameObject.name.Contains("Gripper")) {
+                    motionpub.SendPlanRequest();
+                }
             }
-            EinRightForthCommandsPublisher motionpub = GameObject.Find("RosConnector").GetComponent<EinRightForthCommandsPublisher>();
-            if (gameObject.name.Contains("Gripper")) {
-                motionpub.SendPlanRequest();
+            //if (currState == StateManager.State.WaypointState) {
+            //    if (WaypointManager.Instance.Waypoints.Count != 1) {
+            //        return;
+            //    }
+            //    Pose movoROSPose = StateManager.Instance.MovoROSPose;
+            //    Pose waypointROSPose = WaypointManager.Instance.LastWaypoint.Pose;
+            //}
+            if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
+                //Waypoint lastWaypoint = WaypointManager.Instance.GetLastWaypoint();
+                Waypoint lastWaypoint = WaypointManager.Instance.LastWaypoint;
+                if (gameObject.name == lastWaypoint.Name) {
+                    lastWaypoint.Placed = true;
+                }
+            }
+            if (gameObject.name.Contains("Waypoint")) {
+                WaypointManager.Instance.PathSent = false;
             }
         }
     }

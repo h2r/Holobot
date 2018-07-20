@@ -14,6 +14,7 @@ namespace RosSharp.RosBridgeClient {
         private readonly string RequestIdentityPoseTopic = "/holocontrol/identity_pose_request";
         private readonly string PublishRightGripperCommandTopic = "/holocontrol/right_gripper_command";
         private readonly string PublishLeftGripperCommandTopic = "/holocontrol/left_gripper_command";
+        private readonly string PublishWaypointPoseStampedTopic = "/holocontrol/waypoint_pose_stamped";
 
         public GameObject UrdfModel; // the root gameobject of your robot
 
@@ -23,6 +24,7 @@ namespace RosSharp.RosBridgeClient {
         private int requestIdentityPlanPublicationId;
         private int rightGripperCommandPublicationId;
         private int leftGripperCommandPublicationId;
+        private int waypointPoseStampedPublicationId;
 
         // Use this for initialization
         void Start() {
@@ -32,6 +34,7 @@ namespace RosSharp.RosBridgeClient {
             requestIdentityPlanPublicationId = rosSocket.Advertise(RequestIdentityPoseTopic, "std_msgs/String");
             rightGripperCommandPublicationId = rosSocket.Advertise(PublishRightGripperCommandTopic, "std_msgs/String");
             leftGripperCommandPublicationId = rosSocket.Advertise(PublishLeftGripperCommandTopic, "std_msgs/String");
+            waypointPoseStampedPublicationId = rosSocket.Advertise(PublishWaypointPoseStampedTopic, "geometry_msgs/PoseStamped");
             rosSocket.Subscribe("/move_base/GlobalPlanner/plan", "nav_msgs/Path", NavPathHandler);
             ResetBackend();
         }
@@ -47,6 +50,10 @@ namespace RosSharp.RosBridgeClient {
 
         public void RequestIdentityPlan() { // ask moveit_movo.py to create a non-moving plan, to stop MovoShadow from moving.
             rosSocket.Publish(requestIdentityPlanPublicationId, new StandardString { data = "identity plan pls" });
+        }
+
+        public void PublishPoseStamped(GeometryPoseStamped poseStamped) {
+            rosSocket.Publish(waypointPoseStampedPublicationId, poseStamped);
         }
 
         public void PublishPlan(MoveitTarget moveitTarget) {
@@ -68,10 +75,6 @@ namespace RosSharp.RosBridgeClient {
             else if (gripperSide == "left") {
                 rosSocket.Publish(leftGripperCommandPublicationId, new StandardString { data = command });
             }
-        }
-
-        void PlanHandler(object args) {
-            return;
         }
 
         public void ResetBackend() {

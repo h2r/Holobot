@@ -28,7 +28,8 @@ namespace HoloToolkit.Unity {
             Debug.Assert(StateManager.Instance.CurrentState == StateManager.State.WaypointState);
             //Waypoint curr_waypoint = WaypointManager.Instance.GetLastWaypoint();
             if (thisWaypoint == null) {
-                thisWaypoint = WaypointManager.Instance.GetLastWaypoint();
+                //thisWaypoint = WaypointManager.Instance.GetLastWaypoint();
+                thisWaypoint = WaypointManager.Instance.LastWaypoint;
                 Debug.Log(name + " waypoint set!");
             }
             waypointObj = thisWaypoint.WaypointObj;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using HoloToolkit.Unity;
-
+using RosSharp.RosBridgeClient;
 
 public class WaypointManager : Singleton<WaypointManager> {
     public int WaypointInd { get; set; }
@@ -11,6 +11,8 @@ public class WaypointManager : Singleton<WaypointManager> {
     public List<GeometryPoseStamped> PathPoses; // used to project the Movo's planned navigation path
     public List<GameObject> MovoGhosts;
     public bool PathPosesRefreshed;
+    public Waypoint LastWaypoint;
+    public bool PathSent = false;
 
     void Start() {
         Debug.Log("Initialized WaypointManager");
@@ -54,17 +56,19 @@ public class WaypointManager : Singleton<WaypointManager> {
         GameObject coordTextObj = GetCoordTextObj(waypointObj);
         Debug.Assert(coordTextObj != null);
         coordTextObj.name = String.Format("WaypointCoord{0}", WaypointInd);
-        Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
+        Waypoint newWaypoint = new Waypoint(waypointObj, WaypointInd);
+        Waypoints.Add(newWaypoint);
         Debug.Log(Waypoints.Count + " waypoints exist.");
-        Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
+        //Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
+        LastWaypoint = newWaypoint;
     }
 
-    public Waypoint GetLastWaypoint() {
-        if (Waypoints.Count == 0) {
-            return null;
-        }
-        return Waypoints[Waypoints.Count - 1];
-    }
+    //public Waypoint GetLastWaypoint() {
+    //    if (Waypoints.Count == 0) {
+    //        return null;
+    //    }
+    //    return Waypoints[Waypoints.Count - 1];
+    //}
 
     private void DestroyGhosts() {
         for (int i = 0; i < MovoGhosts.Count; i++) {
@@ -80,7 +84,7 @@ public class WaypointManager : Singleton<WaypointManager> {
         }
         DestroyGhosts();
         int numPoses = PathPoses.Count;
-        for (int i = 0; i < numPoses; i += 5) {
+        for (int i = 0; i < numPoses; i += 10) {
             if (PathPosesRefreshed) {
                 DestroyGhosts();
                 PathPosesRefreshed = false;
@@ -112,9 +116,15 @@ public class WaypointManager : Singleton<WaypointManager> {
         if (Waypoints.Count == 0) {
             InitializeWaypoints();
         }
-        Waypoint lastWaypoint = GetLastWaypoint();
-        if (!lastWaypoint.Placed) {
-            UtilFunctions.FollowGaze(Camera.main, lastWaypoint.WaypointObj);
+        //Waypoint lastWaypoint = GetLastWaypoint();
+        if (!LastWaypoint.Placed) {
+            UtilFunctions.FollowGaze(Camera.main, LastWaypoint.WaypointObj);
+        }
+        else if (LastWaypoint.Placed && !PathSent) {
+            GeometryPoseStamped waypointPoseStamped = UtilFunctions.PoseToPoseStamped(LastWaypoint.Pose, "/map");
+            MoveItGoalPublisher moveItGoalPublisher = GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>();
+            moveItGoalPublisher.PublishPoseStamped(waypointPoseStamped);
+            PathSent = true;
         }
     }
 

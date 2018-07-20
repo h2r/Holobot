@@ -90,14 +90,14 @@ namespace HoloToolkit.Unity {
             Debug.Log("Sent command: " + msg.data);
         }
 
-        private GeometryPoseStamped PoseToPoseStamped(GeometryPose pose, string frame_id) {
-            return new GeometryPoseStamped {
-                pose = pose,
-                header = new StandardHeader {
-                    frame_id = frame_id
-                }
-            };
-        }
+        //private GeometryPoseStamped PoseToPoseStamped(GeometryPose pose, string frame_id) {
+        //    return new GeometryPoseStamped {
+        //        pose = pose,
+        //        header = new StandardHeader {
+        //            frame_id = frame_id
+        //        }
+        //    };
+        //}
 
         public void SendPlanRequest() {
             var currState = StateManager.Instance.CurrentState;
@@ -116,8 +116,8 @@ namespace HoloToolkit.Unity {
                 };
 
                 MoveitTarget moveitTarget = new MoveitTarget {
-                    right_arm = PoseToPoseStamped(rightTargetPose, "/base_link"),
-                    left_arm = PoseToPoseStamped(leftTargetPose, "/base_link"),
+                    right_arm = UtilFunctions.PoseToPoseStamped(rightTargetPose, "/base_link"),
+                    left_arm = UtilFunctions.PoseToPoseStamped(leftTargetPose, "/base_link"),
                 };
                 MoveItGoalPublisher.PublishPlan(moveitTarget);
             }
