@@ -161,7 +161,8 @@ public class Waypoint {
         Vector3 UnityPosition = robotObjTransform.TransformPoint(-UnityCoords.y, StateManager.Instance.FloorY, UnityCoords.x);
         return new Vector2(UnityPosition.x, UnityPosition.z);
     }
-    public void UpdatePose(float calibThetaOffset = 0) {
+    public void UpdatePose(float calibThetaOffset = 0) { // TODO: remove calibThetaOffset parameter
+        calibThetaOffset = -StateManager.Instance.CalibrateThetaOffset;
         Vector2 coords = GetCoords();
         Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
         float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta + calibThetaOffset;
