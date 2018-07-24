@@ -88,6 +88,7 @@ namespace RosSharp.RosBridgeClient {
                 poses = new List<GeometryPoseStamped>()
             };
             foreach (Waypoint waypoint in waypoints) {
+                waypoint.UpdatePose();
                 waypointPath.poses.Add(waypoint.ROSPoseStamped);
             }
             rosSocket.Publish(waypointPubTopicPublicationId, waypointPath);
