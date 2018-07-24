@@ -31,6 +31,7 @@ namespace HoloToolkit.Unity {
         [HideInInspector]
         public float ROSDelTheta;
         [HideInInspector]
+        public bool NavigationComplete = false;
         //public bool MoveitPlanIdentityPose = false; // if true, make moveit plan movement to current arm poses (e.g. to initialize model joint states)
 
         private void Start() {
@@ -108,6 +109,10 @@ namespace HoloToolkit.Unity {
         private void Update() {
             //Debug.Assert(MovoState == "standby" || MovoState == "navigating");
             DisplayState();
+            if (NavigationComplete) {
+                TransitionToStandbyState();
+                NavigationComplete = false;
+            }
         }
     }
 }

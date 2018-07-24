@@ -127,5 +127,8 @@ namespace HoloToolkit.Unity {
         public static HoloPose operator -(HoloPose pose) {
             return new HoloPose(-pose.X, -pose.Y, -pose.Theta);
         }
+        public override string ToString() {
+            return String.Format("({0}, {1}, {2})", X, Y, Theta);
+        }
     }
 }

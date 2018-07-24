@@ -14,7 +14,7 @@ public class WaypointManager : Singleton<WaypointManager> {
     public Waypoint LastWaypoint;
     //public bool PathSent = false;
 
-    void Start() {
+    void Awake() {
         Debug.Log("Initialized WaypointManager");
         WaypointTemplate = GameObject.Find("Waypoint0");
         Waypoints = new List<Waypoint>();
@@ -29,6 +29,8 @@ public class WaypointManager : Singleton<WaypointManager> {
             return;
         }
         foreach (Waypoint wp in Waypoints) {
+            Debug.Log(Waypoints.Count + " Waypoints exist.");
+            Debug.Log("Trying to destroy " + wp.WaypointObj.name);
             Destroy(wp.WaypointObj);
         }
         Waypoints = new List<Waypoint>();

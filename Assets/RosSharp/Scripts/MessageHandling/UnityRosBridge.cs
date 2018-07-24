@@ -17,7 +17,7 @@ namespace RosSharp.RosBridgeClient {
         //private readonly string InitializeMovocontrolRequestTopic = "/holocontrol/init_movocontrol_request";
         private readonly string WaypointPubTopic = "/holocontrol/unity_waypoint_pub";
 
-        public GameObject UrdfModel; // the root gameobject of your robot
+        //public GameObject UrdfModel; // the root gameobject of your robot
 
         private RosSocket rosSocket;
         private int planPublicationId;
@@ -45,6 +45,7 @@ namespace RosSharp.RosBridgeClient {
             rosSocket.Subscribe("/holocontrol/nav_finished", "std_msgs/String", NavCompleteHandler);
             //rosSocket.Publish(initializeMovocontrolPublicationId, new StandardString());
             RequestIdentityPlan();
+            Debug.Log("UnityRosBridge initialized!");
         }
 
         private void Update() {
@@ -66,13 +67,13 @@ namespace RosSharp.RosBridgeClient {
             List<float> pose = new List<float> { Convert.ToSingle(poseStr[0]), Convert.ToSingle(poseStr[1]), Convert.ToSingle(poseStr[2]) };
             Debug.Assert(pose.Count == 3);
             StateManager.Instance.MovoROSPose = new HoloPose(pose[0], pose[1], -pose[2]); // Unity rotation goes clockwise
-            Debug.Log("MovoROSPose updated.");
         }
 
         private void NavCompleteHandler(Message message) {
             var currState = StateManager.Instance.CurrentState;
-            Debug.Assert(currState == StateManager.State.WaypointState, "NavCompleteHandler called while in state " + currState);
-            StateManager.Instance.TransitionToStandbyState();
+            Debug.Assert(currState == StateManager.State.NavigatingState, "NavCompleteHandler called while in state " + currState);
+            StateManager.Instance.NavigationComplete = true;
+            //StateManager.Instance.TransitionToStandbyState();
         }
 
         public void PublishWaypoints() {

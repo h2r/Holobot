@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f9b8f32224ca04498ffd0a2e2bc0567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RosBridgeServerUrl: ws://192.168.160.160:9090
+  RosBridgeServerUrl: ws://192.168.160.193:9090
 --- !u!114 &8210067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,9 +243,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b6421f17c65eb469afc6eb1d485ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlanTopic: /ros_reality/goal_pose
-  ExecuteTopic: /ros_reality/move_to_goal
-  UrdfModel: {fileID: 2132092019}
 --- !u!114 &8210070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1067,7 +1064,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CalibrateThetaOffset: 0
-  UnityDebugMode: 0
   FloorY: 0
   RightGripper: {fileID: 0}
   LeftGripper: {fileID: 0}
@@ -1076,7 +1072,6 @@ MonoBehaviour:
   EinCommandsToExecute: []
   LookAtUser: 0
   ROSDelTheta: 0
-  MoveitPlanIdentityPose: 0
 --- !u!114 &35384990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1089,6 +1084,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MovoGhosts: []
+  PathPosesRefreshed: 0
 --- !u!114 &35384991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2404,11 +2400,17 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 88373858}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87e6e09374b6e004f96f3f39dcdfa642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wsc: {fileID: 0}
+  currentlyNavigating: 0
+  hasPublishedWaypoints: 0
+  frameCounter: 0
+  frameCountStart: 0
+  moveItGoalPublisher: {fileID: 0}
   scale: 1
 --- !u!1 &89799159
 GameObject:
