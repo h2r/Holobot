@@ -12,7 +12,7 @@ public class WaypointManager : Singleton<WaypointManager> {
     public List<GameObject> MovoGhosts;
     public bool PathPosesRefreshed;
     public Waypoint LastWaypoint;
-    public bool PathSent = false;
+    //public bool PathSent = false;
 
     void Start() {
         Debug.Log("Initialized WaypointManager");
@@ -83,19 +83,20 @@ public class WaypointManager : Singleton<WaypointManager> {
             return;
         }
         DestroyGhosts();
+        Debug.Assert(MovoGhosts.Count == 0);
         int numPoses = PathPoses.Count;
         for (int i = 0; i < numPoses; i += 10) {
-            if (PathPosesRefreshed) {
-                DestroyGhosts();
-                PathPosesRefreshed = false;
-                return;
-            }
+            //if (PathPosesRefreshed) {
+            //    DestroyGhosts();
+            //    PathPosesRefreshed = false;
+            //    return;
+            //}
             GeometryPoseStamped stampedPose = PathPoses[i];
             GeometryPose pose = stampedPose.pose;
             GameObject movoGhost = Instantiate(GameObject.Find("base_link"));
             Vector3 eulerAngles = new Quaternion(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w).eulerAngles;
             float theta = -eulerAngles.z; // ROS orientation goes in opposite direction
-            HoloToolkit.Unity.Pose ROSPose = new HoloToolkit.Unity.Pose(pose.position.x, pose.position.y, theta);
+            HoloPose ROSPose = new HoloPose(pose.position.x, pose.position.y, theta);
             MovoPlace.PlaceAtROSPose(movoGhost, ROSPose);
             MovoGhosts.Add(movoGhost);
             Debug.Log("Num ghosts: " + MovoGhosts.Count);
@@ -103,9 +104,12 @@ public class WaypointManager : Singleton<WaypointManager> {
     }
 
     private void Update() {
-        // TODO: first get ROS to Unity conversions working, then visualize path(s) upon placing waypoint.
-        if (StateManager.Instance.CurrentState == StateManager.State.NavigatingState) {
-            VisualizePlannedPath();
+        var currState = StateManager.Instance.CurrentState;
+        if (currState == StateManager.State.NavigatingState || currState == StateManager.State.WaypointState) {
+            if (PathPosesRefreshed) {
+                VisualizePlannedPath();
+                PathPosesRefreshed = false;
+            }
         }
         else {
             DestroyGhosts();
@@ -120,14 +124,13 @@ public class WaypointManager : Singleton<WaypointManager> {
         if (!LastWaypoint.Placed) {
             UtilFunctions.FollowGaze(Camera.main, LastWaypoint.WaypointObj);
         }
-        else if (LastWaypoint.Placed && !PathSent) {
-            GeometryPoseStamped waypointPoseStamped = UtilFunctions.PoseToPoseStamped(LastWaypoint.Pose, "/map");
-            MoveItGoalPublisher moveItGoalPublisher = GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>();
-            moveItGoalPublisher.PublishPoseStamped(waypointPoseStamped);
-            PathSent = true;
-        }
+        //else if (LastWaypoint.Placed && !PathSent) {
+        //    GeometryPoseStamped waypointPoseStamped = UtilFunctions.PoseToPoseStamped(LastWaypoint.Pose, "/map");
+        //    UnityRosBridge moveItGoalPublisher = GameObject.Find("RosConnector").GetComponent<UnityRosBridge>();
+        //    //moveItGoalPublisher.PublishWaypointPoseStamped(waypointPoseStamped);
+        //    PathSent = true;
+        //}
     }
-
 }
 
 public class Waypoint {
@@ -135,7 +138,8 @@ public class Waypoint {
     public GameObject CoordTextObj { get; private set; }
     public String Name { get; private set; }
     public Boolean Placed { get; set; }
-    public HoloToolkit.Unity.Pose Pose { get; private set; }
+    public HoloPose Pose { get; private set; }
+    public GeometryPoseStamped ROSPoseStamped { get; private set; }
     private double Deg2rad(float angle) {
         return (Math.PI / 180) * angle;
     }
@@ -162,7 +166,26 @@ public class Waypoint {
         Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
         float theta = WaypointObj.transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta + calibThetaOffset;
         //Debug.Log("theta: " + theta);
-        Pose = new HoloToolkit.Unity.Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
+        Pose = new HoloPose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
+        Quaternion ROSQuaternion = Quaternion.Euler(0, 0, -theta);
+        ROSPoseStamped = new GeometryPoseStamped {
+            header = new StandardHeader {
+                frame_id = "/map"
+            },
+            pose = new GeometryPose {
+                position = new GeometryPoint {
+                    x = coords.x,
+                    y = coords.y,
+                    z = 0
+                },
+                orientation = new GeometryQuaternion {
+                    x = ROSQuaternion.x,
+                    y = ROSQuaternion.y,
+                    z = ROSQuaternion.z,
+                    w = ROSQuaternion.w
+                }
+            }
+    };
     }
     public Waypoint(GameObject waypointObj, int waypointInd) {
         Name = String.Format("Waypoint{0}", waypointInd);

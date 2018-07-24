@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using RosSharp.RosBridgeClient;
 
 namespace HoloToolkit.Unity {
     //namespace Academy.HoloToolkit.Unity {
@@ -13,12 +14,12 @@ namespace HoloToolkit.Unity {
         public State CurrentState { get; set; }
         //public Pose MovoROSToUnityOffset { get; set; }
         //public Pose MovoUnityToROSOffset { get; set; }
-        public Pose MovoROSPose { get; set; }
-        public Pose MovoROSStartPose { get; set; }
-        public Pose MovoUnityStartPose { get; set; }
-        public Pose MovoUnityToROSOffset { get; set; }
-        public string MovoState { get; set; }
-        public bool UnityDebugMode = false;
+        public HoloPose MovoROSPose { get; set; }
+        public HoloPose MovoROSStartPose { get; set; }
+        public HoloPose MovoUnityStartPose { get; set; }
+        public HoloPose MovoUnityToROSOffset { get; set; }
+        //public string MovoState { get; set; }
+        //public bool UnityDebugMode = false;
         [HideInInspector]
         public float FloorY = -99; // The y-coordinate of the floor (initialized to impossible value)
         [HideInInspector]
@@ -30,14 +31,14 @@ namespace HoloToolkit.Unity {
         [HideInInspector]
         public float ROSDelTheta;
         [HideInInspector]
-        public bool MoveitPlanIdentityPose = false; // if true, make moveit plan movement to current arm poses (e.g. to initialize model joint states)
+        //public bool MoveitPlanIdentityPose = false; // if true, make moveit plan movement to current arm poses (e.g. to initialize model joint states)
 
         private void Start() {
             Debug.Log("Initialized StateManager");
             RightGripper = GameObject.Find("RightGripper");
             LeftGripper = GameObject.Find("LeftGripper");
             MovoShadow = GameObject.Find("movo_moveit_shadow");
-            MovoState = "standby";
+            //MovoState = "standby";
             EinCommandsToExecute = new List<string>();
             LookAtUser = false;
             MovoBaseLink = GameObject.Find("base_link");
@@ -57,12 +58,8 @@ namespace HoloToolkit.Unity {
             if (CurrentState != State.WaypointState) {
                 return;
             }
-            if (UnityDebugMode) {
-                WaypointManager.Instance.InitializeWaypoints();
-            }
-            else {
-                CurrentState = State.NavigatingState;
-            }
+            GameObject.Find("RosConnector").GetComponent<UnityRosBridge>().PublishWaypoints();
+            CurrentState = State.NavigatingState;
             MovoShadow.SetActive(false);
             Debug.Log("Transitioned to navigation state");
         }
@@ -99,8 +96,6 @@ namespace HoloToolkit.Unity {
             UtilFunctions.SetGrippersActive(true);
             MovoShadow.SetActive(true);
             CurrentState = State.MotionIntentState;
-            //UpdateRightArm = false;
-            //UpdateLeftArm = false;
             Debug.Log("Transitioned to motion intent state");
         }
 
@@ -111,7 +106,7 @@ namespace HoloToolkit.Unity {
         }
 
         private void Update() {
-            Debug.Assert(MovoState == "standby" || MovoState == "navigating");
+            //Debug.Assert(MovoState == "standby" || MovoState == "navigating");
             DisplayState();
         }
     }

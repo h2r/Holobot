@@ -12,7 +12,7 @@ namespace HoloToolkit.Unity {
         public GameObject Robot;
 
         [HideInInspector]
-        public MoveItGoalPublisher MoveItGoalPublisher;
+        public UnityRosBridge MoveItGoalPublisher;
 
         private Vector3 outLeftPos, outRightPos;
         private Quaternion outLeftQuat, outRightQuat;
@@ -26,7 +26,7 @@ namespace HoloToolkit.Unity {
             moveitIdentityPoseRequestId = rosSocket.Advertise("/holocontrol/identity_pose_request", "std_msgs/String");
             SendCommand("baseGoCfg");
             InvokeRepeating("SendEinCommands", .1f, .1f);
-            MoveItGoalPublisher = GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>();
+            MoveItGoalPublisher = GameObject.Find("RosConnector").GetComponent<UnityRosBridge>();
         }
 
         float NormalizeRadRotation(float theta) {
@@ -71,7 +71,7 @@ namespace HoloToolkit.Unity {
                 return;
             }
             if (currState == StateManager.State.PuppetState) {
-                GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
+                GameObject.Find("RosConnector").GetComponent<UnityRosBridge>().PublishMove();
             }
         }
 

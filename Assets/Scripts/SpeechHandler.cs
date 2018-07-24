@@ -13,10 +13,10 @@ namespace HoloToolkit.Unity {
         private int frameCounter = 0;
         [HideInInspector]
         private bool commandDetected = false;
-        private MoveItGoalPublisher moveitGoalPublisher;
+        private UnityRosBridge moveitGoalPublisher;
 
         private void Start() {
-            moveitGoalPublisher = GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>();
+            moveitGoalPublisher = GameObject.Find("RosConnector").GetComponent<UnityRosBridge>();
         }
 
         void ISpeechHandler.OnSpeechKeywordRecognized(SpeechEventData eventData) {
@@ -149,7 +149,7 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState != StateManager.State.MotionIntentState) {
                 return;
             }
-            MoveItGoalPublisher moveitGoalPublisher = GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>();
+            UnityRosBridge moveitGoalPublisher = GameObject.Find("RosConnector").GetComponent<UnityRosBridge>();
             switch (command) {
                 case "move":
                     Debug.Log("Sending move command...");

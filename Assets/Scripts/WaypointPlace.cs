@@ -41,7 +41,7 @@ namespace HoloToolkit.Unity {
             coordText = coordTextObj.GetComponent<Text>();
             thisWaypoint.UpdatePose(calibThetaOffset: -StateManager.Instance.CalibrateThetaOffset);
             Debug.Log(name + " Pose updated!");
-            Pose pose = thisWaypoint.Pose;
+            HoloPose pose = thisWaypoint.Pose;
             string msg = string.Format("{0}\n({1}, {2}, {3})", waypointObj.name, Math.Round(pose.X, 1), Math.Round(pose.Y, 1), Math.Round(pose.Theta, 1));
             //Vector2 predictedUnityPosition = thisWaypoint.GetUnityCoords();
             //Vector3 actualUnityPosition = gameObject.transform.position;

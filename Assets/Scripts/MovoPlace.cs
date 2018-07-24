@@ -8,7 +8,7 @@ namespace HoloToolkit.Unity {
                 GameObject movoObj = GameObject.Find("Movo");
                 StateManager.Instance.FloorY = movoObj.transform.position.y;
                 Vector3 movoUnityPos = movoObj.transform.position;
-                StateManager.Instance.MovoUnityStartPose = new Pose(-movoUnityPos.z, movoUnityPos.x, movoObj.transform.eulerAngles.y);
+                StateManager.Instance.MovoUnityStartPose = new HoloPose(-movoUnityPos.z, movoUnityPos.x, movoObj.transform.eulerAngles.y);
                 Debug.Assert(StateManager.Instance.MovoROSPose != null);
                 StateManager.Instance.MovoROSStartPose = StateManager.Instance.MovoROSPose;
                 Debug.Assert(StateManager.Instance.MovoROSStartPose != null);
@@ -20,9 +20,9 @@ namespace HoloToolkit.Unity {
             }
         }
 
-        public static void PlaceAtROSPose(GameObject gameObject, Pose desiredROSPose, bool keepMovoAsParent=true) {
+        public static void PlaceAtROSPose(GameObject gameObject, HoloPose desiredROSPose, bool keepMovoAsParent=true) {
             gameObject.transform.SetParent(GameObject.Find("Movo").transform);
-            Pose movoROSStartPose = StateManager.Instance.MovoROSStartPose;
+            HoloPose movoROSStartPose = StateManager.Instance.MovoROSStartPose;
             gameObject.transform.localPosition = (desiredROSPose - movoROSStartPose).ToUnityCoordsMovo();
             StateManager.Instance.ROSDelTheta = desiredROSPose.Theta - movoROSStartPose.Theta;
             gameObject.transform.localRotation = Quaternion.Euler(0, StateManager.Instance.ROSDelTheta + StateManager.Instance.CalibrateThetaOffset, 0);
@@ -34,7 +34,7 @@ namespace HoloToolkit.Unity {
         void Update() {
             GameObject baseLink = StateManager.Instance.MovoBaseLink;
             Debug.Assert(baseLink != null);
-            Pose movoROSPose = StateManager.Instance.MovoROSPose;
+            HoloPose movoROSPose = StateManager.Instance.MovoROSPose;
             if (movoROSPose == null) {
                 return;
             }

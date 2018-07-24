@@ -391,7 +391,7 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
                 }
                 else if (gameObject.name == "CommandMoveSphere") {
                     if (StateManager.Instance.CurrentState == StateManager.State.MotionIntentState) {
-                        GameObject.Find("RosConnector").GetComponent<MoveItGoalPublisher>().PublishMove();
+                        GameObject.Find("RosConnector").GetComponent<UnityRosBridge>().PublishMove();
                     }
                     else if (StateManager.Instance.CurrentState == StateManager.State.WaypointState) {
                         StateManager.Instance.TransitionToNavigatingState();
@@ -439,9 +439,9 @@ namespace HoloToolkit.Unity.InputModule.Utilities.Interactions {
                     lastWaypoint.Placed = true;
                 }
             }
-            if (gameObject.name.Contains("Waypoint")) {
-                WaypointManager.Instance.PathSent = false;
-            }
+            //if (gameObject.name.Contains("Waypoint")) {
+            //    WaypointManager.Instance.PathSent = false;
+            //}
         }
     }
 }

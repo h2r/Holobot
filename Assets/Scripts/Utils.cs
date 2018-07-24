@@ -77,7 +77,7 @@ namespace HoloToolkit.Unity {
             };
         }
 
-        public static GeometryPoseStamped PoseToPoseStamped(Pose pose, string frame_id) {
+        public static GeometryPoseStamped PoseToPoseStamped(HoloPose pose, string frame_id) {
             Quaternion quat = Quaternion.Euler(0, 0, pose.Theta);
             return new GeometryPoseStamped {
                 header = new StandardHeader {
@@ -100,11 +100,11 @@ namespace HoloToolkit.Unity {
         }
     }
 
-    public class Pose {
+    public class HoloPose {
         public float X { get; private set; }
         public float Y { get; private set; }
         public float Theta { get; set; }
-        public Pose(float x, float y, float theta) {
+        public HoloPose(float x, float y, float theta) {
             X = x;
             Y = y;
             Theta = theta;
@@ -118,14 +118,14 @@ namespace HoloToolkit.Unity {
         //    }
         //    return new Vector3(Y, unityY, X);
         //}
-        public static Pose operator +(Pose pose1, Pose pose2) {
-            return new Pose(pose1.X + pose2.X, pose1.Y + pose2.Y, pose1.Theta + pose2.Theta);
+        public static HoloPose operator +(HoloPose pose1, HoloPose pose2) {
+            return new HoloPose(pose1.X + pose2.X, pose1.Y + pose2.Y, pose1.Theta + pose2.Theta);
         }
-        public static Pose operator -(Pose pose1, Pose pose2) {
-            return new Pose(pose1.X - pose2.X, pose1.Y - pose2.Y, pose1.Theta - pose2.Theta);
+        public static HoloPose operator -(HoloPose pose1, HoloPose pose2) {
+            return new HoloPose(pose1.X - pose2.X, pose1.Y - pose2.Y, pose1.Theta - pose2.Theta);
         }
-        public static Pose operator -(Pose pose) {
-            return new Pose(-pose.X, -pose.Y, -pose.Theta);
+        public static HoloPose operator -(HoloPose pose) {
+            return new HoloPose(-pose.X, -pose.Y, -pose.Theta);
         }
     }
 }
