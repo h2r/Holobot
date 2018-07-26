@@ -14,7 +14,8 @@ namespace HoloToolkit.Unity {
         private float width;
         private float robotXPos;
         private float robotYPos;
-        private float robotZPos;
+        private float originXPos;
+        private float originYPos;
         private Vector3 robotRosPose;
 
         // Use this for initialization
@@ -30,15 +31,24 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.RobotCalibrated) {
                 height = mapMetaData.GetComponent<RosSharp.RosBridgeClient.MapReceiver>().mapMetreHeight;
                 width = mapMetaData.GetComponent<RosSharp.RosBridgeClient.MapReceiver>().mapMetreWidth;
-                robotXPos = mapOrigin.GetComponent<RosSharp.RosBridgeClient.MapToBaselinkReceiver>().robotX;
-                robotYPos = mapOrigin.GetComponent<RosSharp.RosBridgeClient.MapToBaselinkReceiver>().robotY;
-                robotZPos = mapOrigin.GetComponent<RosSharp.RosBridgeClient.MapToBaselinkReceiver>().robotZ;
+                robotXPos = mapOrigin.GetComponent<RosSharp.RosBridgeClient.amcl_poseReceiver>().RosX;
+                robotYPos = mapOrigin.GetComponent<RosSharp.RosBridgeClient.amcl_poseReceiver>().RosY;
+                originXPos = mapMetaData.GetComponent<RosSharp.RosBridgeClient.MapReceiver>().originX;
+                originYPos = mapMetaData.GetComponent<RosSharp.RosBridgeClient.MapReceiver>().originY;
 
                 robotRosPose = GetUnityCoords(new Vector2(robotXPos, robotYPos));
 
+                Debug.Log(height);
+                Debug.Log(width);
+                Debug.Log(robotXPos);
+                Debug.Log(robotYPos);
+                Debug.Log(originXPos);
+                Debug.Log(originYPos);
+
+
                 map.transform.localScale = new Vector3(width, 0.1f, height);
-                map.transform.position = new Vector3((StateManager.Instance.MovoUnityStartPose.Y + (0.5f * width)) - robotRosPose.z, 
-                    StateManager.Instance.FloorY, (StateManager.Instance.MovoUnityStartPose.X + (0.5f * height)) - robotRosPose.x);
+                map.transform.position = new Vector3((StateManager.Instance.MovoUnityStartPose.Y + (0.5f * width) - (robotYPos - originYPos)), 
+                    StateManager.Instance.FloorY, (StateManager.Instance.MovoUnityStartPose.X + (0.5f * height) - (robotXPos - originXPos)));
                 map.SetActive(true);
 
             }

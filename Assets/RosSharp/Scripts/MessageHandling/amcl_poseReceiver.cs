@@ -17,23 +17,16 @@ using System;
 using UnityEngine;
 
 namespace RosSharp.RosBridgeClient {
-    public class MapReceiver : MessageReceiver {
-        public override Type MessageType { get { return (typeof(NavigationMapMetaData)); } }
+    public class amcl_poseReceiver : MessageReceiver {
+        public override Type MessageType { get { return (typeof(GeometryPoseWithCovarianceStamped)); } }
 
-        //public GameObject robotMap;
-
-        // Variables for the metadata
-        private int height;
-        private int width;
-        private float resolution;
+        // Variables for the pose data
+        public float RosX;
+        public float RosY;
+        public float RosZQuat;
+        public float RosWQuat;
 
         private bool isMessageReceived;
-
-        public float mapMetreWidth;
-        public float mapMetreHeight;
-
-        public float originX;
-        public float originY;
 
         private void Awake() {
             MessageReception += ReceiveMessage;
@@ -46,19 +39,16 @@ namespace RosSharp.RosBridgeClient {
                 ProcessMessage();
         }
         private void ReceiveMessage(object sender, MessageEventArgs e) {
-            height = Convert.ToInt32(((NavigationMapMetaData)e.Message).height);
-            width = Convert.ToInt32(((NavigationMapMetaData)e.Message).width);
-            resolution = ((NavigationMapMetaData)e.Message).resolution;
+            RosX = ((GeometryPoseWithCovarianceStamped)e.Message).pose.pose.position.x;
+            RosY = ((GeometryPoseWithCovarianceStamped)e.Message).pose.pose.position.y;
 
-            originX = ((NavigationMapMetaData)e.Message).origin.position.x;
-            originY = ((NavigationMapMetaData)e.Message).origin.position.y;
+            RosZQuat = ((GeometryPoseWithCovarianceStamped)e.Message).pose.pose.orientation.z;
+            RosWQuat = ((GeometryPoseWithCovarianceStamped)e.Message).pose.pose.orientation.w;
 
             isMessageReceived = true;
         }
 
         private void ProcessMessage() {
-            mapMetreWidth = resolution * width;
-            mapMetreHeight = resolution * height;
             isMessageReceived = false;
         }
     }

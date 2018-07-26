@@ -326,7 +326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 599399f87ee56d541ac06a68cbe1fc1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Topic: /tf/map_to_baselink
+  Topic: /amcl_pose
   TimeStep: 0
   MessageReceiver: {fileID: 548018416}
 --- !u!1 &8794578
@@ -7374,16 +7374,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 548018415}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 960530afecf535b439952d5dc1cf83f4, type: 3}
+  m_Script: {fileID: 11500000, guid: b97d35427dd86df4c802956093b7779e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  robotX: 0
-  robotY: 0
-  robotZ: 0
-  robotQ1: 0
-  robotQ2: 0
-  robotQ3: 0
-  robotQ4: 0
+  RosX: 0
+  RosY: 0
+  RosZQuat: 0
+  RosWQuat: 0
 --- !u!4 &548018417
 Transform:
   m_ObjectHideFlags: 0
@@ -18587,6 +18584,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapMetreWidth: 0
   mapMetreHeight: 0
+  originX: 0
+  originY: 0
 --- !u!4 &1549461072
 Transform:
   m_ObjectHideFlags: 0

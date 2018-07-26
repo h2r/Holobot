@@ -335,6 +335,14 @@ public class GeometryPoseWithCovariance : Message {
         covariance = new float[32];
     }
 }
+public class GeometryPoseWithCovarianceStamped : Message {
+    public StandardHeader header;
+    public GeometryPoseWithCovariance pose;
+    public GeometryPoseWithCovarianceStamped() {
+        header = new StandardHeader();
+        pose = new GeometryPoseWithCovariance();
+    }
+}
 public class GeometryTwistWithCovariance : Message {
     public GeometryTwist twist;
     public float[] covariance;

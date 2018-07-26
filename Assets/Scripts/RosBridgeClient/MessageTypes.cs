@@ -30,6 +30,7 @@ public static class MessageTypes {
             { "nav_msgs/Odometry", typeof(NavigationOdometry) },
             { "std_msgs/Header", typeof(StandardHeader) },
             { "geometry_msgs/PoseWithCovariance",typeof(GeometryPoseWithCovariance) },
+            { "geometry_msgs/PoseWithCovarianceStamped", typeof(GeometryPoseWithCovarianceStamped) },
             { "geometry_msgs/TwistWithCovariance", typeof(GeometryTwistWithCovariance) },
             { "geometry_msgs/Pose", typeof(GeometryPose) },
             { "geometry_msgs/PoseStamped", typeof(GeometryPoseStamped) },
