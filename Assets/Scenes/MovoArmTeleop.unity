@@ -674,7 +674,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaypointTemplate: {fileID: 1713567824672912, guid: 4d4619170c7daed49b5df2d942883a2d,
     type: 2}
-  StaticLocTemplate: {fileID: 1384919689244854, guid: b8fe68ba1f5ecef439a4924ee93e2dee,
+  StaticLocTemplate: {fileID: 1463450576174920, guid: 546995c5ea041274195ad9a1a6c99dd6,
     type: 2}
 --- !u!114 &35384995
 MonoBehaviour:
@@ -7367,7 +7367,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &548018416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18572,7 +18572,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1549461071
 MonoBehaviour:
   m_ObjectHideFlags: 0

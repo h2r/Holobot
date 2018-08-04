@@ -122,6 +122,7 @@ namespace HoloToolkit.Unity {
                 LabelDict.Add(LabelDict.Count.ToString(), new[] { label1, label2 });
                 label1.name = LabelDict.Count.ToString() + " L";
                 label2.name = LabelDict.Count.ToString() + " R";
+                midpoint.name = LabelDict.Count.ToString() + "M";
             }
 
             Debug.Log("Finished adding");
@@ -221,15 +222,23 @@ namespace HoloToolkit.Unity {
                     float xr = float.Parse(split_line[3]);// - StateManager.Instance.MovoUnityToROSOffset.Y; ;
                     float yr = float.Parse(split_line[4]);// - StateManager.Instance.MovoUnityToROSOffset.X;
 
+
+
                     Debug.Log("Loading in a label");
                     GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
                     GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+
+                    GameObject midpoint = Instantiate(StaticLocTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+                    midpoint.GetComponent<TapToGo>().corner1 = label1;
+                    midpoint.GetComponent<TapToGo>().corner2 = label2;
+
 
                     if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
                         UtilFunctions.InitLabelPos(Camera.main, label1, label2);
                         LabelDict.Add(l_name, new[] { label1, label2 });
                         label1.name = l_name + " L";
                         label2.name = l_name + " R";
+                        midpoint.name = l_name + "M";
 
                         label1.transform.position = GetUnityCoords(new Vector2(xl, yl));//GetUnityPos(new Vector3(xl, label1.transform.position.y, yl)); //new Vector3(xl - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yl - StateManager.Instance.MovoUnityToROSOffset.Y);
                         label2.transform.position = GetUnityCoords(new Vector2(xr, yr));//GetUnityPos(new Vector3(xr, label1.transform.position.y, yr)); //new Vector3(xr - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yr - StateManager.Instance.MovoUnityToROSOffset.Y);
