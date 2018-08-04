@@ -17,7 +17,8 @@ namespace HoloToolkit.Unity {
         //public List<Label> Labelpoints { get; private set; }
         public Dictionary<string, GameObject[]> LabelDict = new Dictionary<string, GameObject[]>();
         public GameObject WaypointTemplate;
-        public GameObject StaticLocTemplate;
+        public GameObject MidpointTemplate;
+        public GameObject StaticPointTemplate;
         protected string text = " "; // assigned to allow first line to be read below
         private UniversalWebsocketClient wsc;
         private readonly string labelSaveTopic = "holocontrol/save_labels";
@@ -112,7 +113,7 @@ namespace HoloToolkit.Unity {
             Debug.Log("AddLabel()");
             GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
             GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
-            GameObject midpoint = Instantiate(StaticLocTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+            GameObject midpoint = Instantiate(MidpointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
             midpoint.GetComponent<TapToGo>().corner1 = label1;
             midpoint.GetComponent<TapToGo>().corner2 = label2;
 
@@ -123,6 +124,29 @@ namespace HoloToolkit.Unity {
                 label1.name = LabelDict.Count.ToString() + " L";
                 label2.name = LabelDict.Count.ToString() + " R";
                 midpoint.name = LabelDict.Count.ToString() + "M";
+            }
+
+            Debug.Log("Finished adding");
+            Debug.Log(LabelDict.Count.ToString());
+            //WaypointInd++;
+            //waypointObj.name = String.Format("Waypoint{0}", WaypointInd);
+            //GameObject coordTextObj = GetCoordTextObj(waypointObj);
+            //Debug.Assert(coordTextObj != null);
+            //coordTextObj.name = String.Format("WaypointCoord{0}", WaypointInd);
+            //Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
+            //Debug.Log(Waypoints.Count + " waypoints exist.");
+            //Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
+        }
+
+        public void AddStaticPosition() {
+            Debug.Log("AddStatic()");
+            GameObject staticPoint = Instantiate(StaticPointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+
+            if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
+                UtilFunctions.InitWaypointPos(Camera.main, staticPoint);
+
+                //LabelDict.Add(LabelDict.Count.ToString(), new[] { label1, label2 });
+                staticPoint.name = LabelDict.Count.ToString() + "fix me"; //READ ADD IN ADDING TO A DICIONTARY
             }
 
             Debug.Log("Finished adding");
@@ -231,7 +255,7 @@ namespace HoloToolkit.Unity {
                     GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
 
 
-                    GameObject midpoint = Instantiate(StaticLocTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+                    GameObject midpoint = Instantiate(MidpointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
                     midpoint.GetComponent<TapToGo>().corner1 = label1;
                     midpoint.GetComponent<TapToGo>().corner2 = label2;
 

@@ -128,6 +128,12 @@ namespace HoloToolkit.Unity {
                     LabelManager.Instance.LoadLabels();
                     break;
             }
+            switch (command) {
+                case "add static":
+                    Debug.Log("Imma add a static position!!");
+                    LabelManager.Instance.AddStaticPosition();
+                    break;
+            }
         }
 
         private void ParseWaypointCommands(string command) {
