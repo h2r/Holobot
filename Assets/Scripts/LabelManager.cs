@@ -211,7 +211,7 @@ namespace HoloToolkit.Unity {
                 //Debug.Log(lines[0]);
                 //Debug.Log(lines[1]);
                 //Debug.Log(lines.Length);
-                for (int i = 0; i < lines.Length-2; i++) {
+                for (int i = 0; i < lines.Length-1; i++) {
                     string line = lines[i];
                     string[] split_line = line.Split(' ');
                     Debug.Log(lines[i]);
@@ -251,7 +251,7 @@ namespace HoloToolkit.Unity {
                 lastLoadLabels = msg;
             }
             catch (Exception e) {
-                Debug.Log("Waiting to load labels...");
+                //Debug.Log("Waiting to load labels...");
             }
             if (StateManager.Instance.CurrentState != StateManager.State.WaypointState) {
                 return;

@@ -38,10 +38,10 @@ namespace HoloToolkit.Unity {
             //Debug.Assert(coordTextObj != null);
             //coordText = coordTextObj.GetComponent<Text>();
             ROSpose = UpdatePose(calibThetaOffset: -StateManager.Instance.CalibrateThetaOffset);
-            Debug.Log(name + " Pose updated!");
+            //Debug.Log(name + " Pose updated!");
             //Pose pose = thisWaypoint.Pose;
             string msg = string.Format("{0}\n({1}, {2}, {3})", this.name, Math.Round(ROSpose.X, 1), Math.Round(ROSpose.Y, 1), Math.Round(ROSpose.Theta, 1));
-            Debug.Log(msg);
+            //Debug.Log(msg);
             coordTextObj.GetComponent<TextMesh>().text = msg;
         }
 
@@ -49,7 +49,7 @@ namespace HoloToolkit.Unity {
             Vector2 coords = GetCoords();
             Debug.Assert(StateManager.Instance.MovoUnityToROSOffset != null);
             float theta = transform.eulerAngles.y + StateManager.Instance.MovoUnityToROSOffset.Theta + calibThetaOffset;
-            Debug.Log("theta: " + theta);
+            //Debug.Log("theta: " + theta);
             Pose ret = new Pose(coords.x, coords.y, -theta); // ROS theta goes counterclockwise
             return ret;
         }
