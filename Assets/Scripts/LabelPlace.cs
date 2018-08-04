@@ -13,7 +13,7 @@ namespace HoloToolkit.Unity {
 
         private void Start() {
             //thisWaypoint = null;
-            coordTextObj = this.gameObject.transform.GetChild(0).gameObject;
+            //coordTextObj = this.gameObject.transform.GetChild(0).gameObject;
         }
 
         // Update is called once per frame
@@ -42,7 +42,7 @@ namespace HoloToolkit.Unity {
             //Pose pose = thisWaypoint.Pose;
             string msg = string.Format("{0}\n({1}, {2}, {3})", this.name, Math.Round(ROSpose.X, 1), Math.Round(ROSpose.Y, 1), Math.Round(ROSpose.Theta, 1));
             Debug.Log(msg);
-            coordTextObj.GetComponent<TextMesh>().text = msg;
+            //coordTextObj.GetComponent<TextMesh>().text = msg;
         }
 
         public Pose UpdatePose(float calibThetaOffset = 0) {

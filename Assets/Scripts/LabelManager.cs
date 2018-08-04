@@ -17,6 +17,7 @@ namespace HoloToolkit.Unity {
         //public List<Label> Labelpoints { get; private set; }
         public Dictionary<string, GameObject[]> LabelDict = new Dictionary<string, GameObject[]>();
         public GameObject WaypointTemplate;
+        public GameObject StaticLocTemplate;
         protected string text = " "; // assigned to allow first line to be read below
         private UniversalWebsocketClient wsc;
         private readonly string labelSaveTopic = "holocontrol/save_labels";
@@ -111,9 +112,13 @@ namespace HoloToolkit.Unity {
             Debug.Log("AddLabel()");
             GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
             GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+            GameObject midpoint = Instantiate(StaticLocTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+            midpoint.GetComponent<TapToGo>().corner1 = label1;
+            midpoint.GetComponent<TapToGo>().corner2 = label2;
 
             if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
                 UtilFunctions.InitLabelPos(Camera.main, label1, label2);
+
                 LabelDict.Add(LabelDict.Count.ToString(), new[] { label1, label2 });
                 label1.name = LabelDict.Count.ToString() + " L";
                 label2.name = LabelDict.Count.ToString() + " R";
