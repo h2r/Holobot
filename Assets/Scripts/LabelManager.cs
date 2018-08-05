@@ -101,7 +101,8 @@ namespace HoloToolkit.Unity {
 
                 float rx = static_go.GetComponent<LabelPlace>().ROSpose.X; //ROS poses
                 float ry = static_go.GetComponent<LabelPlace>().ROSpose.Y; //ROS poses
-                msg = label_name + " " + rx.ToString() + " " + ry.ToString();
+                float rt = static_go.GetComponent<LabelPlace>().ROSpose.Theta; //ROS poses
+                msg = label_name + " " + rx.ToString() + " " + ry.ToString() + " " + rt.ToString();
                 Debug.Log(msg);
                 //wsc.Publish(labelSaveTopic, msg);
                 c = c + msg + ";";
@@ -258,57 +259,89 @@ namespace HoloToolkit.Unity {
                     try {
                         string line = lines[i];
                         string[] split_line = line.Split(' ');
-                        Debug.Log(lines[i]);
-                        Debug.Log(split_line[0]);
-                        string l_name = split_line[0];
-                        float xl = float.Parse(split_line[1]);// - StateManager.Instance.MovoUnityToROSOffset.Y;
-                        float yl = float.Parse(split_line[2]);// - StateManager.Instance.MovoUnityToROSOffset.X;
-                        float xr = float.Parse(split_line[3]);// - StateManager.Instance.MovoUnityToROSOffset.Y; ;
-                        float yr = float.Parse(split_line[4]);// - StateManager.Instance.MovoUnityToROSOffset.X;
+                        if (split_line.Length == 8)
+                        {
+                            Debug.Log(lines[i]);
+                            Debug.Log(split_line[0]);
+                            string l_name = split_line[0];
+                            float xl = float.Parse(split_line[1]);// - StateManager.Instance.MovoUnityToROSOffset.Y;
+                            float yl = float.Parse(split_line[2]);// - StateManager.Instance.MovoUnityToROSOffset.X;
+                            float xr = float.Parse(split_line[3]);// - StateManager.Instance.MovoUnityToROSOffset.Y; ;
+                            float yr = float.Parse(split_line[4]);// - StateManager.Instance.MovoUnityToROSOffset.X;
 
-                        float red_val = float.Parse(split_line[5]);
-                        float green_val = float.Parse(split_line[6]);
-                        float blue_val = float.Parse(split_line[7]);
+                            float red_val = float.Parse(split_line[5]);
+                            float green_val = float.Parse(split_line[6]);
+                            float blue_val = float.Parse(split_line[7]);
 
-                        Debug.Log("Loading in a label");
-                        GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
-                        GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+                            Debug.Log("Loading in a label");
+                            GameObject label1 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+                            GameObject label2 = Instantiate(WaypointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
 
 
 
-                        GameObject midpoint = Instantiate(MidpointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
-                        midpoint.GetComponent<TapToGo>().corner1 = label1;
-                        midpoint.GetComponent<TapToGo>().corner2 = label2;
+                            GameObject midpoint = Instantiate(MidpointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+                            midpoint.GetComponent<TapToGo>().corner1 = label1;
+                            midpoint.GetComponent<TapToGo>().corner2 = label2;
 
-                        label1.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
-                        label2.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
-                        midpoint.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                            label1.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                            label2.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                            midpoint.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
 
-                        label1.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
-                        label2.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
-                        midpoint.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
+                            label1.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
+                            label2.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
+                            midpoint.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
 
-                        foreach (Transform t in midpoint.transform) {
-                            if (t.name == "Plane")// Do something to child one
-                                {
-                                t.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                            foreach (Transform t in midpoint.transform) {
+                                if (t.name == "Plane")// Do something to child one
+                                    {
+                                    t.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                                }
                             }
+
+
+                            if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
+                                UtilFunctions.InitLabelPos(Camera.main, label1, label2);
+                                LabelDict.Add(l_name, new[] { label1, label2 });
+                                label1.name = l_name + " L";
+                                label2.name = l_name + " R";
+                                midpoint.name = l_name + " M";
+
+                                label1.transform.position = GetUnityCoords(new Vector2(xl, yl));//GetUnityPos(new Vector3(xl, label1.transform.position.y, yl)); //new Vector3(xl - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yl - StateManager.Instance.MovoUnityToROSOffset.Y);
+                                label2.transform.position = GetUnityCoords(new Vector2(xr, yr));//GetUnityPos(new Vector3(xr, label1.transform.position.y, yr)); //new Vector3(xr - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yr - StateManager.Instance.MovoUnityToROSOffset.Y);
+                            }
+
+                            Debug.Log("Finished adding");
+                            Debug.Log(LabelDict.Count.ToString());
                         }
+                        else if (split_line.Length == 4) 
+                            {
+                            Debug.Log(lines[i]);
+                            Debug.Log(split_line[0]);
+                            string l_name = split_line[0];
+                            float xl = float.Parse(split_line[1]);// - StateManager.Instance.MovoUnityToROSOffset.Y;
+                            float yl = float.Parse(split_line[2]);// - StateManager.Instance.MovoUnityToROSOffset.X;
+                            float tl = float.Parse(split_line[3]);
 
+                            Debug.Log("Loading in a label");
+                            GameObject static_ob = Instantiate(StaticPointTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
 
-                        if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
-                            UtilFunctions.InitLabelPos(Camera.main, label1, label2);
-                            LabelDict.Add(l_name, new[] { label1, label2 });
-                            label1.name = l_name + " L";
-                            label2.name = l_name + " R";
-                            midpoint.name = l_name + " M";
+                            if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
+                                UtilFunctions.InitWaypointPos(Camera.main, static_ob);
+                                StaticLocDict.Add(l_name, static_ob);
+                                static_ob.name = l_name + " S";
 
-                            label1.transform.position = GetUnityCoords(new Vector2(xl, yl));//GetUnityPos(new Vector3(xl, label1.transform.position.y, yl)); //new Vector3(xl - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yl - StateManager.Instance.MovoUnityToROSOffset.Y);
-                            label2.transform.position = GetUnityCoords(new Vector2(xr, yr));//GetUnityPos(new Vector3(xr, label1.transform.position.y, yr)); //new Vector3(xr - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yr - StateManager.Instance.MovoUnityToROSOffset.Y);
+                                static_ob.transform.position = GetUnityCoords(new Vector2(xl, yl));//GetUnityPos(new Vector3(xl, label1.transform.position.y, yl)); //new Vector3(xl - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yl - StateManager.Instance.MovoUnityToROSOffset.Y);
+                                Vector3 unity_rot = static_ob.transform.eulerAngles;
+
+                                float unity_y_rot = tl - StateManager.Instance.MovoUnityToROSOffset.Theta - StateManager.Instance.CalibrateThetaOffset;
+                                unity_rot[1] = unity_y_rot;
+                                static_ob.transform.eulerAngles = unity_rot;
+                            }
+
+                            Debug.Log("Finished adding");
+                            Debug.Log(StaticLocDict.Count.ToString());
+
                         }
-
-                        Debug.Log("Finished adding");
-                        Debug.Log(LabelDict.Count.ToString());
                     }
                     catch (Exception e) {
                         Debug.Log("LOADING IN LABEL MANAGER IS MESSING UP");
