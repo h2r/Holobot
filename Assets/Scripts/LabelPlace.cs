@@ -8,16 +8,19 @@ namespace HoloToolkit.Unity {
     public class LabelPlace : MonoBehaviour {
         GameObject coordTextObj;
         public Pose ROSpose;
+        public Vector3 place_color = new Vector3(1,1,1);
         //Waypoint thisWaypoint;
         //Text coordText;
 
         private void Start() {
             //thisWaypoint = null;
+            //place_color = new Vector3(1f, 1f, 1f); //places start with a white color
+
             foreach (Transform t in transform) {
                 if (t.name == "New Text")// Do something to child one
                     {
                     coordTextObj = t.gameObject;//this.gameObject.transform.GetChild(0).gameObject;
-                    Debug.Log("new text found!");
+                    //Debug.Log("new text found!");
                 }
                 }
             

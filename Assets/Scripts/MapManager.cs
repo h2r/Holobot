@@ -38,12 +38,12 @@ namespace HoloToolkit.Unity {
 
                 robotRosPose = GetUnityCoords(new Vector2(robotXPos, robotYPos));
 
-                Debug.Log(height);
-                Debug.Log(width);
-                Debug.Log(robotXPos);
-                Debug.Log(robotYPos);
-                Debug.Log(originXPos);
-                Debug.Log(originYPos);
+               // Debug.Log(height);
+               // Debug.Log(width);
+              //  Debug.Log(robotXPos);
+              //  Debug.Log(robotYPos);
+              //  Debug.Log(originXPos);
+              //  Debug.Log(originYPos);
 
 
                 map.transform.localScale = new Vector3(width, 0.1f, height);

@@ -41,7 +41,7 @@ namespace HoloToolkit.Unity {
                 if (t.name == "Plane")// Do something to child one
                     {
                     t.localScale = new Vector3(xDis/2, 1, zDis/2);
-                    Debug.Log("new text found!");
+                    //Debug.Log("new text found!");
                 }
             }
         }
