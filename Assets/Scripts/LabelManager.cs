@@ -263,6 +263,13 @@ namespace HoloToolkit.Unity {
                     label2.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
                     midpoint.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
 
+                    foreach (Transform t in midpoint.transform) {
+                        if (t.name == "Plane")// Do something to child one
+                            {
+                            t.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                        }
+                    }
+
 
                     if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
                         UtilFunctions.InitLabelPos(Camera.main, label1, label2);

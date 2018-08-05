@@ -13,7 +13,14 @@ namespace HoloToolkit.Unity {
 
         private void Start() {
             //thisWaypoint = null;
-            coordTextObj = this.gameObject.transform.GetChild(0).gameObject;
+            foreach (Transform t in transform) {
+                if (t.name == "New Text")// Do something to child one
+                    {
+                    coordTextObj = t.gameObject;//this.gameObject.transform.GetChild(0).gameObject;
+                    Debug.Log("new text found!");
+                }
+                }
+            
         }
 
         // Update is called once per frame

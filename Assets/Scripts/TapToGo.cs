@@ -32,7 +32,18 @@ namespace HoloToolkit.Unity {
         public void Update() {
             float xpose = (corner1.transform.position.x + corner2.transform.position.x) / 2;
             float zpose = (corner1.transform.position.z + corner2.transform.position.z) / 2;
+
+            float xDis = Math.Abs(corner1.transform.position.x - xpose);
+            float zDis = Math.Abs(corner1.transform.position.z - zpose);
             this.transform.position = new Vector3(xpose, StateManager.Instance.FloorY, zpose);
+
+            foreach (Transform t in transform) {
+                if (t.name == "Plane")// Do something to child one
+                    {
+                    t.localScale = new Vector3(xDis/2, 1, zDis/2);
+                    Debug.Log("new text found!");
+                }
+            }
         }
 
 

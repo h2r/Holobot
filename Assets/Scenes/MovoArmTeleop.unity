@@ -676,9 +676,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaypointTemplate: {fileID: 1713567824672912, guid: 4d4619170c7daed49b5df2d942883a2d,
     type: 2}
-  MidpointTemplate: {fileID: 1463450576174920, guid: 546995c5ea041274195ad9a1a6c99dd6,
+  MidpointTemplate: {fileID: 1599964565358280, guid: b09a44c65e61ef743bfc58869d124df1,
     type: 2}
-  StaticPointTemplate: {fileID: 1713567824672912, guid: 989601acb4de3064081517af17fd5893,
+  StaticPointTemplate: {fileID: 1768583848883972, guid: 74c6c73270ea1af479ff9cd7165194e9,
     type: 2}
 --- !u!114 &35384995
 MonoBehaviour:
