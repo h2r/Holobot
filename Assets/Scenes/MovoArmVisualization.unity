@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f9b8f32224ca04498ffd0a2e2bc0567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RosBridgeServerUrl: ws://192.168.160.193:9090
+  RosBridgeServerUrl: ws://192.168.160.160:9090
 --- !u!114 &8210067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,7 +240,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8210064}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9b6421f17c65eb469afc6eb1d485ad7, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e1fd095394b3fc4d8c536f133963320, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &8210070
@@ -1072,6 +1072,7 @@ MonoBehaviour:
   EinCommandsToExecute: []
   LookAtUser: 0
   ROSDelTheta: 0
+  NavigationComplete: 0
 --- !u!114 &35384990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2380,7 +2381,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &88373859
 Transform:
   m_ObjectHideFlags: 0
