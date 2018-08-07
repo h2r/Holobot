@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using HoloToolkit.Unity;
-using RosSharp.RosBridgeClient;
 
 public class WaypointManager : Singleton<WaypointManager> {
     public int WaypointInd { get; set; }
@@ -10,11 +9,11 @@ public class WaypointManager : Singleton<WaypointManager> {
     private GameObject WaypointTemplate;
     public List<GeometryPoseStamped> PathPoses; // used to project the Movo's planned navigation path
     public List<GameObject> MovoGhosts;
+    [HideInInspector]
     public bool PathPosesRefreshed;
     public Waypoint LastWaypoint;
-    //public bool PathSent = false;
 
-    void Awake() {
+    void Start() { // Awake?
         Debug.Log("Initialized WaypointManager");
         WaypointTemplate = GameObject.Find("Waypoint0");
         Waypoints = new List<Waypoint>();
@@ -61,23 +60,14 @@ public class WaypointManager : Singleton<WaypointManager> {
         Waypoint newWaypoint = new Waypoint(waypointObj, WaypointInd);
         Waypoints.Add(newWaypoint);
         Debug.Log(Waypoints.Count + " waypoints exist.");
-        //Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
         LastWaypoint = newWaypoint;
     }
 
-    //public Waypoint GetLastWaypoint() {
-    //    if (Waypoints.Count == 0) {
-    //        return null;
-    //    }
-    //    return Waypoints[Waypoints.Count - 1];
-    //}
-
     private void DestroyGhosts() {
-        for (int i = 0; i < MovoGhosts.Count; i++) {
-            GameObject ghost = MovoGhosts[i];
-            MovoGhosts.Remove(ghost);
+        foreach (var ghost in MovoGhosts) {
             Destroy(ghost);
         }
+        MovoGhosts = new List<GameObject>();
     }
 
     private void VisualizePlannedPath() {
@@ -88,14 +78,9 @@ public class WaypointManager : Singleton<WaypointManager> {
         Debug.Assert(MovoGhosts.Count == 0);
         int numPoses = PathPoses.Count;
         for (int i = 0; i < numPoses; i += 10) {
-            //if (PathPosesRefreshed) {
-            //    DestroyGhosts();
-            //    PathPosesRefreshed = false;
-            //    return;
-            //}
             GeometryPoseStamped stampedPose = PathPoses[i];
             GeometryPose pose = stampedPose.pose;
-            GameObject movoGhost = Instantiate(GameObject.Find("base_link"));
+            GameObject movoGhost = Instantiate(GameObject.Find("PathMarker"));
             Vector3 eulerAngles = new Quaternion(pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w).eulerAngles;
             float theta = -eulerAngles.z; // ROS orientation goes in opposite direction
             HoloPose ROSPose = new HoloPose(pose.position.x, pose.position.y, theta);
