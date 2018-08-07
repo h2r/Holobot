@@ -134,6 +134,12 @@ namespace HoloToolkit.Unity {
                     LabelManager.Instance.AddStaticPosition();
                     break;
             }
+            switch (command) {
+                case "add doorway":
+                    Debug.Log("Imma add a doorway!!");
+                    LabelManager.Instance.AddDoors();
+                    break;
+            }
         }
 
         private void ParseWaypointCommands(string command) {

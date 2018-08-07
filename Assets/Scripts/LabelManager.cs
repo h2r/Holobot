@@ -17,9 +17,11 @@ namespace HoloToolkit.Unity {
         //public List<Label> Labelpoints { get; private set; }
         public Dictionary<string, GameObject[]> LabelDict = new Dictionary<string, GameObject[]>();
         public Dictionary<string, GameObject> StaticLocDict = new Dictionary<string, GameObject>();
+        public Dictionary<string, GameObject[]> DoorsDict = new Dictionary<string, GameObject[]>();
         public GameObject WaypointTemplate;
         public GameObject MidpointTemplate;
         public GameObject StaticPointTemplate;
+        public GameObject DoorTemplate;
         protected string text = " "; // assigned to allow first line to be read below
         private UniversalWebsocketClient wsc;
         private readonly string labelSaveTopic = "holocontrol/save_labels";
@@ -148,6 +150,31 @@ namespace HoloToolkit.Unity {
 
             Debug.Log("Finished adding");
             Debug.Log(LabelDict.Count.ToString());
+            //WaypointInd++;
+            //waypointObj.name = String.Format("Waypoint{0}", WaypointInd);
+            //GameObject coordTextObj = GetCoordTextObj(waypointObj);
+            //Debug.Assert(coordTextObj != null);
+            //coordTextObj.name = String.Format("WaypointCoord{0}", WaypointInd);
+            //Waypoints.Add(new Waypoint(waypointObj, WaypointInd));
+            //Debug.Log(Waypoints.Count + " waypoints exist.");
+            //Debug.Assert(GetLastWaypoint().Name == waypointObj.name);
+        }
+
+        public void AddDoors() {
+            Debug.Log("AddDoors()");
+            GameObject door1 = Instantiate(DoorTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+            GameObject door2 = Instantiate(DoorTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+
+            if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
+                UtilFunctions.InitLabelPos(Camera.main, door1, door2);
+
+                DoorsDict.Add(LabelDict.Count.ToString(), new[] { door1, door2 });
+                door1.name = LabelDict.Count.ToString() + " D1";
+                door2.name = LabelDict.Count.ToString() + " D2";
+            }
+
+            Debug.Log("Finished adding");
+            Debug.Log(DoorsDict.Count.ToString());
             //WaypointInd++;
             //waypointObj.name = String.Format("Waypoint{0}", WaypointInd);
             //GameObject coordTextObj = GetCoordTextObj(waypointObj);

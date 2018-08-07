@@ -607,7 +607,7 @@ MonoBehaviour:
   - Keyword: transition standby
     KeyCode: 115
   - Keyword: transition puppet
-    KeyCode: 112
+    KeyCode: 48
   - Keyword: state
     KeyCode: 0
   - Keyword: restart
@@ -648,6 +648,8 @@ MonoBehaviour:
     KeyCode: 113
   - Keyword: add static
     KeyCode: 100
+  - Keyword: add doorway
+    KeyCode: 112
   recognitionConfidenceLevel: 0
 --- !u!114 &35384993
 MonoBehaviour:
@@ -679,6 +681,8 @@ MonoBehaviour:
   MidpointTemplate: {fileID: 1599964565358280, guid: b09a44c65e61ef743bfc58869d124df1,
     type: 2}
   StaticPointTemplate: {fileID: 1768583848883972, guid: 74c6c73270ea1af479ff9cd7165194e9,
+    type: 2}
+  DoorTemplate: {fileID: 1021262297950414, guid: 2a9bb79755af19740b43d8a9498e3f78,
     type: 2}
 --- !u!114 &35384995
 MonoBehaviour:
@@ -8011,6 +8015,10 @@ Prefab:
     - target: {fileID: 4690050164067178, guid: f2b4395bb3c8ed3439b31475104a29c7, type: 2}
       propertyPath: m_RootOrder
       value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1649815014526190, guid: f2b4395bb3c8ed3439b31475104a29c7, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f2b4395bb3c8ed3439b31475104a29c7, type: 2}
