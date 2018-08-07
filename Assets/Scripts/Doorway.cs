@@ -50,7 +50,7 @@ namespace HoloToolkit.Unity {
             ROSpose = UpdatePose(calibThetaOffset: -StateManager.Instance.CalibrateThetaOffset);
             //Debug.Log(name + " Pose updated!");
             //Pose pose = thisWaypoint.Pose;
-            string msg = string.Format("{0}\n({1}, {2}, {3})", this.name, Math.Round(ROSpose.X, 1), Math.Round(ROSpose.Y, 1), Math.Round(ROSpose.Theta, 1));
+            string msg = string.Format("{0} DOOR\n({1}, {2}, {3})", roomLocation, Math.Round(ROSpose.X, 1), Math.Round(ROSpose.Y, 1), Math.Round(ROSpose.Theta, 1));
             //Debug.Log(msg);
             coordTextObj.GetComponent<TextMesh>().text = msg;
             updateRoomLocation();
@@ -65,7 +65,9 @@ namespace HoloToolkit.Unity {
                     {
                     if (Math.Min(corner1.z, corner2.z) < this.transform.position.z && Math.Max(corner1.z, corner2.z) > this.transform.position.z) {
                         roomLocation = places.Key;
-                        this.name = roomLocation;
+                        this.name = roomLocation + " DOOR";
+                        Vector3 colors = places.Value[0].GetComponent<LabelPlace>().place_color;
+                        this.GetComponent<Renderer>().material.color = new Color(colors[0], colors[1], colors[2]);
                     }
                 }
             }

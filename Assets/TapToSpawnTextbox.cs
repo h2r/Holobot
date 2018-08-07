@@ -15,13 +15,13 @@ using System.Collections.Generic;
 /// 
 public class TapToSpawnTextbox : MonoBehaviour, IInputClickHandler
 {
+    private Boolean isTextBoxThere = false;
     public GameObject textBox;
     public HoloToolkit.UI.Keyboard.KeyboardInputField keyboardInputField;
 
     public void Start()
     {
         textBox.SetActive(false);
-         //textBox = GameObject.Find("SceneContent");
 
     }
 
@@ -32,8 +32,15 @@ public class TapToSpawnTextbox : MonoBehaviour, IInputClickHandler
     public void OnInputClicked(InputClickedEventData eventData)
     {
         Debug.Log("Cube was clicked!");
-        textBox.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.25f, gameObject.transform.position.z);
-        textBox.SetActive(true);
+        if (!isTextBoxThere) {
+            textBox.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.25f, gameObject.transform.position.z);
+            textBox.SetActive(true);
+            isTextBoxThere = true;
+        }
+        else {
+            textBox.SetActive(false);
+            isTextBoxThere = false;
+        }
 
         eventData.Use(); // Mark the event as used, so it doesn't fall through to other handlers.
     }
