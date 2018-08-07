@@ -110,6 +110,21 @@ namespace HoloToolkit.Unity {
                 c = c + msg + ";";
             }
 
+            foreach (KeyValuePair<string, GameObject[]> doorway_pair in DoorsDict) {
+                //Now you can access the key and value both separately from this attachStat as:
+                string door1_name = doorway_pair.Value[0].GetComponent<Doorway>().roomLocation;
+                string door2_name = doorway_pair.Value[1].GetComponent<Doorway>().roomLocation;
+
+                float d1x = doorway_pair.Value[0].GetComponent<Doorway>().ROSpose.X; //ROS poses
+                float d1y = doorway_pair.Value[0].GetComponent<Doorway>().ROSpose.Y; //ROS poses
+                float d2x = doorway_pair.Value[0].GetComponent<Doorway>().ROSpose.X; //ROS poses
+                float d2y = doorway_pair.Value[0].GetComponent<Doorway>().ROSpose.Y; //ROS poses
+                msg = door1_name + " " + door2_name + " " + d1x.ToString() + " " + d1y.ToString() + " " + d2x.ToString() + " " + d2y.ToString();
+                Debug.Log(msg);
+                //wsc.Publish(labelSaveTopic, msg);
+                c = c + msg + ";";
+            }
+
             //wsc.Publish(labelSaveTopic, msg);
             Debug.Log(c);
             wsc.Publish(labelSaveTopic, c);
