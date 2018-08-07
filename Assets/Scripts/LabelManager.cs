@@ -259,6 +259,7 @@ namespace HoloToolkit.Unity {
                     try {
                         string line = lines[i];
                         string[] split_line = line.Split(' ');
+                        Debug.Log(split_line.Length);
                         if (split_line.Length == 8)
                         {
                             Debug.Log(lines[i]);
