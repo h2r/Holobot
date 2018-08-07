@@ -40,7 +40,8 @@ namespace RosSharp.RosBridgeClient {
             //waypointPoseStampedPublicationId = rosSocket.Advertise(PublishWaypointPoseStampedTopic, "geometry_msgs/PoseStamped");
             //initializeMovocontrolPublicationId = rosSocket.Advertise(InitializeMovocontrolRequestTopic, "std_msgs/String");
             waypointPubTopicPublicationId = rosSocket.Advertise(WaypointPubTopic, "nav_msgs/Path");
-            rosSocket.Subscribe("/holocontrol/simulated_nav_path", "nav_msgs/Path", NavPathHandler);
+            //rosSocket.Subscribe("/holocontrol/simulated_nav_path", "nav_msgs/Path", NavPathHandler);
+            rosSocket.Subscribe("/move_base/MovocontrolGlobalPlanner/plan", "nav_msgs/Path", NavPathHandler);
             rosSocket.Subscribe("/holocontrol/ros_movo_pose_pub", "std_msgs/String", MovoPoseHandler);
             rosSocket.Subscribe("/holocontrol/nav_finished", "std_msgs/String", NavCompleteHandler);
             //rosSocket.Publish(initializeMovocontrolPublicationId, new StandardString());
@@ -56,9 +57,9 @@ namespace RosSharp.RosBridgeClient {
             NavPath path = (NavPath)message;
             if (path.poses.Count > 0) {
                 Debug.Log("Num poses in path: " + path.poses.Count);
+                WaypointManager.Instance.PathPoses = path.poses;
+                WaypointManager.Instance.PathPosesRefreshed = true;
             }
-            WaypointManager.Instance.PathPoses = path.poses;
-            WaypointManager.Instance.PathPosesRefreshed = true;
         }
 
         private void MovoPoseHandler(Message message) {
