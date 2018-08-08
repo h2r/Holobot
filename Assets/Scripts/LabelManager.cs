@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine;
+using System.Collections;
 
 using System;
 using System.IO;
@@ -90,7 +92,7 @@ namespace HoloToolkit.Unity {
                 float red_color = l1.GetComponent<LabelPlace>().place_color[0];
                 float green_color = l1.GetComponent<LabelPlace>().place_color[1];
                 float blue_color = l1.GetComponent<LabelPlace>().place_color[2];
-                msg = label_name + " " + lx.ToString() + " " + ly.ToString() + " " + rx.ToString() + " " + ry.ToString() + " " + red_color.ToString() + " " + green_color.ToString() + " " + blue_color.ToString();
+                msg = "label" + label_name + " " + lx.ToString() + " " + ly.ToString() + " " + rx.ToString() + " " + ry.ToString() + " " + red_color.ToString() + " " + green_color.ToString() + " " + blue_color.ToString();
                 Debug.Log(msg);
                 //wsc.Publish(labelSaveTopic, msg);
                 c = c + msg + ";";
@@ -104,7 +106,7 @@ namespace HoloToolkit.Unity {
                 float rx = static_go.GetComponent<LabelPlace>().ROSpose.X; //ROS poses
                 float ry = static_go.GetComponent<LabelPlace>().ROSpose.Y; //ROS poses
                 float rt = static_go.GetComponent<LabelPlace>().ROSpose.Theta; //ROS poses
-                msg = label_name + " " + rx.ToString() + " " + ry.ToString() + " " + rt.ToString();
+                msg = "static" + label_name + " " + rx.ToString() + " " + ry.ToString() + " " + rt.ToString();
                 Debug.Log(msg);
                 //wsc.Publish(labelSaveTopic, msg);
                 c = c + msg + ";";
@@ -117,9 +119,9 @@ namespace HoloToolkit.Unity {
 
                 float d1x = doorway_pair.Value[0].GetComponent<Doorway>().ROSpose.X; //ROS poses
                 float d1y = doorway_pair.Value[0].GetComponent<Doorway>().ROSpose.Y; //ROS poses
-                float d2x = doorway_pair.Value[0].GetComponent<Doorway>().ROSpose.X; //ROS poses
-                float d2y = doorway_pair.Value[0].GetComponent<Doorway>().ROSpose.Y; //ROS poses
-                msg = door1_name + " " + door2_name + " " + d1x.ToString() + " " + d1y.ToString() + " " + d2x.ToString() + " " + d2y.ToString();
+                float d2x = doorway_pair.Value[1].GetComponent<Doorway>().ROSpose.X; //ROS poses
+                float d2y = doorway_pair.Value[1].GetComponent<Doorway>().ROSpose.Y; //ROS poses
+                msg = "label" + door1_name + " " + "label" + door2_name + " " + d1x.ToString() + " " + d1y.ToString() + " " + d2x.ToString() + " " + d2y.ToString();
                 Debug.Log(msg);
                 //wsc.Publish(labelSaveTopic, msg);
                 c = c + msg + ";";
@@ -156,11 +158,30 @@ namespace HoloToolkit.Unity {
 
             if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
                 UtilFunctions.InitLabelPos(Camera.main, label1, label2);
+                string dummy_val = LabelDict.Count.ToString();
+                LabelDict.Add(dummy_val, new[] { label1, label2 });
+                label1.name = dummy_val + " L";
+                label2.name = dummy_val + " R";
+                midpoint.name = dummy_val + "M";
 
-                LabelDict.Add(LabelDict.Count.ToString(), new[] { label1, label2 });
-                label1.name = LabelDict.Count.ToString() + " L";
-                label2.name = LabelDict.Count.ToString() + " R";
-                midpoint.name = LabelDict.Count.ToString() + "M";
+                float red_val = UnityEngine.Random.value;
+                float green_val = UnityEngine.Random.value;
+                float blue_val = UnityEngine.Random.value;
+
+                label1.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                label2.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                midpoint.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+
+                label1.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
+                label2.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
+                midpoint.GetComponent<LabelPlace>().place_color = new Vector3(red_val, green_val, blue_val);
+
+                foreach (Transform t in midpoint.transform) {
+                    if (t.name == "Plane")// Do something to child one
+                        {
+                        t.GetComponent<Renderer>().material.color = new Color(red_val, green_val, blue_val);
+                    }
+                }
             }
 
             Debug.Log("Finished adding");
@@ -183,9 +204,10 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
                 UtilFunctions.InitLabelPos(Camera.main, door1, door2);
 
-                DoorsDict.Add(LabelDict.Count.ToString(), new[] { door1, door2 });
-                door1.name = LabelDict.Count.ToString() + " D1";
-                door2.name = LabelDict.Count.ToString() + " D2";
+                String dummy_val = DoorsDict.Count.ToString();
+                DoorsDict.Add(dummy_val, new[] { door1, door2 });
+                door1.name = dummy_val + " D1";
+                door2.name = dummy_val + " D2";
             }
 
             Debug.Log("Finished adding");
@@ -207,8 +229,9 @@ namespace HoloToolkit.Unity {
             if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
                 UtilFunctions.InitWaypointPos(Camera.main, staticPoint);
 
-                StaticLocDict.Add(StaticLocDict.Count.ToString(),staticPoint);
-                staticPoint.name = StaticLocDict.Count.ToString() + " S"; //READ ADD IN ADDING TO A DICIONTARY
+                String dummy_val = StaticLocDict.Count.ToString();
+                StaticLocDict.Add(dummy_val,staticPoint);
+                staticPoint.name = dummy_val + " S"; //READ ADD IN ADDING TO A DICIONTARY
             }
 
             Debug.Log("Finished adding");
@@ -302,7 +325,7 @@ namespace HoloToolkit.Unity {
                         string line = lines[i];
                         string[] split_line = line.Split(' ');
                         Debug.Log(split_line.Length);
-                        if (split_line.Length == 8)
+                        if (split_line.Length == 8) //Loading in a place
                         {
                             Debug.Log(lines[i]);
                             Debug.Log(split_line[0]);
@@ -356,7 +379,7 @@ namespace HoloToolkit.Unity {
                             Debug.Log("Finished adding");
                             Debug.Log(LabelDict.Count.ToString());
                         }
-                        else if (split_line.Length == 4) 
+                        else if (split_line.Length == 4) //loading in a static location
                             {
                             Debug.Log(lines[i]);
                             Debug.Log(split_line[0]);
@@ -379,6 +402,39 @@ namespace HoloToolkit.Unity {
                                 float unity_y_rot = tl - StateManager.Instance.MovoUnityToROSOffset.Theta - StateManager.Instance.CalibrateThetaOffset;
                                 unity_rot[1] = unity_y_rot;
                                 static_ob.transform.eulerAngles = unity_rot;
+                            }
+
+                            Debug.Log("Finished adding");
+                            Debug.Log(StaticLocDict.Count.ToString());
+
+                        }
+                        else if (split_line.Length == 6) //loading in a doorway
+                            {
+                            Debug.Log(lines[i]);
+                            Debug.Log(split_line[0]);
+                            string door1_name = split_line[0];
+                            string door2_name = split_line[1];
+                            float d1x = float.Parse(split_line[2]);// - StateManager.Instance.MovoUnityToROSOffset.Y;
+                            float d1y = float.Parse(split_line[3]);
+                            float d2x = float.Parse(split_line[4]);
+                            float d2y = float.Parse(split_line[5]);
+
+                            Debug.Log("Loading in a dooorway");
+                            GameObject door1_obj = Instantiate(DoorTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+                            GameObject door2_obj = Instantiate(DoorTemplate); // This waypoint will eventually be destroyed, so Instantiate ensures that WaypointTemplate is always there.
+
+                            if (StateManager.Instance.CurrentState == StateManager.State.LabelState) { // If in WaypointState, then place waypoint in front of user.
+                                UtilFunctions.InitLabelPos(Camera.main, door1_obj, door2_obj);
+                                DoorsDict.Add(LabelDict.Count.ToString(), new[] { door1_obj, door2_obj });
+
+                                door1_obj.name = DoorsDict.Count.ToString() + " D1";
+                                door2_obj.name = DoorsDict.Count.ToString() + " D2";
+
+                                door1_obj.transform.position = GetUnityCoords(new Vector2(d1x, d1y));//GetUnityPos(new Vector3(xl, label1.transform.position.y, yl)); //new Vector3(xl - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yl - StateManager.Instance.MovoUnityToROSOffset.Y);
+                                door2_obj.transform.position = GetUnityCoords(new Vector2(d2x, d2y));//GetUnityPos(new Vector3(xl, label1.transform.position.y, yl)); //new Vector3(xl - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yl - StateManager.Instance.MovoUnityToROSOffset.Y);
+
+                                door1_obj.GetComponent<Doorway>().roomLocation = door1_name;
+                                door2_obj.GetComponent<Doorway>().roomLocation = door2_name;
                             }
 
                             Debug.Log("Finished adding");
