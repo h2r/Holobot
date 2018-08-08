@@ -7,6 +7,7 @@ using UnityEngine;
 using HoloToolkit.Unity.InputModule;
 using HoloToolkit.Unity.InputModule.Utilities.Interactions;
 using System.Collections.Generic;
+using HoloToolkit.UI.Keyboard;
 
 /// <summary>
 /// This class implements IInputClickHandler to handle the tap gesture.
@@ -16,13 +17,16 @@ using System.Collections.Generic;
 public class TapToSpawnTextbox : MonoBehaviour, IInputClickHandler
 {
     private Boolean isTextBoxThere = false;
-    public GameObject textBox;
-    public HoloToolkit.UI.Keyboard.KeyboardInputField keyboardInputField;
+    private GameObject textBox;
+    private HoloToolkit.UI.Keyboard.KeyboardInputField keyboardInputField;
 
     public void Start()
     {
-        textBox.SetActive(false);
-
+        textBox = GameObject.Find("KeyboardTestCanvas");
+        keyboardInputField = textBox.transform.GetChild(0).transform.GetChild(0).GetComponent<KeyboardInputField>();
+        //textBox.SetActive(false);
+        textBox.transform.position = new Vector3(99, 99, 99);
+        
     }
 
     public void Update()
@@ -31,14 +35,15 @@ public class TapToSpawnTextbox : MonoBehaviour, IInputClickHandler
 
     public void OnInputClicked(InputClickedEventData eventData)
     {
-        Debug.Log("Cube was clicked!");
+        //Debug.Log("Cube was clicked!");
         if (!isTextBoxThere) {
             textBox.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.25f, gameObject.transform.position.z);
-            textBox.SetActive(true);
+            //textBox.SetActive(true);
             isTextBoxThere = true;
         }
         else {
-            textBox.SetActive(false);
+            //textBox.SetActive(false);
+            textBox.transform.position = new Vector3(99, 99, 99);
             isTextBoxThere = false;
         }
 

@@ -676,7 +676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b37147abee1dc439730b67e54bc821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WaypointTemplate: {fileID: 1713567824672912, guid: 4d4619170c7daed49b5df2d942883a2d,
+  WaypointTemplate: {fileID: 1700202228490008, guid: 4d4619170c7daed49b5df2d942883a2d,
     type: 2}
   MidpointTemplate: {fileID: 1599964565358280, guid: b09a44c65e61ef743bfc58869d124df1,
     type: 2}
@@ -711,6 +711,7 @@ GameObject:
   - component: {fileID: 35551356}
   - component: {fileID: 35551355}
   - component: {fileID: 35551353}
+  - component: {fileID: 35551357}
   m_Layer: 0
   m_Name: KeyboardTestCanvas
   m_TagString: Untagged
@@ -810,6 +811,18 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &35551357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 35551351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 204c79f10449a0e4cb82484fdd5d8ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PivotAxis: 0
 --- !u!1 &35888330
 GameObject:
   m_ObjectHideFlags: 0
@@ -8018,7 +8031,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1649815014526190, guid: f2b4395bb3c8ed3439b31475104a29c7, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f2b4395bb3c8ed3439b31475104a29c7, type: 2}
@@ -18333,7 +18346,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1498644281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22584,8 +22597,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2208082c1fce8418646f715ff3a15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textBox: {fileID: 1999112921}
-  keyboardInputField: {fileID: 1999112923}
 --- !u!23 &1872480548
 MeshRenderer:
   m_ObjectHideFlags: 0
