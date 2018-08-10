@@ -399,7 +399,7 @@ namespace HoloToolkit.Unity {
                                 static_ob.transform.position = GetUnityCoords(new Vector2(xl, yl));//GetUnityPos(new Vector3(xl, label1.transform.position.y, yl)); //new Vector3(xl - StateManager.Instance.MovoUnityToROSOffset.X, label1.transform.position.y, yl - StateManager.Instance.MovoUnityToROSOffset.Y);
                                 Vector3 unity_rot = static_ob.transform.eulerAngles;
 
-                                float unity_y_rot = tl - StateManager.Instance.MovoUnityToROSOffset.Theta - StateManager.Instance.CalibrateThetaOffset;
+                                float unity_y_rot = tl - StateManager.Instance.MovoUnityToROSOffset.Theta + StateManager.Instance.CalibrateThetaOffset;
                                 unity_rot[1] = unity_y_rot;
                                 static_ob.transform.eulerAngles = unity_rot;
                             }

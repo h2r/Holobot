@@ -8,6 +8,7 @@ using HoloToolkit.Unity.InputModule;
 using HoloToolkit.Unity.InputModule.Utilities.Interactions;
 using System.Collections.Generic;
 using HoloToolkit.UI.Keyboard;
+using HoloToolkit.Unity;
 
 /// <summary>
 /// This class implements IInputClickHandler to handle the tap gesture.
@@ -16,16 +17,18 @@ using HoloToolkit.UI.Keyboard;
 /// 
 public class TapToSpawnTextbox : MonoBehaviour, IInputClickHandler
 {
-    private Boolean isTextBoxThere = false;
-    private GameObject textBox;
-    private HoloToolkit.UI.Keyboard.KeyboardInputField keyboardInputField;
+    //private Boolean isTextBoxThere = false;
+    //private GameObject textBox;
+    //private HoloToolkit.UI.Keyboard.KeyboardInputField keyboardInputField;
+    private TextboxManager textboxManager;
 
     public void Start()
     {
-        textBox = GameObject.Find("KeyboardTestCanvas");
-        keyboardInputField = textBox.transform.GetChild(0).transform.GetChild(0).GetComponent<KeyboardInputField>();
-        //textBox.SetActive(false);
-        textBox.transform.position = new Vector3(99, 99, 99);
+        //textBox = GameObject.Find("KeyboardTestCanvas");
+        //keyboardInputField = textBox.transform.GetChild(0).transform.GetChild(0).GetComponent<KeyboardInputField>();
+        ////textBox.SetActive(false);
+        //textBox.transform.position = new Vector3(99, 99, 99);
+        textboxManager = GameObject.Find("Managers").GetComponent<TextboxManager>();
         
     }
 
@@ -35,17 +38,16 @@ public class TapToSpawnTextbox : MonoBehaviour, IInputClickHandler
 
     public void OnInputClicked(InputClickedEventData eventData)
     {
-        //Debug.Log("Cube was clicked!");
-        if (!isTextBoxThere) {
-            textBox.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.25f, gameObject.transform.position.z);
-            //textBox.SetActive(true);
-            isTextBoxThere = true;
-        }
-        else {
-            //textBox.SetActive(false);
-            textBox.transform.position = new Vector3(99, 99, 99);
-            isTextBoxThere = false;
-        }
+        //if (!isTextBoxThere) {
+        //    textBox.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.25f, gameObject.transform.position.z);
+        //    isTextBoxThere = true;
+        //}
+        //else {
+        //    textBox.transform.position = new Vector3(99, 99, 99);
+        //    isTextBoxThere = false;
+        //}
+
+        textboxManager.OnLabelTap(gameObject);
 
         eventData.Use(); // Mark the event as used, so it doesn't fall through to other handlers.
     }
