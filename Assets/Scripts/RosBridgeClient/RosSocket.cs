@@ -74,7 +74,7 @@ public class RosSocket {
 
 
     public int Subscribe(string topic, string rosMessageType, MessageHandler messageHandler, int throttle_rate = 0, int queue_length = 1, int fragment_size = int.MaxValue, string compression = "none") {
-
+        Debug.Log("Subscribed to " + topic);
         Type messageType = MessageTypes.MessageType(rosMessageType);
         if (messageType == null)
             return 0;
