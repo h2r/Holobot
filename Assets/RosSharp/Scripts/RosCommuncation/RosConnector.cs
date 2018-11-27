@@ -21,7 +21,7 @@ using UnityEngine;
 public class RosConnector : MonoBehaviour {
 
     public RosSocket RosSocket { get; private set; }
-    private string RosBridgeServerUrl = "ws://138.16.160.229:9090";
+    private string RosBridgeServerUrl = "ws://138.16.161.64:9090";
     //#if UNITY_EDITOR
     //    public string RosBridgeServerUrl = "ws://192.168.160.193:9090";
     //#elif !UNITY_EDITOR
