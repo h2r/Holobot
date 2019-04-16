@@ -15,15 +15,10 @@ public class ObjectHighlighter : MonoBehaviour {
         MarkerTemplate = GameObject.Find("MarkerTemplate");
         Markers = new List<GameObject>();
         MarkerCoords = new List<string>();
-        //PlaceMarker("2,1,3"); // shelf from bottom, row, col
-        for (int shelf = 0; shelf < 4; shelf++) {
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 15; col++) {
-                    PlaceMarker(shelf, row, col);
-                }
-            }
-        }
+        InitializeMarkers();
         HighlightMarker("2,1,3");
+        HighlightMarker("3,1,3");
+        HighlightMarker("0,0,3");
 	}
 	
 	// Update is called once per frame
@@ -31,12 +26,42 @@ public class ObjectHighlighter : MonoBehaviour {
 		
 	}
 
+    void InitializeMarkers() {
+        for (int shelf = 0; shelf < 4; shelf++) {
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 15; col++) {
+                    PlaceMarker(shelf, row, col);
+                }
+            }
+        }
+    }
+
+    bool IsValidCoordString(string coordstring) {
+        Debug.Assert(!coordstring.Contains("."));
+        var coords = coordstring.Split(','); // shelf, row, col
+        var coordVals = ExtractCoords(coordstring);
+        int shelfNum = coordVals[0];
+        int shelfRow = coordVals[1];
+        int shelfCol = coordVals[2];
+        return (0 <= shelfNum && shelfNum < 4) && (0 <= shelfRow && shelfRow < 3) && (0 <= shelfCol && shelfCol < 15);
+    }
+
+    int[] ExtractCoords(string coordstring) {
+        var coords = coordstring.Split(','); // shelf, row, col
+        var coordVals = new int[3];
+        coordVals[0] = numShelves - int.Parse(coords[0]) - 1; // shelf number from top
+        coordVals[1] = int.Parse(coords[1]); // 3 rows per shelf
+        coordVals[2] = int.Parse(coords[2]); // 15 objects across three cubicles
+        return coordVals;
+    }
+
     void PlaceMarker(string coordstring) {
         var coords = coordstring.Split(',');
         Debug.Assert(coords.Length == 3);
         Debug.Log(string.Format("({0}, {1}, {2})", coords[0], coords[1], coords[2]));
         GameObject markerObj = Instantiate(MarkerTemplate);
         markerObj.name = "Marker_" + coordstring;
+        markerObj.tag = "Marker";
         markerObj.transform.parent = GameObject.Find("Shelf").transform;
         markerObj.transform.localPosition = GetMarkerPosition(coordstring);
     }
@@ -46,22 +71,22 @@ public class ObjectHighlighter : MonoBehaviour {
     }
 
     void HighlightMarker(string coordstring) {
-        GameObject marker = GameObject.Find("Marker_" + coordstring);
-        if (marker != null) { // marker exists
-            Material highlightMaterial = (Material)Resources.Load("Assets/Materials/MarkerActiveMaterial", typeof(Material));
-            marker.GetComponent<Renderer>().material = highlightMaterial;
-            //marker.GetComponent<Renderer>().material.color.a = 1.0;
+        Debug.Assert(IsValidCoordString(coordstring));
+        var markers = GameObject.FindGameObjectsWithTag("Marker");
+        foreach (GameObject m in markers) {
+            m.GetComponent<Renderer>().material = (Material)Resources.Load("MarkerInactiveMaterial", typeof(Material));
         }
+        GameObject marker = GameObject.Find("Marker_" + coordstring);
+        Debug.Assert(marker != null);
+        marker.GetComponent<Renderer>().material = (Material)Resources.Load("MarkerActiveMaterial", typeof(Material));
     }
 
     Vector3 GetMarkerPosition(string coordstring) {
-        var coords = coordstring.Split(','); // shelf, row, col
-        float shelfNum = numShelves - float.Parse(coords[0]) - 1;
-        float shelfRow = float.Parse(coords[1]);
-        float shelfCol = float.Parse(coords[2]);
-        Debug.Assert(0 <= shelfNum && shelfNum < 4); // shelf number from bottom
-        Debug.Assert(0 <= shelfRow && shelfRow < 3); // 3 rows per shelf
-        Debug.Assert(0 <= shelfCol && shelfCol < 15); // 15 objects across three cubicles
+        Debug.Assert(IsValidCoordString(coordstring));
+        var coordVals = ExtractCoords(coordstring);
+        int shelfNum = coordVals[0];
+        int shelfRow = coordVals[1];
+        int shelfCol = coordVals[2];
         float x = (float)(0.425 - (shelfCol * 0.05866666666));
         float shelfGap = 0.015f;
         if (shelfCol > 4) {
