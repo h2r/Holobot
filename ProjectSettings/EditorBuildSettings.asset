@@ -5,6 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MovoArmVisualization.unity
     guid: 8c4adc71a65130c41ada4ed8f1df6d35
+  - enabled: 1
+    path: Assets/Scenes/Shelf.unity
+    guid: 66f39e8afa432ad47bb7c65025679295
